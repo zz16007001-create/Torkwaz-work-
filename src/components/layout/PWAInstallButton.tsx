@@ -16,7 +16,7 @@ export const PWAInstallButton: React.FC = () => {
     return (
       <button
         onClick={install}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#14b8a6] text-white hover:bg-[#0d9488] shadow-xs transition-colors"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-accent-500 text-brand-900 hover:bg-accent-400 shadow-xs transition-colors"
         title="تثبيت التطبيق على جهازك"
       >
         <Download className="w-3.5 h-3.5" />
@@ -31,7 +31,7 @@ export const PWAInstallButton: React.FC = () => {
       <>
         <button
           onClick={() => setShowIOSGuide(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border border-[#14b8a6] text-[#0d9488] bg-teal-50/50 hover:bg-teal-50 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border border-accent-400 text-brand-900 bg-accent-500 hover:bg-accent-400 transition-colors"
           title="تثبيت التطبيق على آيفون"
         >
           <Smartphone className="w-3.5 h-3.5" />
@@ -40,13 +40,13 @@ export const PWAInstallButton: React.FC = () => {
 
         {showIOSGuide && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-            <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl border border-slate-200 text-right">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+            <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl border border-brand-100 text-right">
+              <div className="flex items-center justify-between pb-3 border-b border-brand-100 mb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#14b8a6]/10 text-[#14b8a6] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center">
                     <Smartphone className="w-4 h-4" />
                   </div>
-                  <h3 className="text-sm font-bold text-slate-800">تثبيت التطبيق على آيفون</h3>
+                  <h3 className="text-sm font-bold text-brand-800">تثبيت التطبيق على آيفون</h3>
                 </div>
                 <button
                   onClick={() => setShowIOSGuide(false)}
@@ -87,7 +87,7 @@ export const PWAInstallButton: React.FC = () => {
 
               <button
                 onClick={() => setShowIOSGuide(false)}
-                className="mt-4 w-full py-2.5 rounded-xl bg-[#14b8a6] text-white font-bold text-xs hover:bg-[#0d9488] transition-colors"
+                className="mt-4 w-full py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs hover:bg-brand-700 transition-colors"
               >
                 حسناً، فهمت
               </button>

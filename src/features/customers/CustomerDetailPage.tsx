@@ -221,7 +221,7 @@ export const CustomerDetailPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/customers')}
-            className="p-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors"
+            className="p-2 rounded-xl border border-brand-200 bg-white text-brand-700 hover:bg-brand-50 transition-colors"
             title="رجوع لسجل العملاء"
           >
             <ArrowRight className="w-5 h-5" />
@@ -264,9 +264,9 @@ export const CustomerDetailPage: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={handleSendWhatsAppReminder}
-              className="gap-1.5 text-emerald-700 border-emerald-300 hover:bg-emerald-50"
+              className="gap-1.5 text-brand-700 border-brand-200 hover:bg-brand-50"
             >
-              <Send className="w-4 h-4 text-emerald-600" />
+              <Send className="w-4 h-4 text-brand-600" />
               <span>تذكير واتساب</span>
             </Button>
           )}
@@ -294,20 +294,20 @@ export const CustomerDetailPage: React.FC = () => {
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" />
+        <div className="p-3.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-sm flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 shrink-0 text-brand-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {/* بطاقة ملخص الحساب */}
-      <Card className="p-5 border-slate-200">
+      <Card className="p-5 border-brand-100">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
           <div>
             <span className="text-xs text-slate-400 block mb-1">الرصيد الحالي</span>
             <span
               className={`text-xl font-black ${
-                hasDebt ? 'text-rose-600' : 'text-slate-800'
+                hasDebt ? 'text-rose-600' : 'text-brand-700'
               }`}
             >
               {formatCurrency(customer.currentBalance || 0)}
@@ -318,7 +318,7 @@ export const CustomerDetailPage: React.FC = () => {
           <div>
             <span className="text-xs text-slate-400 block mb-1">رقم الهاتف</span>
             <div className="flex items-center gap-1.5 font-bold text-slate-800" dir="ltr">
-              <Phone className="w-4 h-4 text-slate-400" />
+              <Phone className="w-4 h-4 text-brand-600" />
               <span>{customer.phone || 'غير مسجل'}</span>
             </div>
           </div>
@@ -333,30 +333,30 @@ export const CustomerDetailPage: React.FC = () => {
       </Card>
 
       {/* جدول فواتير العميل */}
-      <Card className="p-0 overflow-hidden border-slate-200">
-        <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-            <Receipt className="w-4 h-4 text-[#14b8a6]" />
+      <Card className="p-0 overflow-hidden border-brand-100">
+        <div className="p-4 bg-brand-50 border-b border-brand-100 flex items-center justify-between">
+          <h2 className="text-sm font-bold text-brand-800 flex items-center gap-2">
+            <Receipt className="w-4 h-4 text-brand-600" />
             <span>فواتير العميل ({invoices.length})</span>
           </h2>
         </div>
 
         {invoices.length === 0 ? (
           <div className="py-12 text-center text-slate-400">
-            <Clock className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+            <Clock className="w-10 h-10 mx-auto mb-2 text-brand-200" />
             <p className="text-xs font-medium">لا توجد فواتير مسجلة لهذا العميل</p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-brand-100">
             {invoices.map((inv) => (
               <div
                 key={inv.id}
                 onClick={() => navigate(`/invoices/${inv.id}`)}
-                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50 cursor-pointer transition-colors"
+                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-brand-50/50 cursor-pointer transition-colors"
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-slate-800">
+                    <span className="font-mono text-xs font-bold text-brand-800">
                       {inv.invoiceNumber}
                     </span>
                     <span className="text-xs text-slate-400">
@@ -421,7 +421,7 @@ export const CustomerDetailPage: React.FC = () => {
             <select
               value={collectWallet}
               onChange={(e) => setCollectWallet(e.target.value as WalletId)}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-[#14b8a6]"
+              className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-brand-600"
             >
               <option value="cash">خزينة المحل (نقدية / كاش)</option>
               <option value="bank">الحساب البنكي / إنستاباي</option>
@@ -440,7 +440,7 @@ export const CustomerDetailPage: React.FC = () => {
             </Button>
             <Button
               type="submit"
-              variant="primary"
+              variant="accent"
               size="sm"
               isLoading={isSubmittingCollect}
             >
@@ -457,7 +457,7 @@ export const CustomerDetailPage: React.FC = () => {
         title={`إعدام دين للعميل: ${customer.name}`}
       >
         <form onSubmit={handleConfirmWriteOff} className="space-y-4">
-          <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
+          <div className="p-3 rounded-xl bg-accent-50 border border-accent-400 text-accent-700 text-xs">
             إعدام الدين يقلل من رصيد العميل ويغلق الفواتير المستحقة دون إدخال أي أموال في الخزائن.
           </div>
 

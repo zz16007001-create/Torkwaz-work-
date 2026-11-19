@@ -524,7 +524,7 @@ export const CashierPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <ShoppingCart className="w-6 h-6 text-[#14b8a6]" />
+            <ShoppingCart className="w-6 h-6 text-brand-600" />
             <span>نقطة البيع والكاشير</span>
           </h1>
           <p className="text-xs md:text-sm text-slate-500 mt-0.5">
@@ -581,9 +581,9 @@ export const CashierPage: React.FC = () => {
 
       {/* رسالة نجاح الفاتورة */}
       {successInvoiceNum && (
-        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-          <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+        <div className="p-4 rounded-2xl bg-brand-50 border border-brand-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-2 text-brand-800 font-bold text-sm">
+            <CheckCircle2 className="w-5 h-5 text-brand-600 shrink-0" />
             <span>
               {savedOffline
                 ? `تم الحفظ على الجهاز (رقم ${successInvoiceNum}) وهيترفع لما النت يرجع`
@@ -615,7 +615,7 @@ export const CashierPage: React.FC = () => {
       {/* شريط البحث المباشر عن الأصناف */}
       <div className="relative z-20">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#14b8a6]">
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700">
             <ScanBarcode className="w-3.5 h-3.5 shrink-0" />
             <span>السكانر جاهز</span>
           </span>
@@ -647,14 +647,14 @@ export const CashierPage: React.FC = () => {
             }}
             placeholder="ابحث بالكود، أو اسم الصنف، أو اللون، أو المقاس..."
             dir="rtl"
-            className="w-full rounded-2xl border-2 border-[#14b8a6]/40 bg-white pr-12 pl-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#14b8a6] focus:ring-4 focus:ring-[#14b8a6]/15 shadow-sm transition-all"
+            className="w-full rounded-2xl border-2 border-brand-200 bg-white pr-12 pl-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-600 focus:ring-4 focus:ring-brand-600/15 shadow-sm transition-all"
           />
-          <Search className="absolute right-4 top-4 w-5 h-5 text-slate-400 pointer-events-none" />
+          <Search className="absolute right-4 top-4 w-5 h-5 text-brand-600 pointer-events-none" />
         </div>
 
         {/* قائمة النتائج المنسدلة للبحث */}
         {isSearchFocused && searchResults.length > 0 && (
-          <div className="absolute top-full mt-2 inset-x-0 bg-white rounded-2xl shadow-xl border border-slate-200 max-h-80 overflow-y-auto divide-y divide-slate-100 p-1.5">
+          <div className="absolute top-full mt-2 inset-x-0 bg-white rounded-2xl shadow-xl border border-brand-100 max-h-80 overflow-y-auto divide-y divide-brand-100 p-1.5">
             {searchResults.map((item) => {
               const stock = item.currentStock ?? 0;
               const isOut = stock <= 0;
@@ -666,10 +666,10 @@ export const CashierPage: React.FC = () => {
                     addToCart(item);
                     focusSearchInput();
                   }}
-                  className="p-3 hover:bg-slate-50 cursor-pointer rounded-xl flex items-center justify-between gap-3 transition-colors"
+                  className="p-3 hover:bg-brand-50/70 cursor-pointer rounded-xl flex items-center justify-between gap-3 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-xs font-bold px-2 py-1 rounded-md bg-slate-100 text-slate-800 border border-slate-200">
+                    <span className="font-mono text-xs font-bold px-2 py-1 rounded-md bg-brand-50 text-brand-800 border border-brand-200">
                       {item.code || item.barcode}
                     </span>
                     <div>
@@ -688,7 +688,7 @@ export const CashierPage: React.FC = () => {
                         className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md font-bold ${
                           isOut
                             ? 'bg-rose-100 text-rose-700'
-                            : 'bg-slate-100 text-slate-600'
+                            : 'bg-brand-50 text-brand-700'
                         }`}
                       >
                         {isOut && <AlertTriangle className="w-3 h-3 text-rose-600" />}
@@ -696,7 +696,7 @@ export const CashierPage: React.FC = () => {
                       </span>
                     </div>
 
-                    <span className="text-sm font-black text-[#14b8a6]">
+                    <span className="text-sm font-black text-brand-700">
                       {formatCurrency(item.sellPrice)}
                     </span>
                   </div>
@@ -711,19 +711,19 @@ export const CashierPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* جدول بنود السلة (8 أعمدة) */}
         <div className="lg:col-span-7 space-y-4">
-          <Card className="p-0 overflow-hidden border-slate-200">
-            <div className="p-4 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
-              <span className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                <Receipt className="w-4 h-4 text-[#14b8a6]" />
+          <Card className="p-0 overflow-hidden border-brand-100">
+            <div className="p-4 bg-brand-50 border-b border-brand-100 flex items-center justify-between">
+              <span className="font-bold text-brand-800 text-sm flex items-center gap-2">
+                <Receipt className="w-4 h-4 text-brand-600" />
                 <span>بنود الفاتورة ({cart.length})</span>
               </span>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-brand-700 font-medium">
                 إجمالي القطع: {cart.reduce((s, it) => s + it.quantity, 0)}
               </span>
             </div>
 
             {cart.length > 0 && (
-              <div className="px-2 sm:px-4 py-2 bg-slate-50/60 border-b border-slate-100 flex flex-row items-center gap-1.5 sm:gap-2 text-[11px] font-medium text-slate-500">
+              <div className="px-2 sm:px-4 py-2 bg-brand-50/50 border-b border-brand-100 flex flex-row items-center gap-1.5 sm:gap-2 text-[11px] font-medium text-brand-800">
                 <div className="flex-1 min-w-0">الصنف</div>
                 <div className="w-[84px] sm:w-[120px] shrink-0 text-center">الكمية</div>
                 <div aria-hidden="true" className="w-3 sm:w-6 shrink-0" />
@@ -740,7 +740,7 @@ export const CashierPage: React.FC = () => {
                 <p className="text-xs mt-1">ابحث عن صنف بالأعلى لإضافته إلى الفاتورة</p>
               </div>
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-brand-100">
                 {cart.map((it) => {
                   const lineTotal = round2(it.unitPrice * it.quantity);
                   const isStockOut = it.availableStock <= 0;
@@ -748,7 +748,7 @@ export const CashierPage: React.FC = () => {
                   return (
                     <div
                       key={it.itemId}
-                      className="px-2 sm:px-4 py-3 flex flex-row items-center gap-1.5 sm:gap-2 hover:bg-slate-50/50 transition-colors"
+                      className="px-2 sm:px-4 py-3 flex flex-row items-center gap-1.5 sm:gap-2 hover:bg-brand-50/40 transition-colors"
                     >
                       {/* خانة الصنف */}
                       <div className="flex-1 min-w-0">
@@ -758,7 +758,7 @@ export const CashierPage: React.FC = () => {
 
                         <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 mt-1 text-xs text-slate-500">
                           {it.code && (
-                            <span className="font-mono font-bold text-slate-600">{it.code}</span>
+                            <span className="font-mono font-bold text-brand-700">{it.code}</span>
                           )}
                           {it.code && it.color && <span aria-hidden="true">·</span>}
                           {it.color && <span>{it.color}</span>}
@@ -775,11 +775,11 @@ export const CashierPage: React.FC = () => {
 
                       {/* خانة الكمية */}
                       <div className="w-[84px] sm:w-[120px] shrink-0">
-                        <div className="flex items-center justify-between border border-slate-200 rounded-xl bg-white shadow-2xs">
+                        <div className="flex items-center justify-between border border-brand-200 rounded-xl bg-brand-50/50 shadow-2xs">
                           <button
                             type="button"
                             onClick={() => updateQuantity(it.itemId, it.quantity - 1)}
-                            className="p-1 sm:p-1.5 text-slate-600 hover:text-rose-600 hover:bg-slate-50 rounded-r-xl transition-colors"
+                            className="p-1 sm:p-1.5 text-slate-600 hover:text-rose-600 hover:bg-white rounded-r-xl transition-colors"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
@@ -793,12 +793,12 @@ export const CashierPage: React.FC = () => {
                             onChange={(e) =>
                               updateQuantity(it.itemId, Math.max(1, parseInt(e.target.value) || 1))
                             }
-                            className="w-8 sm:w-12 text-center text-sm font-bold text-slate-800 focus:outline-none"
+                            className="w-8 sm:w-12 text-center text-sm font-bold text-slate-800 bg-transparent focus:outline-none"
                           />
                           <button
                             type="button"
                             onClick={() => updateQuantity(it.itemId, it.quantity + 1)}
-                            className="p-1 sm:p-1.5 text-slate-600 hover:text-[#14b8a6] hover:bg-slate-50 rounded-l-xl transition-colors"
+                            className="p-1 sm:p-1.5 text-slate-600 hover:text-brand-700 hover:bg-white rounded-l-xl transition-colors"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -818,7 +818,7 @@ export const CashierPage: React.FC = () => {
                             onBlur={clearCartInputIdleTimer}
                             onKeyDown={handleCartNumericKeyDown}
                             onChange={(e) => updateUnitPrice(it.itemId, e.target.value)}
-                            className="w-full sm:w-16 px-1 sm:px-1.5 py-0.5 text-center text-xs font-bold text-slate-800 border border-slate-200 rounded-lg focus:outline-none focus:border-[#14b8a6] bg-white"
+                            className="w-full sm:w-16 px-1 sm:px-1.5 py-0.5 text-center text-xs font-bold text-slate-800 border border-brand-200 rounded-lg focus:outline-none focus:border-brand-600 bg-brand-50/70 focus:bg-white"
                             title="سعر القطعة (قابل للتعديل)"
                           />
                           <span className="hidden sm:inline text-[10px] text-slate-400">ج.م</span>
@@ -851,12 +851,12 @@ export const CashierPage: React.FC = () => {
 
         {/* لوحة الحسابات والدفع (5 أعمدة) */}
         <div className="lg:col-span-5 space-y-4">
-          <Card className="p-5 border-slate-200 space-y-5">
+          <Card className="p-5 border-brand-100 space-y-5">
             {/* إجمالي الفاتورة بخط كبير */}
-            <div className="p-4 rounded-2xl bg-slate-900 text-white flex items-center justify-between shadow-sm">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-brand-600 to-brand-700 text-white flex items-center justify-between shadow-sm">
               <div>
-                <span className="text-xs text-slate-400 block mb-1">المطلوب سداده</span>
-                <span className="text-2xl sm:text-3xl font-black text-[#14b8a6]">
+                <span className="text-xs text-brand-100 block mb-1">المطلوب سداده</span>
+                <span className="text-2xl sm:text-3xl font-black text-accent-400">
                   {formatCurrency(grandTotal)}
                 </span>
               </div>
@@ -864,22 +864,22 @@ export const CashierPage: React.FC = () => {
 
             {/* صف حالة السداد */}
             {payMode === 'cashFull' ? (
-              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between">
-                <span className="flex items-center gap-2 font-bold text-emerald-800 text-sm">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <div className="bg-brand-50 border border-brand-200 rounded-xl p-3 flex items-center justify-between">
+                <span className="flex items-center gap-2 font-bold text-brand-800 text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0" />
                   <span>كاش كامل</span>
                 </span>
-                <span className="font-bold text-emerald-800 text-sm">
+                <span className="font-bold text-brand-800 text-sm">
                   {formatCurrency(grandTotal)}
                 </span>
               </div>
             ) : (
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
-                <span className="flex items-center gap-2 font-bold text-slate-700 text-sm">
-                  <Pencil className="w-4 h-4 text-slate-500 shrink-0" />
+              <div className="bg-brand-50/70 border border-brand-200 rounded-xl p-3 flex items-center justify-between">
+                <span className="flex items-center gap-2 font-bold text-brand-800 text-sm">
+                  <Pencil className="w-4 h-4 text-brand-600 shrink-0" />
                   <span>دفع مخصص</span>
                 </span>
-                <span className="font-bold text-slate-700 text-sm">
+                <span className="font-bold text-brand-800 text-sm">
                   {formatCurrency(grandTotal)}
                 </span>
               </div>
@@ -892,7 +892,7 @@ export const CashierPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowDiscount((prev) => !prev)}
-                  className="w-full flex items-center justify-between border-t border-slate-100 py-2.5 text-sm text-slate-600 hover:text-slate-900 transition-colors"
+                  className="w-full flex items-center justify-between border-t border-brand-100 py-2.5 text-sm text-slate-600 hover:text-brand-800 transition-colors"
                 >
                   <span className={overallDiscount > 0 ? 'text-rose-600 font-bold' : ''}>
                     {overallDiscount > 0 ? `خصم: -${formatCurrency(overallDiscount)}` : 'خصم'}
@@ -914,17 +914,17 @@ export const CashierPage: React.FC = () => {
                     )}
 
                     {/* قسم الخصم مع زر الاختيار بين نسبة أو مبلغ */}
-                    <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div className="p-3 rounded-xl bg-brand-50/60 border border-brand-100 space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-700">خصم الفاتورة:</span>
-                        <div className="inline-flex rounded-lg border border-slate-200 p-0.5 bg-white text-xs">
+                        <span className="text-xs font-bold text-brand-800">خصم الفاتورة:</span>
+                        <div className="inline-flex rounded-lg border border-brand-200 p-0.5 bg-white text-xs">
                           <button
                             type="button"
                             onClick={() => setDiscountType('fixed')}
                             className={`px-2.5 py-1 rounded-md font-bold transition-colors ${
                               discountType === 'fixed'
-                                ? 'bg-[#14b8a6] text-white shadow-2xs'
-                                : 'text-slate-600 hover:text-slate-900'
+                                ? 'bg-brand-600 text-white shadow-2xs'
+                                : 'text-slate-600 hover:text-brand-800'
                             }`}
                           >
                             مبلغ (ج)
@@ -934,8 +934,8 @@ export const CashierPage: React.FC = () => {
                             onClick={() => setDiscountType('percent')}
                             className={`px-2.5 py-1 rounded-md font-bold transition-colors ${
                               discountType === 'percent'
-                                ? 'bg-[#14b8a6] text-white shadow-2xs'
-                                : 'text-slate-600 hover:text-slate-900'
+                                ? 'bg-brand-600 text-white shadow-2xs'
+                                : 'text-slate-600 hover:text-brand-800'
                             }`}
                           >
                             نسبة (%)
@@ -949,7 +949,7 @@ export const CashierPage: React.FC = () => {
                           placeholder={discountType === 'percent' ? 'مثال: 10' : 'مثال: 50'}
                           value={discountInputStr}
                           onChange={(e) => setDiscountInputStr(e.target.value)}
-                          className="flex-1 text-left bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                          className="flex-1 text-left bg-white border border-brand-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                         />
                         {overallDiscount > 0 && (
                           <span className="text-xs font-extrabold text-rose-600 whitespace-nowrap">
@@ -967,7 +967,7 @@ export const CashierPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setPayMode(payMode === 'cashFull' ? 'custom' : 'cashFull')}
-                  className="w-full flex items-center justify-between border-t border-slate-100 py-2.5 text-sm text-slate-600 hover:text-slate-900 transition-colors"
+                  className="w-full flex items-center justify-between border-t border-brand-100 py-2.5 text-sm text-slate-600 hover:text-brand-800 transition-colors"
                 >
                   <span>
                     {payMode === 'custom' ? 'رجوع لكاش كامل' : 'طريقة دفع تانية أو آجل'}
@@ -981,12 +981,12 @@ export const CashierPage: React.FC = () => {
 
                 {payMode === 'custom' && (
                   <div className="space-y-3 pb-3">
-                    <span className="text-xs font-bold text-slate-800 block">تفاصيل السداد والمحافظ:</span>
+                    <span className="text-xs font-bold text-brand-800 block">تفاصيل السداد والمحافظ:</span>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       <div>
-                        <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
-                          <Banknote className="w-3 h-3 text-emerald-600" />
+                        <label className="text-[11px] font-medium text-slate-600 mb-1 flex items-center gap-1">
+                          <Banknote className="w-3 h-3 text-brand-600" />
                           <span>نقدية (كاش)</span>
                         </label>
                         <input
@@ -994,13 +994,13 @@ export const CashierPage: React.FC = () => {
                           placeholder="0.00"
                           value={cashStr}
                           onChange={(e) => setCashStr(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                          className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
-                          <CreditCard className="w-3 h-3 text-indigo-600" />
+                        <label className="text-[11px] font-medium text-slate-600 mb-1 flex items-center gap-1">
+                          <CreditCard className="w-3 h-3 text-brand-700" />
                           <span>إنستاباي</span>
                         </label>
                         <input
@@ -1008,12 +1008,12 @@ export const CashierPage: React.FC = () => {
                           placeholder="0.00"
                           value={instapayStr}
                           onChange={(e) => setInstapayStr(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                          className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
+                        <label className="text-[11px] font-medium text-slate-600 mb-1 flex items-center gap-1">
                           <Smartphone className="w-3 h-3 text-rose-600" />
                           <span>فودافون كاش</span>
                         </label>
@@ -1022,24 +1022,24 @@ export const CashierPage: React.FC = () => {
                           placeholder="0.00"
                           value={walletStr}
                           onChange={(e) => setWalletStr(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                          className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                         />
                       </div>
                     </div>
 
                     {/* ملخص المتبقي آجل أو الباقي للعميل */}
-                    <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold space-y-1">
+                    <div className="p-3 rounded-xl bg-brand-50/60 border border-brand-100 text-xs font-bold space-y-1">
                       <div className="flex justify-between">
                         <span className="text-slate-600">إجمالي المدفوع:</span>
                         <span className="text-slate-900">{formatCurrency(totalPaid)}</span>
                       </div>
                       {remainingDebt > 0 ? (
-                        <div className="flex justify-between text-rose-600 font-extrabold text-sm pt-1 border-t border-slate-200">
+                        <div className="flex justify-between text-rose-600 font-extrabold text-sm pt-1 border-t border-brand-100">
                           <span>المتبقي آجل (دين على العميل):</span>
                           <span>{formatCurrency(remainingDebt)}</span>
                         </div>
                       ) : changeDue > 0 ? (
-                        <div className="flex justify-between text-emerald-700 font-bold pt-1 border-t border-slate-200">
+                        <div className="flex justify-between text-brand-700 font-bold pt-1 border-t border-brand-100">
                           <span>الباقي للعميل:</span>
                           <span>{formatCurrency(changeDue)}</span>
                         </div>
@@ -1054,7 +1054,7 @@ export const CashierPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowCustomer((prev) => !prev)}
-                  className="w-full flex items-center justify-between border-t border-slate-100 py-2.5 text-sm text-slate-600 hover:text-slate-900 transition-colors"
+                  className="w-full flex items-center justify-between border-t border-brand-100 py-2.5 text-sm text-slate-600 hover:text-brand-800 transition-colors"
                 >
                   <span>بيانات عميل (اختياري)</span>
                   {showCustomer || remainingDebt > 0 || customerName.trim() || customerPhone.trim() ? (
@@ -1067,8 +1067,8 @@ export const CashierPage: React.FC = () => {
                 {(showCustomer || remainingDebt > 0 || customerName.trim() || customerPhone.trim()) && (
                   <div className="space-y-3 pb-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                        <User className="w-3.5 h-3.5 text-[#14b8a6]" />
+                      <span className="text-xs font-bold text-brand-800 flex items-center gap-1.5">
+                        <User className="w-3.5 h-3.5 text-brand-600" />
                         <span>بيانات العميل</span>
                       </span>
                       {remainingDebt > 0 && (
@@ -1101,7 +1101,7 @@ export const CashierPage: React.FC = () => {
               onClick={handleSaveInvoice}
               disabled={cart.length === 0 || isSubmitting}
               isLoading={isSubmitting}
-              variant="primary"
+              variant="accent"
               className="w-full py-4 text-base font-bold shadow-sm gap-2"
             >
               <CheckCircle2 className="w-5 h-5" />

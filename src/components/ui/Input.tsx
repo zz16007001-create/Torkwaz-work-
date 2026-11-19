@@ -31,10 +31,10 @@ export const Input: React.FC<InputProps> = ({
         id={inputId}
         disabled={disabled}
         dir="rtl"
-        className={`w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:outline-none focus:ring-2 disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed ${
+        className={`w-full rounded-xl border bg-brand-50/70 focus:bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:outline-none focus:ring-2 disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed ${
           error
             ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-200'
-            : 'border-slate-300 focus:border-[#14b8a6] focus:ring-[#14b8a6]/20'
+            : 'border-brand-200 focus:border-brand-600 focus:ring-brand-600/20'
         } ${className}`}
         {...props}
       />

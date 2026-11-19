@@ -13,12 +13,10 @@ import { formatCurrency, round2 } from '../../domain/money';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Spinner } from '../../components/ui/Spinner';
+import { Icon3D } from '../../components/ui/Icons3D';
 import {
-  ShoppingCart,
-  Boxes,
   AlertTriangle,
   Database,
-  Building,
   ChevronLeft,
   ChevronDown,
   ChevronUp,
@@ -233,9 +231,9 @@ export const DashboardPage: React.FC = () => {
     <div className="max-w-6xl mx-auto space-y-6">
       {/* تنبيه النسخ الاحتياطي */}
       {backupAlert && (
-        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+        <div className="p-4 rounded-2xl bg-accent-50 border border-accent-400 text-accent-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs print:hidden">
           <div className="flex items-center gap-2.5 text-xs sm:text-sm font-bold">
-            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
+            <AlertTriangle className="w-5 h-5 text-accent-600 shrink-0" />
             <span>تنبيه: لم يتم عمل نسخة احتياطية محلية لبياناتك منذ أكثر من 7 أيام!</span>
           </div>
           <Button
@@ -243,7 +241,7 @@ export const DashboardPage: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => navigate('/settings')}
-            className="text-amber-800 border-amber-300 bg-white hover:bg-amber-100 shrink-0 self-start sm:self-auto text-xs"
+            className="text-accent-700 border-accent-400 bg-white hover:bg-accent-100 shrink-0 self-start sm:self-auto text-xs"
           >
             <Database className="w-3.5 h-3.5" />
             <span>الذهاب للإعدادات والنسخ</span>
@@ -254,7 +252,7 @@ export const DashboardPage: React.FC = () => {
       {/* عنوان لوحة التحكم */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900">لوحة التحكم الرئيسية</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-brand-900">لوحة التحكم الرئيسية</h1>
           <p className="text-xs md:text-sm text-slate-500 mt-0.5">
             نظرة شاملة وسريعة على رأس المال والمبيعات اليومية والمخزون
           </p>
@@ -264,59 +262,73 @@ export const DashboardPage: React.FC = () => {
       {/* شبكة الكروت الأساسية */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* كارت رأس المال المدمج */}
-        <Card className="col-span-2 p-5 border-slate-200 bg-gradient-to-br from-slate-900 via-slate-850 to-slate-800 text-white flex flex-col justify-between shadow-xs">
+        <Card className="col-span-2 p-5 border-brand-700 bg-gradient-to-br from-brand-600 to-brand-700 text-white flex flex-col justify-between shadow-sm print:bg-white print:text-slate-900 print:border-slate-300">
           <div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-300 font-medium">رأس المال التشغيلي الحالي</span>
-              <Building className="w-5 h-5 text-[#14b8a6]" />
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs text-brand-100 font-medium print:text-slate-600">
+                رأس المال التشغيلي الحالي
+              </span>
+              <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0 print:hidden">
+                <Icon3D name="capital" size={34} />
+              </div>
             </div>
-            <div className="text-3xl sm:text-4xl font-black text-white mt-2 tracking-tight">
+            <div className="text-3xl sm:text-4xl font-black text-white mt-1.5 tracking-tight print:text-slate-900">
               {formatCurrency(currentCapital)}
             </div>
           </div>
 
           {/* مربعات مكونات رأس المال */}
           <div
-            className={`grid gap-2 pt-4 mt-4 border-t border-white/10 text-xs ${
+            className={`grid gap-2 pt-3 mt-3 border-t border-white/15 text-xs ${
               customerCredits > 0 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'
             }`}
           >
             <button
               type="button"
               onClick={() => setShowWalletDetails((prev) => !prev)}
-              className="text-right rounded-lg p-1.5 -m-1.5 hover:bg-white/5 transition-colors cursor-pointer"
+              className="text-right rounded-xl bg-white/10 p-2 hover:bg-white/15 transition-colors cursor-pointer"
             >
-              <span className="text-slate-400 flex items-center gap-1 text-[11px]">
+              <span className="text-brand-100 flex items-center gap-1 text-[11px] print:text-slate-600">
+                <Icon3D name="wallets" size={20} className="print:hidden" />
                 <span>الخزائن</span>
                 {showWalletDetails ? (
-                  <ChevronUp className="w-3.5 h-3.5 text-[#14b8a6] shrink-0" />
+                  <ChevronUp className="w-3.5 h-3.5 text-accent-400 shrink-0" />
                 ) : (
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <ChevronDown className="w-3.5 h-3.5 text-brand-100 shrink-0" />
                 )}
               </span>
-              <span className="font-bold text-white text-sm block mt-0.5">
+              <span className="font-bold text-white text-sm block mt-0.5 print:text-slate-900">
                 {formatCurrency(totalWallets)}
               </span>
             </button>
 
-            <div>
-              <span className="text-slate-400 block text-[11px]">البضاعة</span>
-              <span className="font-bold text-white text-sm block mt-0.5">
+            <div className="rounded-xl bg-white/10 p-2">
+              <span className="text-brand-100 flex items-center gap-1 text-[11px] print:text-slate-600">
+                <Icon3D name="inventory" size={20} className="print:hidden" />
+                <span>البضاعة</span>
+              </span>
+              <span className="font-bold text-white text-sm block mt-0.5 print:text-slate-900">
                 {formatCurrency(inventoryValue)}
               </span>
             </div>
 
-            <div>
-              <span className="text-slate-400 block text-[11px]">ديون لنا</span>
-              <span className="font-bold text-amber-400 text-sm block mt-0.5">
+            <div className="rounded-xl bg-white/10 p-2">
+              <span className="text-brand-100 flex items-center gap-1 text-[11px] print:text-slate-600">
+                <Icon3D name="receivables" size={20} className="print:hidden" />
+                <span>ديون لنا</span>
+              </span>
+              <span className="font-bold text-accent-400 text-sm block mt-0.5 print:text-slate-900">
                 {formatCurrency(receivables)}
               </span>
             </div>
 
             {customerCredits > 0 && (
-              <div>
-                <span className="text-slate-400 block text-[11px]">فلوس عملاء عندنا</span>
-                <span className="font-bold text-rose-300 text-sm block mt-0.5">
+              <div className="rounded-xl bg-white/10 p-2">
+                <span className="text-brand-100 flex items-center gap-1 text-[11px] print:text-slate-600">
+                  <Icon3D name="credit" size={20} className="print:hidden" />
+                  <span>فلوس عملاء عندنا</span>
+                </span>
+                <span className="font-bold text-rose-200 text-sm block mt-0.5 print:text-slate-900">
                   {formatCurrency(customerCredits)}
                 </span>
               </div>
@@ -325,23 +337,32 @@ export const DashboardPage: React.FC = () => {
 
           {/* تفاصيل الخزائن ومعادلة رأس المال (مغلقة افتراضياً) */}
           {showWalletDetails && (
-            <div className="pt-3 mt-3 border-t border-white/10 space-y-3">
+            <div className="pt-2.5 mt-2.5 border-t border-white/15">
               <div className="grid grid-cols-3 gap-2 text-xs">
-                <div>
-                  <span className="text-slate-400 block text-[11px]">كاش (الدرج)</span>
-                  <span className="font-bold text-white text-sm">
+                <div className="rounded-xl bg-white/10 p-2">
+                  <span className="text-brand-100 flex items-center gap-1 text-[11px]">
+                    <Icon3D name="cash" size={20} className="print:hidden" />
+                    <span>كاش (الدرج)</span>
+                  </span>
+                  <span className="font-bold text-white text-sm block mt-0.5">
                     {formatCurrency(walletBalances.cash || 0)}
                   </span>
                 </div>
-                <div>
-                  <span className="text-slate-400 block text-[11px]">إنستاباي</span>
-                  <span className="font-bold text-white text-sm">
+                <div className="rounded-xl bg-white/10 p-2">
+                  <span className="text-brand-100 flex items-center gap-1 text-[11px]">
+                    <Icon3D name="instapay" size={20} className="print:hidden" />
+                    <span>إنستاباي</span>
+                  </span>
+                  <span className="font-bold text-white text-sm block mt-0.5">
                     {formatCurrency(walletBalances.bank || 0)}
                   </span>
                 </div>
-                <div>
-                  <span className="text-slate-400 block text-[11px]">فودافون</span>
-                  <span className="font-bold text-white text-sm">
+                <div className="rounded-xl bg-white/10 p-2">
+                  <span className="text-brand-100 flex items-center gap-1 text-[11px]">
+                    <Icon3D name="vodafone" size={20} className="print:hidden" />
+                    <span>فودافون</span>
+                  </span>
+                  <span className="font-bold text-white text-sm block mt-0.5">
                     {formatCurrency(walletBalances.wallet || 0)}
                   </span>
                 </div>
@@ -351,23 +372,23 @@ export const DashboardPage: React.FC = () => {
         </Card>
 
         {/* كارت مبيعات اليوم */}
-        <Card className="p-4 sm:p-5 border-slate-200 flex flex-col justify-between hover:shadow-md transition-shadow">
+        <Card className="p-4 sm:p-5 bg-accent-500 border-accent-600 text-slate-900 flex flex-col justify-between hover:shadow-md transition-shadow print:bg-white print:border-slate-300">
           <div>
             <div className="flex items-center justify-between gap-1">
-              <span className="text-xs font-bold text-slate-600">صافي حركة اليوم</span>
-              <div className="w-8 h-8 rounded-lg bg-teal-50 text-[#14b8a6] flex items-center justify-center shrink-0">
-                <ShoppingCart className="w-4 h-4" />
+              <span className="text-xs font-bold text-brand-900">صافي حركة اليوم</span>
+              <div className="w-9 h-9 rounded-xl bg-white/35 flex items-center justify-center shrink-0 print:hidden">
+                <Icon3D name="today" size={30} />
               </div>
             </div>
             <div className="text-xl sm:text-2xl font-black text-slate-900 mt-2">
               {formatCurrency(todayNetSales)}
             </div>
             {todayReturnsTotal > 0 ? (
-              <p className="text-[11px] text-slate-500 mt-1">
+              <p className="text-[11px] text-brand-900/80 mt-1 font-medium">
                 إجمالي: {formatCurrency(todayGrossSales)} | مرتجعات: -{formatCurrency(todayReturnsTotal)}
               </p>
             ) : (
-              <p className="text-[11px] text-slate-500 mt-1">
+              <p className="text-[11px] text-brand-900/80 mt-1 font-medium">
                 عدد الفواتير المنفذة اليوم: {todayInvoices.length} فاتورة
               </p>
             )}
@@ -376,7 +397,7 @@ export const DashboardPage: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate('/reports?period=today')}
-            className="flex items-center justify-between text-xs font-bold text-[#14b8a6] hover:text-[#0d9488] pt-3 border-t border-slate-100 mt-3"
+            className="flex items-center justify-between text-xs font-bold text-brand-900 hover:text-brand-800 pt-3 border-t border-brand-900/15 mt-3 print:hidden"
           >
             <span>عرض التفاصيل</span>
             <ChevronLeft className="w-4 h-4" />
@@ -384,17 +405,17 @@ export const DashboardPage: React.FC = () => {
         </Card>
 
         {/* كارت نواقص المخزون */}
-        <Card className="p-4 sm:p-5 border-slate-200 flex flex-col justify-between hover:shadow-md transition-shadow">
+        <Card className="p-4 sm:p-5 bg-white border-brand-100 flex flex-col justify-between hover:shadow-md transition-shadow">
           <div>
             <div className="flex items-center justify-between gap-1">
-              <span className="text-xs font-bold text-slate-600">نواقص المخزون</span>
-              <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
-                <Boxes className="w-4 h-4" />
+              <span className="text-xs font-bold text-brand-800">نواقص المخزون</span>
+              <div className="w-9 h-9 rounded-xl bg-brand-50 flex items-center justify-center shrink-0 print:hidden">
+                <Icon3D name="lowStock" size={30} />
               </div>
             </div>
             <div
               className={`text-xl sm:text-2xl font-black mt-2 ${
-                lowStockItems.length > 0 ? 'text-rose-600' : 'text-slate-900'
+                lowStockItems.length > 0 ? 'text-rose-600' : 'text-brand-700'
               }`}
             >
               {lowStockItems.length} صنف
@@ -407,7 +428,11 @@ export const DashboardPage: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate('/items')}
-            className="flex items-center justify-between text-xs font-bold text-rose-600 hover:text-rose-700 pt-3 border-t border-slate-100 mt-3"
+            className={`flex items-center justify-between text-xs font-bold pt-3 border-t border-brand-100 mt-3 print:hidden ${
+              lowStockItems.length > 0
+                ? 'text-rose-600 hover:text-rose-700'
+                : 'text-brand-700 hover:text-brand-800'
+            }`}
           >
             <span>فحص النواقص</span>
             <ChevronLeft className="w-4 h-4" />

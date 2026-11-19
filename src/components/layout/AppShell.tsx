@@ -129,9 +129,9 @@ const AppShellContent: React.FC = () => {
 
   if (authUser === undefined) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-500">
+      <div className="flex min-h-screen items-center justify-center bg-page text-slate-500">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-3 border-[#14b8a6] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-3 border-brand-600 border-t-transparent rounded-full animate-spin" />
           <span className="text-sm font-medium">جاري التحقق من تسجيل الدخول...</span>
         </div>
       </div>
@@ -149,18 +149,18 @@ const AppShellContent: React.FC = () => {
   const isRouteBlocked = mode === 'sales' && !isPathAllowedInSales(location.pathname);
 
   return (
-    <div className="min-h-screen bg-slate-100/70 flex flex-col antialiased text-slate-800">
+    <div className="min-h-screen bg-page flex flex-col antialiased text-slate-800 print:bg-white">
       {/* Top Header */}
-      <header className="sticky top-0 z-30 bg-white border-b border-slate-200/80 px-4 lg:px-6 h-16 flex items-center justify-between shadow-2xs">
+      <header className="sticky top-0 z-30 bg-brand-600 border-b border-brand-700 text-white px-4 lg:px-6 h-16 flex items-center justify-between shadow-2xs print:hidden">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#14b8a6] text-white flex items-center justify-center shadow-sm">
+          <div className="w-10 h-10 rounded-xl bg-accent-500 text-brand-900 flex items-center justify-center shadow-sm">
             <Store className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-bold text-base lg:text-lg text-slate-900 leading-tight">
+            <h1 className="font-bold text-base lg:text-lg text-white leading-tight">
               محلي
             </h1>
-            <p className="text-[11px] text-slate-500 hidden sm:block">
+            <p className="text-[11px] text-brand-100 hidden sm:block">
               نظام إدارة المبيعات والمخزون
             </p>
           </div>
@@ -173,11 +173,11 @@ const AppShellContent: React.FC = () => {
           {/* Mode Switch Pill */}
           <div
             dir="ltr"
-            className="relative inline-flex items-center p-0.5 rounded-full bg-slate-100 border border-slate-200 shrink-0"
+            className="relative inline-flex items-center p-0.5 rounded-full bg-brand-800/80 border border-brand-500/40 shrink-0"
           >
             <span
               aria-hidden="true"
-              className={`absolute top-0.5 left-0.5 w-7 h-6 rounded-full bg-[#14b8a6] shadow-xs transition-transform duration-200 ease-out ${
+              className={`absolute top-0.5 left-0.5 w-7 h-6 rounded-full bg-accent-500 shadow-xs transition-transform duration-200 ease-out ${
                 mode === 'sales' ? 'translate-x-0' : 'translate-x-7'
               }`}
             />
@@ -187,7 +187,7 @@ const AppShellContent: React.FC = () => {
               aria-label="وضع البيع (لاب توب)"
               title="وضع البيع (لاب توب)"
               className={`relative z-10 w-7 h-6 flex items-center justify-center rounded-full transition-colors ${
-                mode === 'sales' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
+                mode === 'sales' ? 'text-brand-900' : 'text-brand-100 hover:text-white'
               }`}
             >
               <Laptop className="w-3.5 h-3.5" />
@@ -198,7 +198,7 @@ const AppShellContent: React.FC = () => {
               aria-label="وضع الإدارة (موبايل)"
               title="وضع الإدارة (موبايل)"
               className={`relative z-10 w-7 h-6 flex items-center justify-center rounded-full transition-colors ${
-                mode === 'admin' ? 'text-white' : 'text-slate-500 hover:text-slate-700'
+                mode === 'admin' ? 'text-brand-900' : 'text-brand-100 hover:text-white'
               }`}
             >
               <Smartphone className="w-3.5 h-3.5" />
@@ -208,7 +208,7 @@ const AppShellContent: React.FC = () => {
           <button
             onClick={() => { if (window.confirm('متأكد إنك عايز تخرج؟\nلو النت فاصل مش هتقدر تدخل تاني لحد ما يرجع.')) { handleSignOut(); } }}
             title="تسجيل الخروج"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors border border-slate-200"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-white hover:bg-brand-700 transition-colors border border-brand-500/50"
           >
             <LogOut className="w-4 h-4" />
             <span className="hidden sm:inline">خروج</span>
@@ -219,7 +219,7 @@ const AppShellContent: React.FC = () => {
       {/* Main Body */}
       <div className="flex-1 flex overflow-hidden">
         {/* Desktop Sidebar */}
-        <aside className="hidden md:flex flex-col w-60 bg-white border-l border-slate-200/80 p-3 shrink-0">
+        <aside className="hidden md:flex flex-col w-60 bg-white border-l border-brand-100 p-3 shrink-0 print:hidden">
           <nav className="space-y-1 overflow-y-auto flex-1">
             {visibleNavItems.map((item) => {
               const Icon = item.icon;
@@ -231,8 +231,8 @@ const AppShellContent: React.FC = () => {
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                       isActive
-                        ? 'bg-[#14b8a6] text-white shadow-xs font-semibold'
-                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                        ? 'bg-brand-600 text-white shadow-xs font-semibold'
+                        : 'text-slate-600 hover:bg-brand-50 hover:text-brand-800'
                     }`
                   }
                 >
@@ -253,18 +253,18 @@ const AppShellContent: React.FC = () => {
       {/* Mobile Drawer Overlay for "المزيد" */}
       {mode === 'admin' && mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs md:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs md:hidden print:hidden"
           onClick={() => setMobileMenuOpen(false)}
         >
           <div
-            className="absolute bottom-16 inset-x-0 bg-white rounded-t-3xl p-5 shadow-2xl border-t border-slate-200 max-h-[75vh] overflow-y-auto"
+            className="absolute bottom-16 inset-x-0 bg-white rounded-t-3xl p-5 shadow-2xl border-t border-brand-100 max-h-[75vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
-              <span className="font-bold text-slate-800 text-sm">كافة أقسام النظام</span>
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-brand-100">
+              <span className="font-bold text-brand-800 text-sm">كافة أقسام النظام</span>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                className="p-1 rounded-lg text-slate-400 hover:text-brand-800 hover:bg-brand-50"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -281,13 +281,17 @@ const AppShellContent: React.FC = () => {
                     className={({ isActive }) =>
                       `flex items-center gap-2.5 p-3 rounded-xl text-xs font-medium border ${
                         isActive
-                          ? 'border-[#14b8a6] bg-[#14b8a6]/10 text-[#0d9488]'
-                          : 'border-slate-200 text-slate-700 hover:bg-slate-50'
+                          ? 'border-brand-600 bg-brand-600 text-white'
+                          : 'border-brand-100 text-slate-700 hover:bg-brand-50'
                       }`
                     }
                   >
-                    <Icon className="w-4 h-4 text-[#14b8a6]" />
-                    <span>{item.label}</span>
+                    {({ isActive }) => (
+                      <>
+                        <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-brand-600'}`} />
+                        <span>{item.label}</span>
+                      </>
+                    )}
                   </NavLink>
                 );
               })}
@@ -297,12 +301,12 @@ const AppShellContent: React.FC = () => {
       )}
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 inset-x-0 z-30 bg-white border-t border-slate-200 md:hidden flex items-center justify-around h-16 px-2 shadow-lg">
+      <nav className="fixed bottom-0 inset-x-0 z-30 bg-white border-t border-brand-100 md:hidden flex items-center justify-around h-16 px-2 shadow-lg print:hidden">
         <NavLink
           to="/cashier"
           className={({ isActive }) =>
-            `flex flex-col items-center justify-center w-16 py-1 text-[11px] font-medium transition-colors ${
-              isActive ? 'text-[#14b8a6]' : 'text-slate-500 hover:text-slate-900'
+            `flex flex-col items-center justify-center w-16 py-1.5 rounded-xl text-[11px] font-medium transition-colors ${
+              isActive ? 'bg-brand-600 text-white font-semibold' : 'text-slate-500 hover:text-brand-800'
             }`
           }
         >
@@ -313,8 +317,8 @@ const AppShellContent: React.FC = () => {
         <NavLink
           to="/items"
           className={({ isActive }) =>
-            `flex flex-col items-center justify-center w-16 py-1 text-[11px] font-medium transition-colors ${
-              isActive ? 'text-[#14b8a6]' : 'text-slate-500 hover:text-slate-900'
+            `flex flex-col items-center justify-center w-16 py-1.5 rounded-xl text-[11px] font-medium transition-colors ${
+              isActive ? 'bg-brand-600 text-white font-semibold' : 'text-slate-500 hover:text-brand-800'
             }`
           }
         >
@@ -326,8 +330,8 @@ const AppShellContent: React.FC = () => {
           <NavLink
             to="/invoices"
             className={({ isActive }) =>
-              `flex flex-col items-center justify-center w-16 py-1 text-[11px] font-medium transition-colors ${
-                isActive ? 'text-[#14b8a6]' : 'text-slate-500 hover:text-slate-900'
+              `flex flex-col items-center justify-center w-16 py-1.5 rounded-xl text-[11px] font-medium transition-colors ${
+                isActive ? 'bg-brand-600 text-white font-semibold' : 'text-slate-500 hover:text-brand-800'
               }`
             }
           >
@@ -339,8 +343,8 @@ const AppShellContent: React.FC = () => {
             <NavLink
               to="/purchase"
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center w-16 py-1 text-[11px] font-medium transition-colors ${
-                  isActive ? 'text-[#14b8a6]' : 'text-slate-500 hover:text-slate-900'
+                `flex flex-col items-center justify-center w-16 py-1.5 rounded-xl text-[11px] font-medium transition-colors ${
+                  isActive ? 'bg-brand-600 text-white font-semibold' : 'text-slate-500 hover:text-brand-800'
                 }`
               }
             >
@@ -350,8 +354,8 @@ const AppShellContent: React.FC = () => {
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`flex flex-col items-center justify-center w-16 py-1 text-[11px] font-medium transition-colors ${
-                mobileMenuOpen ? 'text-[#14b8a6]' : 'text-slate-500 hover:text-slate-900'
+              className={`flex flex-col items-center justify-center w-16 py-1.5 rounded-xl text-[11px] font-medium transition-colors ${
+                mobileMenuOpen ? 'bg-brand-600 text-white font-semibold' : 'text-slate-500 hover:text-brand-800'
               }`}
             >
               <Menu className="w-5 h-5 mb-0.5" />
@@ -390,7 +394,7 @@ const AppShellContent: React.FC = () => {
               value={adminPasswordInput}
               onChange={(e) => setAdminPasswordInput(e.target.value)}
               placeholder="••••"
-              className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#14b8a6] focus:ring-2 focus:ring-[#14b8a6]/20"
+              className="w-full rounded-xl border border-brand-200 bg-brand-50/70 focus:bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20"
             />
           </div>
 
@@ -407,7 +411,7 @@ const AppShellContent: React.FC = () => {
             >
               إلغاء
             </Button>
-            <Button type="submit" variant="primary" size="sm">
+            <Button type="submit" variant="accent" size="sm">
               تأكيد
             </Button>
           </div>

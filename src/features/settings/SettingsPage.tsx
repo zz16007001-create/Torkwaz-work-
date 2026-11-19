@@ -235,7 +235,7 @@ export const SettingsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <SettingsIcon className="w-6 h-6 text-[#14b8a6]" />
+            <SettingsIcon className="w-6 h-6 text-brand-600" />
             <span>إعدادات النظام</span>
           </h1>
           <p className="text-xs md:text-sm text-slate-500 mt-0.5">
@@ -262,17 +262,17 @@ export const SettingsPage: React.FC = () => {
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" />
+        <div className="p-3.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-sm flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 shrink-0 text-brand-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {/* 1. بيانات المحل */}
-      <Card className="p-5 border-slate-200 space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
-          <Store className="w-5 h-5 text-[#14b8a6]" />
-          <h2 className="text-sm font-bold text-slate-800">بيانات المحل الأساسية</h2>
+      <Card className="p-5 border-brand-100 space-y-4">
+        <div className="flex items-center gap-2 border-b border-brand-100 pb-2">
+          <Store className="w-5 h-5 text-brand-600" />
+          <h2 className="text-sm font-bold text-brand-800">بيانات المحل الأساسية</h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -300,11 +300,11 @@ export const SettingsPage: React.FC = () => {
       </Card>
 
       {/* 2. الخزائن */}
-      <Card className="p-5 border-slate-200 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+      <Card className="p-5 border-brand-100 space-y-4">
+        <div className="flex items-center justify-between border-b border-brand-100 pb-2">
           <div className="flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-[#14b8a6]" />
-            <h2 className="text-sm font-bold text-slate-800">الخزائن وطرق الدفع</h2>
+            <Wallet className="w-5 h-5 text-brand-600" />
+            <h2 className="text-sm font-bold text-brand-800">الخزائن وطرق الدفع</h2>
           </div>
 
           <Button
@@ -323,7 +323,7 @@ export const SettingsPage: React.FC = () => {
           {wallets.map((w) => (
             <div
               key={w.id}
-              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm"
+              className="flex items-center justify-between p-3 rounded-xl bg-brand-50/60 border border-brand-100 text-sm"
             >
               <div className="flex items-center gap-2">
                 <span className="font-bold text-slate-800">{w.name}</span>
@@ -335,7 +335,7 @@ export const SettingsPage: React.FC = () => {
                 type="button"
                 onClick={() => toggleWallet(w.id)}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                  w.enabled ? 'bg-[#14b8a6]' : 'bg-slate-300'
+                  w.enabled ? 'bg-brand-600' : 'bg-slate-300'
                 }`}
               >
                 <span
@@ -350,10 +350,10 @@ export const SettingsPage: React.FC = () => {
       </Card>
 
       {/* 3. إعدادات عامة وتنبيهات الأمان */}
-      <Card className="p-5 border-slate-200 space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
-          <Sliders className="w-5 h-5 text-[#14b8a6]" />
-          <h2 className="text-sm font-bold text-slate-800">حدود التنبيهات والأمان</h2>
+      <Card className="p-5 border-brand-100 space-y-4">
+        <div className="flex items-center gap-2 border-b border-brand-100 pb-2">
+          <Sliders className="w-5 h-5 text-brand-600" />
+          <h2 className="text-sm font-bold text-brand-800">حدود التنبيهات والأمان</h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -382,11 +382,11 @@ export const SettingsPage: React.FC = () => {
       </Card>
 
       {/* 4. الالتزامات (Liabilities) */}
-      <Card className="p-5 border-slate-200 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+      <Card className="p-5 border-brand-100 space-y-4">
+        <div className="flex items-center justify-between border-b border-brand-100 pb-2">
           <div className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-[#14b8a6]" />
-            <h2 className="text-sm font-bold text-slate-800">الالتزامات والديون على المحل</h2>
+            <DollarSign className="w-5 h-5 text-brand-600" />
+            <h2 className="text-sm font-bold text-brand-800">الالتزامات والديون على المحل</h2>
           </div>
 
           <Button
@@ -414,7 +414,7 @@ export const SettingsPage: React.FC = () => {
                   placeholder="اسم الالتزام (مثال: مستحق لمورد أو قسط)"
                   value={item.name}
                   onChange={(e) => updateLiability(item.id, 'name', e.target.value)}
-                  className="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-[#14b8a6]"
+                  className="flex-1 bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-brand-600"
                 />
                 <div className="w-36">
                   <input
@@ -425,7 +425,7 @@ export const SettingsPage: React.FC = () => {
                     onChange={(e) =>
                       updateLiability(item.id, 'amount', Number(e.target.value) || 0)
                     }
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                    className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                   />
                 </div>
                 <button
@@ -442,11 +442,11 @@ export const SettingsPage: React.FC = () => {
       </Card>
 
       {/* 5. حروف الألوان */}
-      <Card className="p-5 border-slate-200 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+      <Card className="p-5 border-brand-100 space-y-4">
+        <div className="flex items-center justify-between border-b border-brand-100 pb-2">
           <div className="flex items-center gap-2">
-            <Palette className="w-5 h-5 text-[#14b8a6]" />
-            <h2 className="text-sm font-bold text-slate-800">حروف ورموز الألوان التلقائية</h2>
+            <Palette className="w-5 h-5 text-brand-600" />
+            <h2 className="text-sm font-bold text-brand-800">حروف ورموز الألوان التلقائية</h2>
           </div>
 
           <Button
@@ -465,7 +465,7 @@ export const SettingsPage: React.FC = () => {
           {Object.entries(colorLetters).map(([name, letter]) => (
             <div
               key={name}
-              className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2"
+              className="p-2.5 rounded-xl bg-brand-50/60 border border-brand-100 flex items-center justify-between gap-2"
             >
               <span className="text-xs font-bold text-slate-800">{name}</span>
               <input
@@ -473,7 +473,7 @@ export const SettingsPage: React.FC = () => {
                 maxLength={4}
                 value={letter}
                 onChange={(e) => updateColorLetter(name, e.target.value)}
-                className="w-12 text-center font-mono font-bold bg-white border border-slate-300 rounded-lg px-1 py-1 text-xs uppercase focus:outline-none focus:border-[#14b8a6]"
+                className="w-12 text-center font-mono font-bold bg-white border border-brand-200 rounded-lg px-1 py-1 text-xs uppercase focus:outline-none focus:border-brand-600"
               />
             </div>
           ))}
@@ -481,30 +481,30 @@ export const SettingsPage: React.FC = () => {
       </Card>
 
       {/* 6. الشهر المقفول حالياً (Read-only) */}
-      <Card className="p-5 border-slate-200 bg-slate-50/60 flex items-center justify-between">
+      <Card className="p-5 border-brand-100 bg-brand-50/60 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-slate-200/80 text-slate-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center">
             <Lock className="w-5 h-5" />
           </div>
           <div>
             <span className="text-xs text-slate-500 font-bold block">
               حالة قفل الفترات المحاسبية (عرض فقط)
             </span>
-            <span className="text-sm font-extrabold text-slate-800">
+            <span className="text-sm font-extrabold text-brand-900">
               الشهر المقفول حالياً: {lockedThroughMonth}
             </span>
           </div>
         </div>
-        <span className="text-[11px] font-semibold text-slate-400 bg-white border border-slate-200 px-3 py-1 rounded-full">
+        <span className="text-[11px] font-semibold text-brand-700 bg-white border border-brand-200 px-3 py-1 rounded-full">
           مقفل عبر شاشة صورة المحل
         </span>
       </Card>
 
       {/* رابط النسخ الاحتياطي وبداية جديدة */}
-      <Card className="p-5 border-[#14b8a6]/30 bg-teal-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <Card className="p-5 border-brand-200 bg-brand-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h3 className="font-bold text-slate-900 text-sm">النسخ الاحتياطي وبداية جديدة</h3>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h3 className="font-bold text-brand-900 text-sm">النسخ الاحتياطي وبداية جديدة</h3>
+          <p className="text-xs text-brand-700 mt-0.5">
             تصدير واستيراد ملفات JSON لقاعدة البيانات وتأسيس الأرصدة الافتتاحية
           </p>
         </div>
@@ -513,7 +513,7 @@ export const SettingsPage: React.FC = () => {
           variant="outline"
           size="sm"
           onClick={() => window.location.hash = '#/backup'}
-          className="bg-white text-[#0d9488] border-[#14b8a6] hover:bg-[#14b8a6]/10 font-bold"
+          className="bg-white text-brand-700 border-brand-600 hover:bg-brand-100 font-bold"
         >
           الانتقال للنسخ الاحتياطي
         </Button>
@@ -524,7 +524,7 @@ export const SettingsPage: React.FC = () => {
         <Button
           onClick={handleSaveSettings}
           isLoading={isSaving}
-          variant="primary"
+          variant="accent"
           className="w-full py-4 text-base font-bold shadow-sm gap-2"
         >
           <Save className="w-5 h-5" />
@@ -556,7 +556,7 @@ export const SettingsPage: React.FC = () => {
             >
               إلغاء
             </Button>
-            <Button type="submit" variant="primary" size="sm">
+            <Button type="submit" variant="accent" size="sm">
               إضافة
             </Button>
           </div>
@@ -596,7 +596,7 @@ export const SettingsPage: React.FC = () => {
             >
               إلغاء
             </Button>
-            <Button type="submit" variant="primary" size="sm">
+            <Button type="submit" variant="accent" size="sm">
               إضافة اللون
             </Button>
           </div>

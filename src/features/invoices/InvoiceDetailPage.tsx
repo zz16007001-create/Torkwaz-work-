@@ -219,7 +219,7 @@ export const InvoiceDetailPage: React.FC = () => {
         <div className="flex items-start gap-2">
           <button
             onClick={() => navigate('/invoices')}
-            className="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors shrink-0 mt-0.5"
+            className="p-1.5 rounded-lg border border-brand-200 bg-white text-brand-700 hover:bg-brand-50 transition-colors shrink-0 mt-0.5 print:hidden"
             title="رجوع لسجل الفواتير"
           >
             <ArrowRight className="w-4 h-4" />
@@ -230,15 +230,15 @@ export const InvoiceDetailPage: React.FC = () => {
                 فاتورة {invoice.invoiceNumber}
               </h1>
               {isCancelled ? (
-                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-rose-100 text-rose-700 shrink-0">
+                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-rose-100 text-rose-700 shrink-0 print:bg-white print:text-slate-900 print:border print:border-slate-300">
                   ملغاة
                 </span>
               ) : hasDebt ? (
-                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800 shrink-0">
+                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-accent-100 text-accent-700 shrink-0 print:bg-white print:text-slate-900 print:border print:border-slate-300">
                   آجل
                 </span>
               ) : (
-                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-800 shrink-0">
+                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-brand-100 text-brand-800 shrink-0 print:bg-white print:text-slate-900 print:border print:border-slate-300">
                   مدفوعة
                 </span>
               )}
@@ -250,7 +250,7 @@ export const InvoiceDetailPage: React.FC = () => {
         </div>
 
         {/* أزرار الإجراءات */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 print:hidden">
           <Button
             type="button"
             variant="outline"
@@ -258,7 +258,7 @@ export const InvoiceDetailPage: React.FC = () => {
             onClick={() => window.print()}
             className="flex-1 justify-center gap-1 h-8 px-2 text-xs"
           >
-            <Printer className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+            <Printer className="w-3.5 h-3.5 text-brand-600 shrink-0" />
             <span>طباعة</span>
           </Button>
 
@@ -270,9 +270,9 @@ export const InvoiceDetailPage: React.FC = () => {
               disabled={!hasReturnableItems}
               onClick={openReturnModal}
               title={hasReturnableItems ? 'تسجيل مرتجع' : 'تم إرجاع كافة البنود بالفعل'}
-              className="flex-1 justify-center gap-1 h-8 px-2 text-xs text-amber-700 border-amber-300 hover:bg-amber-50 disabled:opacity-40"
+              className="flex-1 justify-center gap-1 h-8 px-2 text-xs text-accent-700 border-accent-400 hover:bg-accent-50 disabled:opacity-40"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <RotateCcw className="w-3.5 h-3.5 text-accent-600 shrink-0" />
               <span>مرتجع</span>
             </Button>
           )}
@@ -300,28 +300,28 @@ export const InvoiceDetailPage: React.FC = () => {
       )}
 
       {successMsg && (
-        <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+        <div className="p-2.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 shrink-0 text-brand-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {/* بيانات العميل */}
-      <Card className="p-3 border-slate-200">
+      <Card className="p-3 border-brand-100">
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs">
           <div className="flex items-center gap-1.5 font-bold text-slate-800 min-w-0">
-            <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <User className="w-3.5 h-3.5 text-brand-600 shrink-0 print:hidden" />
             <span className="truncate">{invoice.customerName || 'عميل نقدي'}</span>
           </div>
 
           <div className="flex items-center gap-1.5 font-medium text-slate-600 shrink-0">
-            <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <Phone className="w-3.5 h-3.5 text-brand-600 shrink-0 print:hidden" />
             <span dir="ltr">{invoice.customerPhone || '-'}</span>
           </div>
         </div>
 
         {invoice.notes && (
-          <div className="mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-600">
+          <div className="mt-2 pt-2 border-t border-brand-100 text-[11px] text-slate-600">
             <span className="font-bold ml-1">ملاحظات:</span>
             <span>{invoice.notes}</span>
           </div>
@@ -329,9 +329,9 @@ export const InvoiceDetailPage: React.FC = () => {
       </Card>
 
       {/* بنود الفاتورة - ممنوع تماماً إظهار سعر الشراء أو الربح */}
-      <Card className="p-0 overflow-hidden border-slate-200">
-        <div className="px-3 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between gap-2">
-          <h2 className="text-xs font-bold text-slate-800">بنود الفاتورة</h2>
+      <Card className="p-0 overflow-hidden border-brand-100">
+        <div className="px-3 py-2 bg-brand-50 border-b border-brand-100 flex items-center justify-between gap-2 print:bg-white print:border-slate-300">
+          <h2 className="text-xs font-bold text-brand-800 print:text-slate-900">بنود الفاتورة</h2>
           {isCancelled && (
             <span className="text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">
               تم إلغاء وإرجاع كافة البنود للمخزن
@@ -340,7 +340,7 @@ export const InvoiceDetailPage: React.FC = () => {
         </div>
 
         {/* عرض الموبايل: كروت صغيرة بدون سكرول أفقي */}
-        <div className="md:hidden print:hidden divide-y divide-slate-100">
+        <div className="md:hidden print:hidden divide-y divide-brand-100">
           {(invoice.items || []).map((it: any, index: number) => {
             const returned = Number(it.returnedQty) || 0;
             return (
@@ -355,13 +355,13 @@ export const InvoiceDetailPage: React.FC = () => {
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[11px] text-slate-500">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="font-mono font-bold text-slate-600">{it.code || '-'}</span>
+                    <span className="font-mono font-bold text-brand-700">{it.code || '-'}</span>
                     <span>
                       {it.quantity} × {formatCurrency(it.unitPrice)}
                     </span>
                   </div>
                   {returned > 0 && (
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 shrink-0">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-accent-100 text-accent-700 shrink-0">
                       مرتجع سابقاً: {returned} قطعة
                     </span>
                   )}
@@ -374,7 +374,7 @@ export const InvoiceDetailPage: React.FC = () => {
         {/* عرض اللاب توب والطباعة: جدول نظيف */}
         <div className="hidden md:block print:block overflow-x-auto">
           <table className="w-full text-right text-xs">
-            <thead className="bg-slate-50/50 text-[11px] text-slate-500 border-b border-slate-200">
+            <thead className="bg-brand-50 text-[11px] text-brand-800 border-b border-brand-100 print:bg-slate-100 print:text-slate-900 print:border-slate-300">
               <tr>
                 <th className="p-2 font-semibold">#</th>
                 <th className="p-2 font-semibold">الكود</th>
@@ -387,19 +387,19 @@ export const InvoiceDetailPage: React.FC = () => {
                 <th className="p-2 font-semibold text-left">الإجمالي</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-brand-100 print:divide-slate-200">
               {(invoice.items || []).map((it: any, index: number) => {
                 const returned = Number(it.returnedQty) || 0;
                 return (
-                  <tr key={index} className="hover:bg-slate-50/50">
+                  <tr key={index} className="hover:bg-brand-50/50">
                     <td className="p-2 text-xs text-slate-400">{index + 1}</td>
-                    <td className="p-2 font-mono text-xs font-bold text-slate-700">
+                    <td className="p-2 font-mono text-xs font-bold text-brand-800 print:text-slate-900">
                       {it.code || '-'}
                     </td>
                     <td className="p-2 font-medium text-slate-800">{it.name}</td>
                     <td className="p-2 font-bold text-slate-900 text-center">{it.quantity}</td>
                     {hasAnyReturned && (
-                      <td className="p-2 font-medium text-amber-700 text-center">
+                      <td className="p-2 font-medium text-accent-700 text-center print:text-slate-800">
                         {returned > 0 ? `${returned} قطعة` : '-'}
                       </td>
                     )}
@@ -418,8 +418,8 @@ export const InvoiceDetailPage: React.FC = () => {
       </Card>
 
       {/* كارت الحساب المدمج (الإجماليات + طرق الدفع) */}
-      <Card className="p-3 border-slate-200 space-y-2">
-        <h2 className="text-xs font-bold text-slate-800 border-b border-slate-100 pb-1.5">
+      <Card className="p-3 border-brand-100 space-y-2">
+        <h2 className="text-xs font-bold text-brand-800 border-b border-brand-100 pb-1.5 print:text-slate-900 print:border-slate-300">
           الحساب
         </h2>
 
@@ -449,11 +449,11 @@ export const InvoiceDetailPage: React.FC = () => {
           </div>
 
           {/* طرق الدفع والمسدد والمتبقي */}
-          <div className="space-y-1.5 text-xs border-t border-slate-100 pt-2 md:border-t-0 md:pt-0 md:border-r md:pr-6">
+          <div className="space-y-1.5 text-xs border-t border-brand-100 pt-2 md:border-t-0 md:pt-0 md:border-r md:pr-6 print:border-slate-300">
             {payments.cash > 0 && (
               <div className="flex items-center justify-between text-slate-700">
                 <span className="flex items-center gap-1.5">
-                  <Banknote className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <Banknote className="w-3.5 h-3.5 text-brand-600 shrink-0 print:hidden" />
                   <span>نقدي (خزينة المحل):</span>
                 </span>
                 <span className="font-bold">{formatCurrency(payments.cash)}</span>
@@ -463,7 +463,7 @@ export const InvoiceDetailPage: React.FC = () => {
             {payments.instapay > 0 && (
               <div className="flex items-center justify-between text-slate-700">
                 <span className="flex items-center gap-1.5">
-                  <CreditCard className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                  <CreditCard className="w-3.5 h-3.5 text-brand-700 shrink-0 print:hidden" />
                   <span>إنستاباي (البنك):</span>
                 </span>
                 <span className="font-bold">{formatCurrency(payments.instapay)}</span>
@@ -473,7 +473,7 @@ export const InvoiceDetailPage: React.FC = () => {
             {payments.wallet > 0 && (
               <div className="flex items-center justify-between text-slate-700">
                 <span className="flex items-center gap-1.5">
-                  <Smartphone className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                  <Smartphone className="w-3.5 h-3.5 text-rose-600 shrink-0 print:hidden" />
                   <span>فودافون كاش:</span>
                 </span>
                 <span className="font-bold">{formatCurrency(payments.wallet)}</span>
@@ -482,11 +482,11 @@ export const InvoiceDetailPage: React.FC = () => {
 
             <div className="flex items-center justify-between font-bold text-slate-900 pt-1">
               <span>إجمالي المسدد:</span>
-              <span className="text-[#14b8a6]">{formatCurrency(invoice.paidAmount)}</span>
+              <span className="text-brand-700 print:text-slate-900">{formatCurrency(invoice.paidAmount)}</span>
             </div>
 
             {hasDebt && !isCancelled && (
-              <div className="flex justify-between items-center text-rose-600 font-black text-xs bg-rose-50 border border-rose-200 px-2.5 py-1.5 rounded-lg">
+              <div className="flex justify-between items-center text-rose-600 font-black text-xs bg-rose-50 border border-rose-200 px-2.5 py-1.5 rounded-lg print:bg-white print:text-slate-900 print:border-slate-300">
                 <span>المتبقي آجل (دين):</span>
                 <span>{formatCurrency(invoice.remainingAmount)}</span>
               </div>
@@ -514,7 +514,7 @@ export const InvoiceDetailPage: React.FC = () => {
               return (
                 <div
                   key={lineKey}
-                  className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2"
+                  className="p-3 bg-brand-50/60 border border-brand-100 rounded-xl space-y-2"
                 >
                   <div className="flex justify-between items-center text-xs">
                     <span className="font-bold text-slate-800">{it.name}</span>
@@ -537,7 +537,7 @@ export const InvoiceDetailPage: React.FC = () => {
                         );
                         setReturnQuantities((prev) => ({ ...prev, [lineKey]: val }));
                       }}
-                      className="w-20 bg-white border border-slate-300 rounded-lg px-2 py-1 text-center font-bold text-sm"
+                      className="w-20 bg-white border border-brand-200 rounded-lg px-2 py-1 text-center font-bold text-sm focus:outline-none focus:border-brand-600"
                     />
                     <span className="text-xs text-slate-400">
                       سعر الوحدة: {formatCurrency(it.unitPrice)}
@@ -556,7 +556,7 @@ export const InvoiceDetailPage: React.FC = () => {
             <select
               value={refundWallet}
               onChange={(e) => setRefundWallet(e.target.value as WalletId)}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-[#14b8a6]"
+              className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-brand-600"
             >
               <option value="cash">خزينة المحل (نقدية / كاش)</option>
               <option value="bank">الحساب البنكي / إنستاباي</option>
@@ -565,7 +565,7 @@ export const InvoiceDetailPage: React.FC = () => {
           </div>
 
           {/* معاينة الحسبة المالية للمرتجع */}
-          <div className="p-3 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold space-y-1.5">
+          <div className="p-3 rounded-xl bg-brand-50/70 border border-brand-100 text-xs font-bold space-y-1.5">
             <div className="flex justify-between text-slate-700">
               <span>إجمالي قيمة المرتجع:</span>
               <span className="text-slate-900">
@@ -574,13 +574,13 @@ export const InvoiceDetailPage: React.FC = () => {
             </div>
 
             {returnPreview.appliedToDebt > 0 && (
-              <div className="flex justify-between text-amber-800 border-t border-slate-200 pt-1">
+              <div className="flex justify-between text-accent-700 border-t border-brand-100 pt-1">
                 <span>خصم من الدين الآجل للفاتورة:</span>
                 <span>-{formatCurrency(returnPreview.appliedToDebt)}</span>
               </div>
             )}
 
-            <div className="flex justify-between text-emerald-700 border-t border-slate-200 pt-1 text-sm font-extrabold">
+            <div className="flex justify-between text-brand-700 border-t border-brand-100 pt-1 text-sm font-extrabold">
               <span>المبلغ المسترد نقداً للعميل:</span>
               <span>{formatCurrency(returnPreview.cashRefund)}</span>
             </div>
@@ -597,7 +597,7 @@ export const InvoiceDetailPage: React.FC = () => {
             </Button>
             <Button
               type="submit"
-              variant="primary"
+              variant="accent"
               size="sm"
               isLoading={isSubmittingReturn}
               disabled={returnPreview.totalReturnValue <= 0}

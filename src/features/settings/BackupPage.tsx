@@ -180,7 +180,7 @@ export const BackupPage: React.FC = () => {
       {/* رأس الصفحة */}
       <div>
         <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <Database className="w-6 h-6 text-[#14b8a6]" />
+          <Database className="w-6 h-6 text-brand-600" />
           <span>النسخ الاحتياطي وبداية جديدة</span>
         </h1>
         <p className="text-xs md:text-sm text-slate-500 mt-0.5">
@@ -196,18 +196,18 @@ export const BackupPage: React.FC = () => {
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" />
+        <div className="p-3.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-sm flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 shrink-0 text-brand-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {/* 1. قسم النسخ الاحتياطي (تصدير واستيراد) */}
-      <Card className="p-6 border-slate-200 space-y-5">
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-          <ShieldCheck className="w-5 h-5 text-[#14b8a6]" />
+      <Card className="p-6 border-brand-100 space-y-5">
+        <div className="flex items-center gap-2 border-b border-brand-100 pb-3">
+          <ShieldCheck className="w-5 h-5 text-brand-600" />
           <div>
-            <h2 className="text-base font-bold text-slate-900">النسخ الاحتياطي لبيانات النظام</h2>
+            <h2 className="text-base font-bold text-brand-800">النسخ الاحتياطي لبيانات النظام</h2>
             <p className="text-xs text-slate-500 mt-0.5">
               احتفظ بنسخة من كافة الفواتير، الأصناف، العملاء، والخزائن على جهازك بأمان
             </p>
@@ -216,7 +216,7 @@ export const BackupPage: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* تصدير نسخة */}
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-3">
+          <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-100 flex flex-col justify-between space-y-3">
             <div>
               <span className="font-bold text-slate-800 text-sm block mb-1">
                 تصدير نسخة احتياطية كاملة
@@ -239,7 +239,7 @@ export const BackupPage: React.FC = () => {
           </div>
 
           {/* استيراد نسخة */}
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-3">
+          <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-100 flex flex-col justify-between space-y-3">
             <div>
               <span className="font-bold text-slate-800 text-sm block mb-1">
                 استيراد واستعادة نسخة احتياطية
@@ -262,9 +262,9 @@ export const BackupPage: React.FC = () => {
               variant="outline"
               onClick={() => fileInputRef.current?.click()}
               isLoading={isImporting}
-              className="w-full gap-2 font-bold bg-white text-slate-800 hover:bg-slate-100 border-slate-300"
+              className="w-full gap-2 font-bold"
             >
-              <Upload className="w-4 h-4 text-[#14b8a6]" />
+              <Upload className="w-4 h-4 text-brand-600" />
               <span>اختيار ملف والاستيراد</span>
             </Button>
           </div>
@@ -272,11 +272,11 @@ export const BackupPage: React.FC = () => {
       </Card>
 
       {/* 2. قسم بداية جديدة (إعادة تأسيس) */}
-      <Card className="p-6 border-slate-200 space-y-5">
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-          <RefreshCw className="w-5 h-5 text-[#14b8a6]" />
+      <Card className="p-6 border-brand-100 space-y-5">
+        <div className="flex items-center gap-2 border-b border-brand-100 pb-3">
+          <RefreshCw className="w-5 h-5 text-brand-600" />
           <div>
-            <h2 className="text-base font-bold text-slate-900">بداية جديدة (إعادة تأسيس الأرصدة)</h2>
+            <h2 className="text-base font-bold text-brand-800">بداية جديدة (إعادة تأسيس الأرصدة)</h2>
             <p className="text-xs text-slate-500 mt-0.5">
               تهيئة الأرصدة الافتتاحية للمحل للبدء برأس مال تشغيلي جديد ومضبوط
             </p>
@@ -291,8 +291,8 @@ export const BackupPage: React.FC = () => {
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
-                  <Banknote className="w-3.5 h-3.5 text-emerald-600" />
+                <label className="text-[11px] font-medium text-slate-600 mb-1 flex items-center gap-1">
+                  <Banknote className="w-3.5 h-3.5 text-brand-600" />
                   <span>خزينة المحل (كاش)</span>
                 </label>
                 <input
@@ -300,13 +300,13 @@ export const BackupPage: React.FC = () => {
                   placeholder="0.00"
                   value={openCash}
                   onChange={(e) => setOpenCash(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
-                  <CreditCard className="w-3.5 h-3.5 text-indigo-600" />
+                <label className="text-[11px] font-medium text-slate-600 mb-1 flex items-center gap-1">
+                  <CreditCard className="w-3.5 h-3.5 text-brand-700" />
                   <span>البنك / إنستاباي</span>
                 </label>
                 <input
@@ -314,12 +314,12 @@ export const BackupPage: React.FC = () => {
                   placeholder="0.00"
                   value={openBank}
                   onChange={(e) => setOpenBank(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
+                <label className="text-[11px] font-medium text-slate-600 mb-1 flex items-center gap-1">
                   <Smartphone className="w-3.5 h-3.5 text-rose-600" />
                   <span>فودافون كاش</span>
                 </label>
@@ -328,17 +328,17 @@ export const BackupPage: React.FC = () => {
                   placeholder="0.00"
                   value={openWallet}
                   onChange={(e) => setOpenWallet(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                 />
               </div>
             </div>
           </div>
 
           {/* المخزون والديون والالتزامات */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-brand-100">
             <div>
               <label className="text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                <Boxes className="w-3.5 h-3.5 text-slate-400" />
+                <Boxes className="w-3.5 h-3.5 text-brand-600" />
                 <span>قيمة المخزون الحالي (ج.م) — للعلم فقط، أضف الأصناف من شاشة الشراء بالدفع «من الجيب»:</span>
               </label>
               <input
@@ -346,13 +346,13 @@ export const BackupPage: React.FC = () => {
                 placeholder="0.00"
                 value={openInventoryVal}
                 onChange={(e) => setOpenInventoryVal(e.target.value)}
-                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
               />
             </div>
 
             <div>
               <label className="text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                <Users className="w-3.5 h-3.5 text-amber-600" />
+                <Users className="w-3.5 h-3.5 text-accent-600" />
                 <span>ديون العملاء المستحقة (ج.م) — للعلم فقط، سجّل كل عميل من شاشة العملاء:</span>
               </label>
               <input
@@ -360,7 +360,7 @@ export const BackupPage: React.FC = () => {
                 placeholder="0.00"
                 value={openReceivables}
                 onChange={(e) => setOpenReceivables(e.target.value)}
-                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
               />
             </div>
 
@@ -374,7 +374,7 @@ export const BackupPage: React.FC = () => {
                 placeholder="0.00"
                 value={openLiabilities}
                 onChange={(e) => setOpenLiabilities(e.target.value)}
-                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
               />
             </div>
           </div>
@@ -387,16 +387,16 @@ export const BackupPage: React.FC = () => {
           />
 
           {/* عرض رأس المال الافتتاحي المحسوب */}
-          <div className="p-4 rounded-xl bg-slate-900 text-white flex items-center justify-between shadow-2xs">
+          <div className="p-4 rounded-xl bg-gradient-to-br from-brand-600 to-brand-700 text-white flex items-center justify-between shadow-2xs">
             <div>
-              <span className="text-xs text-slate-400 block mb-0.5">
+              <span className="text-xs text-brand-100 block mb-0.5">
                 رأس المال الافتتاحي المحسوب (Capital):
               </span>
-              <span className="text-xl sm:text-2xl font-black text-[#14b8a6]">
+              <span className="text-xl sm:text-2xl font-black text-accent-400">
                 {formatCurrency(calculatedCapital)}
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 text-left max-w-[200px] hidden sm:block">
+            <p className="text-[11px] text-brand-100 text-left max-w-[200px] hidden sm:block">
               الخزائن + المخزون + الديون - الالتزامات
             </p>
           </div>
@@ -404,7 +404,7 @@ export const BackupPage: React.FC = () => {
           {/* زر بدء العمل */}
           <Button
             type="submit"
-            variant="primary"
+            variant="accent"
             isLoading={isOpeningSubmitting}
             className="w-full py-4 text-base font-bold shadow-sm gap-2"
           >

@@ -268,7 +268,7 @@ export const AddPurchasePage: React.FC = () => {
     <div className="max-w-4xl mx-auto space-y-2">
       {/* عنوان الصفحة */}
       <h1 className="text-lg font-bold text-slate-900 flex items-center gap-1.5">
-        <PackagePlus className="w-5 h-5 text-[#14b8a6]" />
+        <PackagePlus className="w-5 h-5 text-brand-600" />
         <span>تسجيل بضاعة جديدة</span>
       </h1>
 
@@ -280,9 +280,9 @@ export const AddPurchasePage: React.FC = () => {
       )}
 
       {successMsg && (
-        <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs">
+        <div className="p-3 rounded-xl bg-brand-50 border border-brand-200 text-brand-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs">
           <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0" />
             <span>{successMsg}</span>
           </div>
 
@@ -303,7 +303,7 @@ export const AddPurchasePage: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={() => navigate('/items')}
-              className="gap-1.5 bg-white text-slate-700 hover:bg-slate-50"
+              className="gap-1.5"
             >
               <span>الانتقال للمخزون</span>
               <ArrowRight className="w-3.5 h-3.5 rotate-180" />
@@ -314,15 +314,15 @@ export const AddPurchasePage: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="space-y-2">
         {/* اختيار القسم */}
-        <Card className="p-1.5 border-slate-200">
+        <Card className="p-1.5 border-brand-100">
           <div className="grid grid-cols-3 gap-1.5">
             <button
               type="button"
               onClick={() => setCategory('shoes')}
               className={`h-9 flex items-center justify-center gap-1.5 rounded-lg font-bold text-xs transition-all ${
                 category === 'shoes'
-                  ? 'bg-[#14b8a6] text-white shadow-sm'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                  ? 'bg-brand-600 text-white shadow-sm'
+                  : 'bg-brand-50/70 text-brand-800 hover:bg-brand-100'
               }`}
             >
               <Footprints className="w-3.5 h-3.5" />
@@ -334,8 +334,8 @@ export const AddPurchasePage: React.FC = () => {
               onClick={() => setCategory('bags')}
               className={`h-9 flex items-center justify-center gap-1.5 rounded-lg font-bold text-xs transition-all ${
                 category === 'bags'
-                  ? 'bg-[#14b8a6] text-white shadow-sm'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                  ? 'bg-brand-600 text-white shadow-sm'
+                  : 'bg-brand-50/70 text-brand-800 hover:bg-brand-100'
               }`}
             >
               <ShoppingBag className="w-3.5 h-3.5" />
@@ -347,8 +347,8 @@ export const AddPurchasePage: React.FC = () => {
               onClick={() => setCategory('accessories')}
               className={`h-9 flex items-center justify-center gap-1.5 rounded-lg font-bold text-xs transition-all ${
                 category === 'accessories'
-                  ? 'bg-[#14b8a6] text-white shadow-sm'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                  ? 'bg-brand-600 text-white shadow-sm'
+                  : 'bg-brand-50/70 text-brand-800 hover:bg-brand-100'
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -358,10 +358,10 @@ export const AddPurchasePage: React.FC = () => {
         </Card>
 
         {/* بيانات الموديل والأسعار في صف واحد */}
-        <Card className="p-2.5 sm:p-3 border-slate-200 space-y-2">
+        <Card className="p-2.5 sm:p-3 border-brand-100 space-y-2">
           <div className="grid grid-cols-12 gap-1.5">
             <div className="col-span-6">
-              <label className="block text-[11px] font-medium text-slate-600 mb-0.5 truncate">
+              <label className="block text-[11px] font-medium text-brand-800 mb-0.5 truncate">
                 اسم الصنف / الموديل *
               </label>
               <input
@@ -369,12 +369,12 @@ export const AddPurchasePage: React.FC = () => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
-                className="w-full h-10 rounded-lg border border-slate-300 bg-white px-2.5 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#14b8a6]"
+                className="w-full h-10 rounded-lg border border-brand-200 bg-brand-50/70 focus:bg-white px-2.5 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-600"
               />
             </div>
 
             <div className="col-span-3">
-              <label className="block text-[11px] font-medium text-slate-600 mb-0.5 truncate">
+              <label className="block text-[11px] font-medium text-brand-800 mb-0.5 truncate">
                 سعر الشراء
               </label>
               <input
@@ -383,12 +383,12 @@ export const AddPurchasePage: React.FC = () => {
                 value={purchaseCostStr}
                 onChange={(e) => setPurchaseCostStr(e.target.value)}
                 required
-                className="w-full h-10 rounded-lg border border-slate-300 bg-white px-2 text-xs font-bold text-center text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#14b8a6]"
+                className="w-full h-10 rounded-lg border border-brand-200 bg-brand-50/70 focus:bg-white px-2 text-xs font-bold text-center text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-600"
               />
             </div>
 
             <div className="col-span-3">
-              <label className="block text-[11px] font-medium text-slate-600 mb-0.5 truncate">
+              <label className="block text-[11px] font-medium text-brand-800 mb-0.5 truncate">
                 سعر البيع
               </label>
               <input
@@ -397,7 +397,7 @@ export const AddPurchasePage: React.FC = () => {
                 value={sellPriceStr}
                 onChange={(e) => setSellPriceStr(e.target.value)}
                 required
-                className="w-full h-10 rounded-lg border border-slate-300 bg-white px-2 text-xs font-bold text-center text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#14b8a6]"
+                className="w-full h-10 rounded-lg border border-brand-200 bg-brand-50/70 focus:bg-white px-2 text-xs font-bold text-center text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-600"
               />
             </div>
           </div>
@@ -407,7 +407,7 @@ export const AddPurchasePage: React.FC = () => {
             <div
               className={`px-2.5 py-1.5 rounded-lg border text-xs font-bold flex items-center justify-between transition-colors ${
                 profitMargin >= 0
-                  ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                  ? 'bg-brand-50 border-brand-200 text-brand-800'
                   : 'bg-rose-50 border-rose-200 text-rose-800'
               }`}
             >
@@ -422,7 +422,7 @@ export const AddPurchasePage: React.FC = () => {
         </Card>
 
         {/* كارت اللون والكميات */}
-        <Card className="p-2.5 sm:p-3 border-slate-200 space-y-2">
+        <Card className="p-2.5 sm:p-3 border-brand-100 space-y-2">
           {/* للأحذية: اللون الأساسي + زر إضافة لون + كروت المقاسات (2 في الصف) */}
           {category === 'shoes' && (
             <>
@@ -430,7 +430,7 @@ export const AddPurchasePage: React.FC = () => {
                 <select
                   value={selectedColor}
                   onChange={(e) => setSelectedColor(e.target.value)}
-                  className="flex-1 h-9 rounded-lg border border-slate-300 bg-white px-2.5 text-xs font-medium text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                  className="flex-1 h-9 rounded-lg border border-brand-200 bg-brand-50/70 focus:bg-white px-2.5 text-xs font-medium text-slate-900 focus:outline-none focus:border-brand-600"
                 >
                   {Object.entries(colorLetters).map(([name, letter]) => (
                     <option key={name} value={name}>
@@ -443,7 +443,7 @@ export const AddPurchasePage: React.FC = () => {
                   type="button"
                   onClick={() => setIsColorModalOpen(true)}
                   title="إضافة لون جديد"
-                  className="h-9 w-9 shrink-0 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center transition-colors"
+                  className="h-9 w-9 shrink-0 rounded-lg border border-brand-200 bg-white hover:bg-brand-50 text-brand-700 flex items-center justify-center transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -453,10 +453,10 @@ export const AddPurchasePage: React.FC = () => {
                 {sizeRows.map((row, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-1 bg-slate-50 p-1.5 rounded-lg border border-slate-200"
+                    className="flex items-center gap-1 bg-brand-50/60 p-1.5 rounded-lg border border-brand-100"
                   >
                     <div className="flex-1 min-w-0">
-                      <label className="text-[10px] text-slate-500 block leading-tight mb-0.5 text-center">
+                      <label className="text-[10px] text-brand-800 block leading-tight mb-0.5 text-center">
                         المقاس
                       </label>
                       <input
@@ -469,12 +469,12 @@ export const AddPurchasePage: React.FC = () => {
                             e.target.value === '' ? '' : Number(e.target.value)
                           )
                         }
-                        className="w-full h-7 bg-white border border-slate-300 rounded-md px-1 text-xs text-center font-bold text-slate-900"
+                        className="w-full h-7 bg-white border border-brand-200 focus:border-brand-600 focus:outline-none rounded-md px-1 text-xs text-center font-bold text-slate-900"
                       />
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <label className="text-[10px] text-slate-500 block leading-tight mb-0.5 text-center">
+                      <label className="text-[10px] text-brand-800 block leading-tight mb-0.5 text-center">
                         الكمية
                       </label>
                       <input
@@ -484,7 +484,7 @@ export const AddPurchasePage: React.FC = () => {
                         onChange={(e) =>
                           updateSizeRow(idx, 'quantity', Math.max(1, Number(e.target.value)))
                         }
-                        className="w-full h-7 bg-white border border-slate-300 rounded-md px-1 text-xs text-center font-bold text-slate-900"
+                        className="w-full h-7 bg-white border border-brand-200 focus:border-brand-600 focus:outline-none rounded-md px-1 text-xs text-center font-bold text-slate-900"
                       />
                     </div>
 
@@ -503,7 +503,7 @@ export const AddPurchasePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={addSizeRow}
-                  className="min-h-[48px] rounded-lg border border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-100 text-slate-600 text-xs font-bold flex items-center justify-center gap-1 transition-colors"
+                  className="min-h-[48px] rounded-lg border border-dashed border-brand-200 bg-brand-50/40 hover:bg-brand-50 text-brand-700 text-xs font-bold flex items-center justify-center gap-1 transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>مقاس</span>
@@ -518,16 +518,16 @@ export const AddPurchasePage: React.FC = () => {
               {bagRows.map((row, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-1 bg-slate-50 p-1.5 rounded-lg border border-slate-200"
+                  className="flex items-center gap-1 bg-brand-50/60 p-1.5 rounded-lg border border-brand-100"
                 >
                   <div className="flex-[1.3] min-w-0">
-                    <label className="text-[10px] text-slate-500 block leading-tight mb-0.5">
+                    <label className="text-[10px] text-brand-800 block leading-tight mb-0.5">
                       اللون
                     </label>
                     <select
                       value={row.color}
                       onChange={(e) => updateBagRow(idx, 'color', e.target.value)}
-                      className="w-full h-7 bg-white border border-slate-300 rounded-md px-1 text-[11px] font-medium text-slate-900"
+                      className="w-full h-7 bg-white border border-brand-200 focus:border-brand-600 focus:outline-none rounded-md px-1 text-[11px] font-medium text-slate-900"
                     >
                       {Object.entries(colorLetters).map(([name, letter]) => (
                         <option key={name} value={name}>
@@ -538,7 +538,7 @@ export const AddPurchasePage: React.FC = () => {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <label className="text-[10px] text-slate-500 block leading-tight mb-0.5 text-center">
+                    <label className="text-[10px] text-brand-800 block leading-tight mb-0.5 text-center">
                       الكمية
                     </label>
                     <input
@@ -548,7 +548,7 @@ export const AddPurchasePage: React.FC = () => {
                       onChange={(e) =>
                         updateBagRow(idx, 'quantity', Math.max(1, Number(e.target.value)))
                       }
-                      className="w-full h-7 bg-white border border-slate-300 rounded-md px-1 text-xs text-center font-bold text-slate-900"
+                      className="w-full h-7 bg-white border border-brand-200 focus:border-brand-600 focus:outline-none rounded-md px-1 text-xs text-center font-bold text-slate-900"
                     />
                   </div>
 
@@ -567,7 +567,7 @@ export const AddPurchasePage: React.FC = () => {
               <button
                 type="button"
                 onClick={addBagRow}
-                className="min-h-[48px] rounded-lg border border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-100 text-slate-600 text-xs font-bold flex items-center justify-center gap-1 transition-colors"
+                className="min-h-[48px] rounded-lg border border-dashed border-brand-200 bg-brand-50/40 hover:bg-brand-50 text-brand-700 text-xs font-bold flex items-center justify-center gap-1 transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>لون</span>
@@ -576,19 +576,19 @@ export const AddPurchasePage: React.FC = () => {
           )}
 
           {/* إجمالي القطع والتكلفة */}
-          <div className="flex items-center justify-between pt-2 border-t border-slate-200 text-xs">
+          <div className="flex items-center justify-between pt-2 border-t border-brand-100 text-xs">
             <span className="text-slate-600">
               إجمالي القطع: <strong className="text-slate-900">{totalQuantity} قطعة</strong>
             </span>
             <span className="text-slate-600">
               إجمالي التكلفة:{' '}
-              <strong className="text-[#14b8a6] text-sm">{formatCurrency(totalCost)}</strong>
+              <strong className="text-brand-700 text-sm">{formatCurrency(totalCost)}</strong>
             </span>
           </div>
         </Card>
 
         {/* كارت الدفع */}
-        <Card className="p-2 border-slate-200 space-y-1.5">
+        <Card className="p-2 border-brand-100 space-y-1.5">
           <div className="flex items-center gap-1.5">
             <button
               type="button"
@@ -596,18 +596,18 @@ export const AddPurchasePage: React.FC = () => {
                 setPaymentSource('cash');
                 setShowOtherPayments(false);
               }}
-              className="flex-1 h-9 px-3 rounded-lg border border-[#14b8a6] bg-[#14b8a6]/10 text-[#0d9488] text-xs font-bold flex items-center justify-between transition-colors"
+              className="flex-1 h-9 px-3 rounded-lg border border-brand-600 bg-brand-50 text-brand-800 text-xs font-bold flex items-center justify-between transition-colors"
             >
               <span>{paymentMethodLabels[paymentSource]}</span>
               {paymentSource !== 'cash' && (
-                <span className="text-[10px] font-medium text-slate-500">رجوع للنقدية</span>
+                <span className="text-[10px] font-medium text-brand-700">رجوع للنقدية</span>
               )}
             </button>
 
             <button
               type="button"
               onClick={() => setShowOtherPayments((prev) => !prev)}
-              className="h-9 px-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-1 shrink-0 transition-colors"
+              className="h-9 px-2.5 rounded-lg border border-brand-200 bg-white hover:bg-brand-50 text-brand-700 text-xs font-bold flex items-center gap-1 shrink-0 transition-colors"
             >
               <span>طرق أخرى</span>
               <ChevronDown
@@ -617,7 +617,7 @@ export const AddPurchasePage: React.FC = () => {
           </div>
 
           {showOtherPayments && (
-            <div className="grid grid-cols-3 gap-1.5 pt-1 border-t border-slate-100">
+            <div className="grid grid-cols-3 gap-1.5 pt-1 border-t border-brand-100">
               {(
                 [
                   { id: 'instapay', label: 'إنستاباي (البنك)' },
@@ -634,8 +634,8 @@ export const AddPurchasePage: React.FC = () => {
                   }}
                   className={`py-2 px-1.5 rounded-lg border text-[11px] font-bold text-center transition-colors ${
                     paymentSource === method.id
-                      ? 'border-[#14b8a6] bg-[#14b8a6]/10 text-[#0d9488]'
-                      : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                      ? 'border-brand-600 bg-brand-600 text-white'
+                      : 'border-brand-200 bg-white text-brand-800 hover:bg-brand-50'
                   }`}
                 >
                   {method.label}
@@ -648,7 +648,7 @@ export const AddPurchasePage: React.FC = () => {
         {/* زر الحفظ النهائي */}
         <Button
           type="submit"
-          variant="primary"
+          variant="accent"
           isLoading={isSubmitting}
           className="w-full py-2.5 text-sm shadow-sm gap-2"
         >
@@ -690,7 +690,7 @@ export const AddPurchasePage: React.FC = () => {
             >
               إلغاء
             </Button>
-            <Button type="submit" variant="primary" size="sm">
+            <Button type="submit" variant="accent" size="sm">
               إضافة اللون
             </Button>
           </div>

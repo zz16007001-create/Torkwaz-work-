@@ -18,7 +18,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
 
   return (
     <div
-      className={`inline-block animate-spin rounded-full border-solid border-[#14b8a6] border-t-transparent ${sizeMap[size]} ${className}`}
+      className={`inline-block animate-spin rounded-full border-solid border-brand-600 border-t-transparent ${sizeMap[size]} ${className}`}
       role="status"
       aria-label="جار التحميل..."
     />

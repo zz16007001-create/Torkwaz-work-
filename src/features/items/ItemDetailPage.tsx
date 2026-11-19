@@ -258,7 +258,7 @@ export const ItemDetailPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/items')}
-            className="p-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors"
+            className="p-2 rounded-xl border border-brand-200 bg-white text-brand-700 hover:bg-brand-50 transition-colors"
             title="رجوع للمخزون"
           >
             <ArrowRight className="w-5 h-5" />
@@ -267,7 +267,7 @@ export const ItemDetailPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <h1 className="text-xl md:text-2xl font-bold text-slate-900">{item.name}</h1>
               {!item.isActive && (
-                <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-amber-100 text-amber-800">
+                <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-accent-100 text-accent-700">
                   مؤرشف
                 </span>
               )}
@@ -286,7 +286,7 @@ export const ItemDetailPage: React.FC = () => {
             size="sm"
             className="gap-1.5"
           >
-            <Edit className="w-4 h-4 text-[#14b8a6]" />
+            <Edit className="w-4 h-4 text-brand-600" />
             <span>تعديل</span>
           </Button>
 
@@ -296,7 +296,7 @@ export const ItemDetailPage: React.FC = () => {
             size="sm"
             className="gap-1.5"
           >
-            <ClipboardList className="w-4 h-4 text-indigo-600" />
+            <ClipboardList className="w-4 h-4 text-brand-700" />
             <span>جرد</span>
           </Button>
 
@@ -306,7 +306,7 @@ export const ItemDetailPage: React.FC = () => {
             size="sm"
             className="gap-1.5"
           >
-            <Printer className="w-4 h-4 text-slate-700" />
+            <Printer className="w-4 h-4 text-brand-700" />
             <span>طباعة ملصقات</span>
           </Button>
 
@@ -340,7 +340,7 @@ export const ItemDetailPage: React.FC = () => {
       </div>
 
       {item.currentStock > 0 && (
-        <div className="text-[11px] text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 inline-block">
+        <div className="text-[11px] text-brand-800 bg-brand-50 px-3 py-1.5 rounded-lg border border-brand-100 inline-block">
           * تنبيه الأرشفة: زر الأرشفة معطل تلقائياً طالما أن هناك رصيد متاح في المخزن ({item.currentStock} قطعة).
         </div>
       )}
@@ -353,8 +353,8 @@ export const ItemDetailPage: React.FC = () => {
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" />
+        <div className="p-3.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-sm flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 shrink-0 text-brand-600" />
           <span>{successMsg}</span>
         </div>
       )}
@@ -362,8 +362,8 @@ export const ItemDetailPage: React.FC = () => {
       {/* بطاقات البيانات الأساسية والمالية */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* بطاقة الكمية */}
-        <Card className="p-5 border-slate-200">
-          <span className="text-xs font-medium text-slate-400 block mb-1">الرصيد المتاح بالمخزن</span>
+        <Card className="p-5 border-brand-100">
+          <span className="text-xs font-medium text-slate-500 block mb-1">الرصيد المتاح بالمخزن</span>
           <div
             className={`flex items-baseline gap-2 text-2xl font-black ${
               isLowStock ? 'text-rose-600' : 'text-slate-900'
@@ -379,12 +379,12 @@ export const ItemDetailPage: React.FC = () => {
         </Card>
 
         {/* بطاقة الأسعار */}
-        <Card className="p-5 border-slate-200">
-          <span className="text-xs font-medium text-slate-400 block mb-1">الأسعار والبيع</span>
+        <Card className="p-5 border-brand-100">
+          <span className="text-xs font-medium text-slate-500 block mb-1">الأسعار والبيع</span>
           <div className="flex items-center justify-between">
             <div>
               <span className="text-[11px] text-slate-400 block">سعر البيع</span>
-              <span className="text-lg font-extrabold text-[#14b8a6]">
+              <span className="text-lg font-extrabold text-brand-700">
                 {formatCurrency(item.sellPrice)}
               </span>
             </div>
@@ -401,7 +401,7 @@ export const ItemDetailPage: React.FC = () => {
         <Card
           className={`p-5 border ${
             markupPercent >= 0
-              ? 'bg-emerald-50/50 border-emerald-200 text-emerald-900'
+              ? 'bg-brand-50 border-brand-200 text-brand-900'
               : 'bg-rose-50/50 border-rose-200 text-rose-900'
           }`}
         >
@@ -424,8 +424,8 @@ export const ItemDetailPage: React.FC = () => {
       </div>
 
       {/* تفاصيل المواصفات */}
-      <Card className="p-6 border-slate-200 space-y-4">
-        <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">
+      <Card className="p-6 border-brand-100 space-y-4">
+        <h2 className="text-sm font-bold text-brand-800 border-b border-brand-100 pb-2">
           مواصفات الصنف وسجل البيانات
         </h2>
 
@@ -438,7 +438,7 @@ export const ItemDetailPage: React.FC = () => {
           <div>
             <span className="text-xs text-slate-400 block mb-1">اللون</span>
             <div className="flex items-center gap-1.5 font-semibold text-slate-800">
-              <Palette className="w-3.5 h-3.5 text-slate-400" />
+              <Palette className="w-3.5 h-3.5 text-brand-600" />
               <span>{item.color || 'غير محدد'}</span>
             </div>
           </div>
@@ -446,7 +446,7 @@ export const ItemDetailPage: React.FC = () => {
           <div>
             <span className="text-xs text-slate-400 block mb-1">المقاس</span>
             <div className="flex items-center gap-1.5 font-semibold text-slate-800">
-              <Ruler className="w-3.5 h-3.5 text-slate-400" />
+              <Ruler className="w-3.5 h-3.5 text-brand-600" />
               <span>{item.size || 'غير محدد'}</span>
             </div>
           </div>
@@ -467,8 +467,8 @@ export const ItemDetailPage: React.FC = () => {
         title="تعديل بيانات الصنف"
       >
         <form onSubmit={handleSaveEdit} className="space-y-4">
-          <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center gap-2">
-            <Lock className="w-4 h-4 text-slate-400 shrink-0" />
+          <div className="p-2.5 rounded-xl bg-brand-50/70 border border-brand-100 text-xs text-brand-800 flex items-center gap-2">
+            <Lock className="w-4 h-4 text-brand-600 shrink-0" />
             <span>كود الصنف وسعر الشراء محميان ولا يمكن تعديلهما للحفاظ على سلامة القيود.</span>
           </div>
 
@@ -523,7 +523,7 @@ export const ItemDetailPage: React.FC = () => {
             </Button>
             <Button
               type="submit"
-              variant="primary"
+              variant="accent"
               size="sm"
               isLoading={isSavingEdit}
             >
@@ -540,7 +540,7 @@ export const ItemDetailPage: React.FC = () => {
         title="تسوية جرد الصنف"
       >
         <form onSubmit={handleConfirmAdjust} className="space-y-4">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm">
+          <div className="flex items-center justify-between p-3 rounded-xl bg-brand-50/70 border border-brand-100 text-sm">
             <span className="text-slate-600">الرصيد المسجل في النظام:</span>
             <span className="font-bold text-slate-900">{currentStock} قطعة</span>
           </div>
@@ -558,9 +558,9 @@ export const ItemDetailPage: React.FC = () => {
           <div
             className={`p-3 rounded-xl border text-xs font-bold space-y-1 ${
               stockDiff === 0
-                ? 'bg-slate-50 border-slate-200 text-slate-700'
+                ? 'bg-brand-50/50 border-brand-100 text-slate-700'
                 : stockDiff > 0
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                ? 'bg-brand-50 border-brand-200 text-brand-800'
                 : 'bg-rose-50 border-rose-200 text-rose-800'
             }`}
           >
@@ -592,7 +592,7 @@ export const ItemDetailPage: React.FC = () => {
             </Button>
             <Button
               type="submit"
-              variant="primary"
+              variant="accent"
               size="sm"
               isLoading={isSavingAdjust}
             >

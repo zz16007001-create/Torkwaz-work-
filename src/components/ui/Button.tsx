@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'danger' | 'outline' | 'ghost';
+  variant?: 'primary' | 'accent' | 'danger' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
 }
@@ -25,15 +25,16 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   const variantClasses = {
-    // primary using #14b8a6 (teal-500)
     primary:
-      'bg-[#14b8a6] hover:bg-[#0d9488] text-white shadow-sm focus:ring-[#14b8a6]/50 active:bg-[#0f766e]',
+      'bg-brand-600 hover:bg-brand-700 text-white shadow-sm focus:ring-brand-600/50 active:bg-brand-800',
+    accent:
+      'bg-accent-500 hover:bg-accent-600 text-slate-900 font-bold shadow-sm focus:ring-accent-500/50 active:bg-accent-600',
     danger:
       'bg-rose-600 hover:bg-rose-700 text-white shadow-sm focus:ring-rose-500/50 active:bg-rose-800',
     outline:
-      'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus:ring-[#14b8a6]/40 active:bg-slate-100',
+      'border border-brand-200 bg-white text-brand-700 hover:bg-brand-50 focus:ring-brand-600/40 active:bg-brand-100',
     ghost:
-      'text-slate-600 hover:bg-slate-100 focus:ring-[#14b8a6]/30 active:bg-slate-200',
+      'text-slate-600 hover:bg-brand-50 focus:ring-brand-600/30 active:bg-brand-100',
   };
 
   return (

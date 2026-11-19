@@ -48,25 +48,26 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* رأس الصفحة والشعار */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#14b8a6]/10 text-[#14b8a6] mb-3 shadow-inner">
-            <Store className="w-8 h-8" />
-          </div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">نظام محلي</h1>
-          <p className="text-sm text-slate-500 mt-1">إدارة مبيعات ومخزون الأحذية والشنط</p>
+    <div className="min-h-screen bg-page flex flex-col">
+      {/* القسم العلوي الأخضر الغامق */}
+      <div className="bg-gradient-to-b from-brand-600 to-brand-700 pt-10 pb-20 px-4 text-center text-white">
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-accent-500 text-brand-900 mb-3 shadow-md">
+          <Store className="w-8 h-8" />
         </div>
+        <h1 className="text-2xl font-bold text-white tracking-tight">نظام محلي</h1>
+        <p className="text-sm text-brand-100 mt-1">إدارة مبيعات ومخزون الأحذية والشنط</p>
+      </div>
 
-        <Card className="shadow-lg border-slate-200/90">
-          <h2 className="text-lg font-semibold text-slate-800 mb-6 text-center">
+      {/* كارت تسجيل الدخول */}
+      <div className="w-full max-w-md mx-auto px-4 -mt-12 pb-8 flex-1">
+        <Card className="shadow-lg border-brand-100 rounded-2xl">
+          <h2 className="text-lg font-semibold text-brand-800 mb-6 text-center">
             تسجيل الدخول للنظام
           </h2>
 
           {!isFirebaseConfigured && (
-            <div className="mb-5 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 flex-shrink-0 text-amber-500" />
+            <div className="mb-5 p-3 rounded-xl bg-accent-50 border border-accent-400 text-accent-700 text-sm flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 flex-shrink-0 text-accent-600" />
               <span>يرجى ضبط متغيرات البيئة الخاصة بـ Firebase لتفعيل تسجيل الدخول وقاعدة البيانات.</span>
             </div>
           )}
@@ -112,7 +113,7 @@ export const LoginPage: React.FC = () => {
             <div className="pt-2">
               <Button
                 type="submit"
-                variant="primary"
+                variant="accent"
                 isLoading={isLoading}
                 className="w-full text-base py-3"
               >
@@ -122,7 +123,7 @@ export const LoginPage: React.FC = () => {
           </form>
         </Card>
 
-        <p className="text-xs text-center text-slate-400 mt-6">
+        <p className="text-xs text-center text-slate-500 mt-6">
           «محلي» &bull; مصمم للعمل دون اتصال بالإنترنت (Offline-First)
         </p>
       </div>

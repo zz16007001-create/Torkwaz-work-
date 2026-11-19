@@ -184,7 +184,7 @@ export const CustomersListPage: React.FC = () => {
           <Input label="رقم الهاتف" value={ocPhone} onChange={(e) => setOcPhone(e.target.value)} />
           <Input label="الدين السابق (ج.م)" value={ocAmount} onChange={(e) => setOcAmount(e.target.value)} />
           {ocError && <p className="text-xs text-rose-600">{ocError}</p>}
-          <Button type="submit" variant="primary" disabled={ocBusy}>
+          <Button type="submit" variant="accent" disabled={ocBusy}>
             {ocBusy ? 'جاري الحفظ...' : 'حفظ العميل'}
           </Button>
         </form>
@@ -194,7 +194,7 @@ export const CustomersListPage: React.FC = () => {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0">
           <h1 className="text-lg font-bold text-slate-900 flex items-center gap-1.5">
-            <Users className="w-5 h-5 text-[#14b8a6] shrink-0" />
+            <Users className="w-5 h-5 text-brand-600 shrink-0" />
             <span>سجل العملاء والديون</span>
           </h1>
           <p className="text-[11px] text-slate-500 mt-0.5 truncate">
@@ -217,23 +217,23 @@ export const CustomersListPage: React.FC = () => {
 
       {/* بطاقة إجمالي الديون المستحقة في الأعلى */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        <Card className="p-3 border-slate-200 bg-gradient-to-br from-slate-900 to-slate-800 text-white sm:col-span-2 flex items-center justify-between gap-2">
+        <Card className="p-3 border-brand-600 bg-gradient-to-br from-brand-600 to-brand-700 text-white sm:col-span-2 flex items-center justify-between gap-2">
           <div className="min-w-0">
-            <span className="text-[11px] text-slate-300 block mb-0.5">إجمالي الديون المستحقة للمحل</span>
-            <span className="text-lg sm:text-xl font-black text-amber-400 block">
+            <span className="text-[11px] text-brand-100 block mb-0.5">إجمالي الديون المستحقة للمحل</span>
+            <span className="text-lg sm:text-xl font-black text-accent-400 block">
               {formatCurrency(totalReceivables)}
             </span>
-            <p className="text-[10px] text-slate-400 mt-0.5 leading-tight">
+            <p className="text-[10px] text-brand-100/80 mt-0.5 leading-tight">
               مجموع المبالغ الآجلة على كافة العملاء النشطين
             </p>
           </div>
           <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-            <BadgeDollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
+            <BadgeDollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-accent-400" />
           </div>
         </Card>
 
-        <Card className="p-3 border-slate-200 flex flex-col justify-center">
-          <span className="text-[11px] text-slate-400 block mb-0.5">عدد العملاء المسجلين</span>
+        <Card className="p-3 border-brand-100 flex flex-col justify-center">
+          <span className="text-[11px] text-slate-500 block mb-0.5">عدد العملاء المسجلين</span>
           <span className="text-lg font-bold text-slate-800 block">{customers.length} عميل</span>
           <span className="text-[11px] text-rose-600 font-medium mt-0.5 leading-tight">
             {customers.filter((c) => c.currentBalance > 0).length} عملاء عليهم ديون مستحقة
@@ -249,14 +249,14 @@ export const CustomersListPage: React.FC = () => {
       )}
 
       {successMsg && (
-        <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+        <div className="p-2.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 shrink-0 text-brand-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {/* شريط البحث */}
-      <Card className="p-2 border-slate-200">
+      <Card className="p-2 border-brand-100">
         <div className="relative">
           <input
             type="text"
@@ -264,9 +264,9 @@ export const CustomersListPage: React.FC = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="ابحث باسم العميل أو برقم الهاتف..."
             dir="rtl"
-            className="w-full rounded-lg border border-slate-300 bg-white pr-8 pl-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#14b8a6] focus:ring-2 focus:ring-[#14b8a6]/20 transition-all"
+            className="w-full rounded-lg border border-brand-200 bg-brand-50/70 focus:bg-white pr-8 pl-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 transition-all"
           />
-          <Search className="absolute right-2.5 top-2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+          <Search className="absolute right-2.5 top-2 w-3.5 h-3.5 text-brand-600 pointer-events-none" />
         </div>
       </Card>
 
@@ -277,8 +277,8 @@ export const CustomersListPage: React.FC = () => {
           <p className="text-xs text-slate-500 mt-2">جاري تحميل بيانات العملاء...</p>
         </div>
       ) : filteredCustomers.length === 0 ? (
-        <Card className="py-10 text-center border-dashed border-2 border-slate-200">
-          <Users className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+        <Card className="py-10 text-center border-dashed border-2 border-brand-200">
+          <Users className="w-10 h-10 text-brand-200 mx-auto mb-2" />
           <h3 className="text-sm font-bold text-slate-700">لا يوجد عملاء مطابقين</h3>
           <p className="text-xs text-slate-400 mt-1">
             يتم تسجيل العملاء تلقائياً عند حفظ فواتير بيع بآجل.
@@ -294,12 +294,12 @@ export const CustomersListPage: React.FC = () => {
               <Card
                 key={cust.id}
                 onClick={() => navigate(`/customers/${cust.id}`)}
-                className="p-2.5 border border-slate-200 hover:border-[#14b8a6]/50 hover:shadow-md transition-all cursor-pointer group"
+                className="p-2.5 border border-brand-100 hover:border-brand-500 hover:shadow-md transition-all cursor-pointer group"
               >
                 {/* السطر الأول: الاسم + الشارة على اليمين، والرصيد الحالي على الشمال */}
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 min-w-0 flex-1">
-                    <h3 className="font-bold text-slate-900 text-sm truncate group-hover:text-[#14b8a6] transition-colors">
+                    <h3 className="font-bold text-slate-900 text-sm truncate group-hover:text-brand-700 transition-colors">
                       {cust.name}
                     </h3>
                     {hasDebt ? (
@@ -307,11 +307,11 @@ export const CustomersListPage: React.FC = () => {
                         مدين
                       </span>
                     ) : hasCredit ? (
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 shrink-0">
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-100 text-brand-800 shrink-0">
                         دائن (دفعة مقدمة)
                       </span>
                     ) : (
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 shrink-0">
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-50 text-brand-700 shrink-0">
                         خالص الحساب
                       </span>
                     )}
@@ -324,7 +324,7 @@ export const CustomersListPage: React.FC = () => {
                         hasDebt
                           ? 'text-rose-600'
                           : hasCredit
-                          ? 'text-emerald-700'
+                          ? 'text-brand-700'
                           : 'text-slate-700'
                       }`}
                     >
@@ -340,7 +340,7 @@ export const CustomersListPage: React.FC = () => {
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
                     {cust.phone && (
                       <span className="flex items-center gap-1 shrink-0">
-                        <Phone className="w-3 h-3 text-slate-400" />
+                        <Phone className="w-3 h-3 text-brand-500" />
                         <span dir="ltr">{cust.phone}</span>
                       </span>
                     )}
@@ -361,7 +361,7 @@ export const CustomersListPage: React.FC = () => {
                       </Button>
                     )}
 
-                    <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-[#14b8a6] transition-colors hidden sm:block" />
+                    <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-brand-600 transition-colors hidden sm:block" />
                   </div>
                 </div>
               </Card>
@@ -378,7 +378,7 @@ export const CustomersListPage: React.FC = () => {
           title={`تحصيل دفعة من العميل: ${selectedCustomer.name}`}
         >
           <form onSubmit={handleConfirmCollect} className="space-y-4">
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+            <div className="p-3 rounded-xl bg-brand-50/70 border border-brand-100 text-xs space-y-1">
               <div className="flex justify-between">
                 <span className="text-slate-600">إجمالي الدين المستحق:</span>
                 <span className="font-bold text-rose-600 text-sm">
@@ -403,7 +403,7 @@ export const CustomersListPage: React.FC = () => {
               <select
                 value={collectWallet}
                 onChange={(e) => setCollectWallet(e.target.value as WalletId)}
-                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-[#14b8a6]"
+                className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-brand-600"
               >
                 <option value="cash">خزينة المحل (نقدية / كاش)</option>
                 <option value="bank">الحساب البنكي / إنستاباي</option>
@@ -422,7 +422,7 @@ export const CustomersListPage: React.FC = () => {
               </Button>
               <Button
                 type="submit"
-                variant="primary"
+                variant="accent"
                 size="sm"
                 isLoading={isSubmittingCollect}
               >
@@ -441,7 +441,7 @@ export const CustomersListPage: React.FC = () => {
           title="تأكيد تحصيل مبلغ يتجاوز الدين"
         >
           <div className="space-y-4">
-            <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed">
+            <div className="p-3.5 rounded-xl bg-accent-50 border border-accent-400 text-accent-700 text-xs leading-relaxed">
               <p className="font-bold mb-1.5">تنبيه: المبلغ المراد تحصيله أكبر من الدين الحالي على العميل</p>
               <div className="space-y-1.5 text-slate-700 mt-2">
                 <div className="flex justify-between">
@@ -450,9 +450,9 @@ export const CustomersListPage: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span>المبلغ المراد تحصيله:</span>
-                  <span className="font-black text-emerald-700">{formatCurrency(excessConfirmData.amount)}</span>
+                  <span className="font-black text-brand-700">{formatCurrency(excessConfirmData.amount)}</span>
                 </div>
-                <div className="flex justify-between pt-1.5 border-t border-amber-200 font-bold text-amber-900">
+                <div className="flex justify-between pt-1.5 border-t border-accent-400/50 font-bold text-accent-700">
                   <span>المبلغ الفائض (رصيد للعميل):</span>
                   <span>{formatCurrency(excessConfirmData.amount - excessConfirmData.debt)}</span>
                 </div>
@@ -473,7 +473,7 @@ export const CustomersListPage: React.FC = () => {
               </Button>
               <Button
                 type="button"
-                variant="primary"
+                variant="accent"
                 size="sm"
                 isLoading={isSubmittingCollect}
                 onClick={() => executeCollect(excessConfirmData.amount)}

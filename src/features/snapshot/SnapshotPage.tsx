@@ -402,7 +402,7 @@ export const SnapshotPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <Camera className="w-6 h-6 text-[#14b8a6]" />
+            <Camera className="w-6 h-6 text-brand-600" />
             <span>صورة المحل وقفل الشهر ({formatMonth(new Date())})</span>
           </h1>
           <p className="text-xs md:text-sm text-slate-500 mt-0.5">
@@ -411,7 +411,7 @@ export const SnapshotPage: React.FC = () => {
         </div>
 
         {isCurrentMonthLocked && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800 self-start sm:self-auto">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-brand-100 text-brand-800 self-start sm:self-auto">
             <Lock className="w-4 h-4" />
             <span>الشهر الحالي مقفل رسمياً</span>
           </span>
@@ -426,8 +426,8 @@ export const SnapshotPage: React.FC = () => {
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" />
+        <div className="p-3.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-sm flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 shrink-0 text-brand-600" />
           <span>{successMsg}</span>
         </div>
       )}
@@ -452,11 +452,11 @@ export const SnapshotPage: React.FC = () => {
       {/* كروت رأس المال والأرباح */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* رأس المال */}
-        <Card className="p-5 border-slate-200 bg-slate-900! text-white flex flex-col justify-between">
+        <Card className="p-5 border-brand-600 bg-gradient-to-br from-brand-600 to-brand-700 text-white flex flex-col justify-between">
           <div>
-            <span className="text-xs text-slate-400 block mb-1">رأس المال الفعلي الإجمالي</span>
+            <span className="text-xs text-brand-100 block mb-1">رأس المال الفعلي الإجمالي</span>
             <span className="text-2xl font-black text-white">{formatCurrency(currentCapital)}</span>
-            <div className="mt-3 space-y-1 text-xs text-slate-300 border-t border-white/10 pt-2">
+            <div className="mt-3 space-y-1 text-xs text-brand-100 border-t border-white/15 pt-2">
               <div className="flex justify-between">
                 <span>الخزائن الفعلية:</span>
                 <span className="font-bold text-white">{formatCurrency(actualWalletsTotal)}</span>
@@ -467,20 +467,20 @@ export const SnapshotPage: React.FC = () => {
               </div>
               <div className="flex justify-between">
                 <span>ديون العملاء:</span>
-                <span className="font-bold text-amber-400">{formatCurrency(receivables)}</span>
+                <span className="font-bold text-accent-400">{formatCurrency(receivables)}</span>
               </div>
             </div>
           </div>
         </Card>
 
         {/* ربح الفواتير */}
-        <Card className="p-5 border-slate-200 flex flex-col justify-between">
+        <Card className="p-5 border-brand-100 flex flex-col justify-between">
           <div>
             <span className="text-xs text-slate-500 block mb-1">ربح الفواتير للشهر</span>
-            <span className="text-2xl font-black text-[#14b8a6]">
+            <span className="text-2xl font-black text-brand-700">
               {formatCurrency(invoiceProfit)}
             </span>
-            <div className="mt-3 space-y-1 text-xs text-slate-600 border-t border-slate-100 pt-2">
+            <div className="mt-3 space-y-1 text-xs text-slate-600 border-t border-brand-100 pt-2">
               <div className="flex justify-between">
                 <span>صافي المبيعات:</span>
                 <span>{formatCurrency(totalSalesNet)}</span>
@@ -510,14 +510,14 @@ export const SnapshotPage: React.FC = () => {
         </Card>
 
         {/* الربح الحقيقي والفرق */}
-        <Card className="p-5 border-slate-200 flex flex-col justify-between">
+        <Card className="p-5 border-brand-100 flex flex-col justify-between">
           <div>
             <span className="text-xs text-slate-500 block mb-1">الربح الحقيقي الصافي</span>
             <span className="text-2xl font-black text-slate-900">
               {formatCurrency(realProfit)}
             </span>
 
-            <div className="mt-3 space-y-1 text-xs border-t border-slate-100 pt-2">
+            <div className="mt-3 space-y-1 text-xs border-t border-brand-100 pt-2">
               <div className="flex justify-between text-slate-600">
                 <span>المسحوبات الشخصية:</span>
                 <span>{formatCurrency(monthDrawings)}</span>
@@ -527,8 +527,8 @@ export const SnapshotPage: React.FC = () => {
                 <span>{formatCurrency(monthCapitalIn)}</span>
               </div>
               <div
-                className={`flex justify-between font-bold pt-1 border-t border-slate-100 ${
-                  isMismatchWarning ? 'text-rose-600' : 'text-emerald-700'
+                className={`flex justify-between font-bold pt-1 border-t border-brand-100 ${
+                  isMismatchWarning ? 'text-rose-600' : 'text-brand-700'
                 }`}
               >
                 <span>فرق الربح (Mismatch):</span>
@@ -545,10 +545,10 @@ export const SnapshotPage: React.FC = () => {
       </div>
 
       {/* قسم الرصيد الفعلي في الدرج وتدقيق الخزائن */}
-      <Card className="p-6 border-slate-200 space-y-5">
+      <Card className="p-6 border-brand-100 space-y-5">
         <div>
-          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-[#14b8a6]" />
+          <h2 className="text-base font-bold text-brand-800 flex items-center gap-2">
+            <Wallet className="w-5 h-5 text-brand-600" />
             <span>الرصيد الفعلي في الدرج والخزائن</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
@@ -558,10 +558,10 @@ export const SnapshotPage: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* نقدية كاش */}
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+          <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-100 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <Banknote className="w-4 h-4 text-emerald-600" />
+                <Banknote className="w-4 h-4 text-brand-600" />
                 <span>خزينة المحل (كاش)</span>
               </span>
               <span className="text-xs text-slate-500">
@@ -585,7 +585,7 @@ export const SnapshotPage: React.FC = () => {
                   round2(actualCash - (walletBalances.cash || 0)) === 0
                     ? 'text-slate-600'
                     : round2(actualCash - (walletBalances.cash || 0)) > 0
-                    ? 'text-emerald-700'
+                    ? 'text-brand-700'
                     : 'text-rose-600'
                 }
               >
@@ -596,10 +596,10 @@ export const SnapshotPage: React.FC = () => {
           </div>
 
           {/* بنك إنستاباي */}
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+          <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-100 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <CreditCard className="w-4 h-4 text-indigo-600" />
+                <CreditCard className="w-4 h-4 text-brand-700" />
                 <span>البنك / إنستاباي</span>
               </span>
               <span className="text-xs text-slate-500">
@@ -623,7 +623,7 @@ export const SnapshotPage: React.FC = () => {
                   round2(actualBank - (walletBalances.bank || 0)) === 0
                     ? 'text-slate-600'
                     : round2(actualBank - (walletBalances.bank || 0)) > 0
-                    ? 'text-emerald-700'
+                    ? 'text-brand-700'
                     : 'text-rose-600'
                 }
               >
@@ -634,7 +634,7 @@ export const SnapshotPage: React.FC = () => {
           </div>
 
           {/* فودافون كاش */}
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+          <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-100 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                 <Smartphone className="w-4 h-4 text-rose-600" />
@@ -661,7 +661,7 @@ export const SnapshotPage: React.FC = () => {
                   round2(actualWallet - (walletBalances.wallet || 0)) === 0
                     ? 'text-slate-600'
                     : round2(actualWallet - (walletBalances.wallet || 0)) > 0
-                    ? 'text-emerald-700'
+                    ? 'text-brand-700'
                     : 'text-rose-600'
                 }
               >
@@ -684,7 +684,7 @@ export const SnapshotPage: React.FC = () => {
         <div className="pt-2">
           <Button
             type="button"
-            variant="primary"
+            variant="accent"
             onClick={handleCloseMonth}
             disabled={isCurrentMonthLocked || isSubmitting || pendingCount > 0}
             isLoading={isSubmitting}
