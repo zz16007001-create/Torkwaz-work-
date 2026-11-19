@@ -264,30 +264,30 @@ export const TransactionsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-3">
       {/* رأس الصفحة وأزرار العمليات الأربعة */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="space-y-2">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <ArrowLeftRight className="w-6 h-6 text-[#14b8a6]" />
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-1.5">
+            <ArrowLeftRight className="w-5 h-5 text-[#14b8a6] shrink-0" />
             <span>العمليات وحركات الخزينة</span>
           </h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-0.5">
+          <p className="text-[11px] text-slate-500 mt-0.5 truncate">
             تسجيل المصروفات والمسحوبات الشخصية والتحويلات اليومية
           </p>
         </div>
 
         {/* 4 أزرار في الأعلى */}
-        <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={() => openModal('expense')}
-            className="gap-1.5 text-rose-700 border-rose-300 hover:bg-rose-50"
+            className="w-full justify-center gap-1 py-1 px-2 h-8 text-xs text-rose-700 border-rose-300 hover:bg-rose-50"
           >
-            <TrendingDown className="w-4 h-4 text-rose-600" />
-            <span>مصروف</span>
+            <TrendingDown className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+            <span className="truncate">مصروف</span>
           </Button>
 
           <Button
@@ -295,10 +295,10 @@ export const TransactionsPage: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => openModal('withdrawal')}
-            className="gap-1.5 text-amber-700 border-amber-300 hover:bg-amber-50"
+            className="w-full justify-center gap-1 py-1 px-2 h-8 text-xs text-amber-700 border-amber-300 hover:bg-amber-50"
           >
-            <UserMinus className="w-4 h-4 text-amber-600" />
-            <span>سحب شخصي</span>
+            <UserMinus className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+            <span className="truncate">سحب شخصي</span>
           </Button>
 
           <Button
@@ -306,10 +306,10 @@ export const TransactionsPage: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => openModal('capital_in')}
-            className="gap-1.5 text-emerald-700 border-emerald-300 hover:bg-emerald-50"
+            className="w-full justify-center gap-1 py-1 px-2 h-8 text-xs text-emerald-700 border-emerald-300 hover:bg-emerald-50"
           >
-            <TrendingUp className="w-4 h-4 text-emerald-600" />
-            <span>إضافة رأس مال</span>
+            <TrendingUp className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span className="truncate">إضافة رأس مال</span>
           </Button>
 
           <Button
@@ -317,46 +317,46 @@ export const TransactionsPage: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => openModal('transfer')}
-            className="gap-1.5 text-indigo-700 border-indigo-300 hover:bg-indigo-50"
+            className="w-full justify-center gap-1 py-1 px-2 h-8 text-xs text-indigo-700 border-indigo-300 hover:bg-indigo-50"
           >
-            <ArrowLeftRight className="w-4 h-4 text-indigo-600" />
-            <span>تحويل</span>
+            <ArrowLeftRight className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+            <span className="truncate">تحويل</span>
           </Button>
         </div>
       </div>
 
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
+        <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" />
+        <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {/* قائمة الحركات الأخيرة */}
       <Card className="p-0 overflow-hidden border-slate-200">
-        <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-            <FileSpreadsheet className="w-4 h-4 text-[#14b8a6]" />
+        <div className="px-3 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+          <h2 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <FileSpreadsheet className="w-3.5 h-3.5 text-[#14b8a6]" />
             <span>سجل المعاملات والقيود المالية ({transactions.length})</span>
           </h2>
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20">
+          <div className="flex flex-col items-center justify-center py-12">
             <Spinner size="lg" />
-            <p className="text-sm text-slate-500 mt-3">جاري تحميل حركات الخزينة...</p>
+            <p className="text-xs text-slate-500 mt-2">جاري تحميل حركات الخزينة...</p>
           </div>
         ) : transactions.length === 0 ? (
-          <div className="py-16 text-center text-slate-400">
-            <ArrowLeftRight className="w-12 h-12 mx-auto mb-2 text-slate-300" />
-            <h3 className="text-base font-bold text-slate-700">لا توجد حركات مسجلة</h3>
+          <div className="py-10 text-center text-slate-400">
+            <ArrowLeftRight className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+            <h3 className="text-sm font-bold text-slate-700">لا توجد حركات مسجلة</h3>
             <p className="text-xs mt-1">استخدم الأزرار في الأعلى لتسجيل المصروفات أو التحويلات.</p>
           </div>
         ) : (
@@ -375,96 +375,56 @@ export const TransactionsPage: React.FC = () => {
               return (
                 <div
                   key={tx.id}
-                  className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/60 transition-colors"
+                  className="px-3 py-2 hover:bg-slate-50/60 transition-colors"
                 >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      {/* بادج نوع الحركة */}
+                  {/* السطر الأول: الشارة + الوصف على اليمين، والمبلغ على الشمال */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0 flex-1">
                       {isExpense && (
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-rose-100 text-rose-700">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 shrink-0">
                           مصروف
                         </span>
                       )}
                       {isWithdrawal && (
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 shrink-0">
                           مسحوبات شخصية
                         </span>
                       )}
                       {isCapitalIn && (
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 shrink-0">
                           تمويل رأس مال
                         </span>
                       )}
                       {isTransfer && (
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-indigo-100 text-indigo-800">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 shrink-0">
                           تحويل خزائن
                         </span>
                       )}
                       {isCollection && (
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-teal-100 text-teal-800">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-100 text-teal-800 shrink-0">
                           تحصيل عميل
                         </span>
                       )}
                       {isRefund && (
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 shrink-0">
                           رد مرتجع
                         </span>
                       )}
                       {isPurchase && (
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 shrink-0">
                           سداد مشتريات
                         </span>
                       )}
 
-                      <span className="font-bold text-slate-800 text-sm">
+                      <span className="font-bold text-slate-800 text-xs truncate">
                         {tx.category || tx.description || 'معاملة مالية'}
                       </span>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 pt-0.5">
-                      <span className="flex items-center gap-1">
-                        <Wallet className="w-3.5 h-3.5 text-slate-400" />
-                        <span>
-                          {WALLET_NAMES[tx.walletId] || tx.walletId}
-                          {isTransfer && tx.targetWalletId && (
-                            <> &rarr; {WALLET_NAMES[tx.targetWalletId] || tx.targetWalletId}</>
-                          )}
-                        </span>
-                      </span>
-
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                        <span>{formatDate(tx.createdAt, true)}</span>
-                      </span>
-
-                      {tx.description && tx.category && tx.description !== tx.category && (
-                        <span className="text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded text-[11px]">
-                          {tx.description}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* المبلغ */}
-                  <div className="text-left">
-                    {tx.status === 'reversed' && (
-                      <span className="block text-[11px] text-slate-400 mb-0.5">معكوسة</span>
-                    )}
-                    {tx.status !== 'reversed' &&
-                      ['expense', 'withdrawal', 'capital_in', 'transfer'].includes(tx.type) &&
-                      tx.walletId !== 'pocket' &&
-                      !tx.referenceNumber && (
-                        <button
-                          type="button"
-                          disabled={reversingTxId === tx.id}
-                          onClick={() => handleReverse(tx)}
-                          className="block text-[11px] text-rose-600 underline mb-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {reversingTxId === tx.id ? 'جاري العكس...' : 'عكس الحركة'}
-                        </button>
-                      )}
                     <span
-                      className={`${tx.status === 'reversed' ? 'line-through opacity-50 ' : ''}text-base font-black ${
+                      className={`shrink-0 text-sm font-black ${
+                        tx.status === 'reversed' ? 'line-through opacity-50 ' : ''
+                      }${
                         isOutflow
                           ? 'text-rose-600'
                           : isCapitalIn || isCollection
@@ -475,6 +435,57 @@ export const TransactionsPage: React.FC = () => {
                       {isOutflow ? '-' : isCapitalIn || isCollection ? '+' : ''}
                       {formatCurrency(tx.amount)}
                     </span>
+                  </div>
+
+                  {/* السطر الثاني: الخزينة والتاريخ + شارة الوصف الإضافي + علامة معكوسة وزر العكس */}
+                  <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 text-[11px] text-slate-400 mt-1">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
+                      <span className="flex items-center gap-1">
+                        <Wallet className="w-3 h-3 text-slate-400 shrink-0" />
+                        <span>
+                          {WALLET_NAMES[tx.walletId] || tx.walletId}
+                          {isTransfer && tx.targetWalletId && (
+                            <> &rarr; {WALLET_NAMES[tx.targetWalletId] || tx.targetWalletId}</>
+                          )}
+                        </span>
+                      </span>
+
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-slate-400 shrink-0" />
+                        <span>{formatDate(tx.createdAt, true)}</span>
+                      </span>
+
+                      {tx.description && tx.category && tx.description !== tx.category && (
+                        <span className="text-slate-500 bg-slate-100 px-1.5 py-0 rounded text-[10px]">
+                          {tx.description}
+                        </span>
+                      )}
+                    </div>
+
+                    {(tx.status === 'reversed' ||
+                      (tx.status !== 'reversed' &&
+                        ['expense', 'withdrawal', 'capital_in', 'transfer'].includes(tx.type) &&
+                        tx.walletId !== 'pocket' &&
+                        !tx.referenceNumber)) && (
+                      <div className="flex items-center gap-2 shrink-0">
+                        {tx.status === 'reversed' && (
+                          <span className="text-[10px] text-slate-400">معكوسة</span>
+                        )}
+                        {tx.status !== 'reversed' &&
+                          ['expense', 'withdrawal', 'capital_in', 'transfer'].includes(tx.type) &&
+                          tx.walletId !== 'pocket' &&
+                          !tx.referenceNumber && (
+                            <button
+                              type="button"
+                              disabled={reversingTxId === tx.id}
+                              onClick={() => handleReverse(tx)}
+                              className="text-[11px] text-rose-600 underline disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {reversingTxId === tx.id ? 'جاري العكس...' : 'عكس الحركة'}
+                            </button>
+                          )}
+                      </div>
+                    )}
                   </div>
                 </div>
               );

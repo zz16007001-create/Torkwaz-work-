@@ -173,7 +173,7 @@ export const CustomersListPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-3">
       <Modal
         isOpen={isOpeningCustOpen}
         onClose={() => setIsOpeningCustOpen(false)}
@@ -191,13 +191,13 @@ export const CustomersListPage: React.FC = () => {
       </Modal>
 
       {/* رأس الصفحة */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <Users className="w-6 h-6 text-[#14b8a6]" />
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-1.5">
+            <Users className="w-5 h-5 text-[#14b8a6] shrink-0" />
             <span>سجل العملاء والديون</span>
           </h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-0.5">
+          <p className="text-[11px] text-slate-500 mt-0.5 truncate">
             متابعة أرصدة العملاء والتحصيلات وتذكيرات الديون
           </p>
         </div>
@@ -205,6 +205,7 @@ export const CustomersListPage: React.FC = () => {
           type="button"
           variant="outline"
           size="sm"
+          className="px-2.5 py-1 h-7 text-[11px] shrink-0"
           onClick={() => {
             setOcError(null);
             setIsOpeningCustOpen(true);
@@ -215,47 +216,47 @@ export const CustomersListPage: React.FC = () => {
       </div>
 
       {/* بطاقة إجمالي الديون المستحقة في الأعلى */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="p-5 border-slate-200 bg-gradient-to-br from-slate-900 to-slate-800 text-white sm:col-span-2 flex items-center justify-between">
-          <div>
-            <span className="text-xs text-slate-300 block mb-1">إجمالي الديون المستحقة للمحل</span>
-            <span className="text-2xl sm:text-3xl font-black text-amber-400">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        <Card className="p-3 border-slate-200 bg-gradient-to-br from-slate-900 to-slate-800 text-white sm:col-span-2 flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <span className="text-[11px] text-slate-300 block mb-0.5">إجمالي الديون المستحقة للمحل</span>
+            <span className="text-lg sm:text-xl font-black text-amber-400 block">
               {formatCurrency(totalReceivables)}
             </span>
-            <p className="text-[11px] text-slate-400 mt-1.5">
+            <p className="text-[10px] text-slate-400 mt-0.5 leading-tight">
               مجموع المبالغ الآجلة على كافة العملاء النشطين
             </p>
           </div>
-          <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
-            <BadgeDollarSign className="w-8 h-8 text-amber-400" />
+          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
+            <BadgeDollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
           </div>
         </Card>
 
-        <Card className="p-5 border-slate-200 flex flex-col justify-center">
-          <span className="text-xs text-slate-400 block mb-1">عدد العملاء المسجلين</span>
-          <span className="text-2xl font-bold text-slate-800">{customers.length} عميل</span>
-          <span className="text-xs text-rose-600 font-medium mt-1">
+        <Card className="p-3 border-slate-200 flex flex-col justify-center">
+          <span className="text-[11px] text-slate-400 block mb-0.5">عدد العملاء المسجلين</span>
+          <span className="text-lg font-bold text-slate-800 block">{customers.length} عميل</span>
+          <span className="text-[11px] text-rose-600 font-medium mt-0.5 leading-tight">
             {customers.filter((c) => c.currentBalance > 0).length} عملاء عليهم ديون مستحقة
           </span>
         </Card>
       </div>
 
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
+        <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" />
+        <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {/* شريط البحث */}
-      <Card className="p-4 border-slate-200">
+      <Card className="p-2 border-slate-200">
         <div className="relative">
           <input
             type="text"
@@ -263,28 +264,28 @@ export const CustomersListPage: React.FC = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="ابحث باسم العميل أو برقم الهاتف..."
             dir="rtl"
-            className="w-full rounded-xl border border-slate-300 bg-white pr-10 pl-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#14b8a6] focus:ring-2 focus:ring-[#14b8a6]/20 transition-all"
+            className="w-full rounded-lg border border-slate-300 bg-white pr-8 pl-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#14b8a6] focus:ring-2 focus:ring-[#14b8a6]/20 transition-all"
           />
-          <Search className="absolute right-3.5 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
+          <Search className="absolute right-2.5 top-2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
         </div>
       </Card>
 
       {/* قائمة العملاء */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20">
+        <div className="flex flex-col items-center justify-center py-12">
           <Spinner size="lg" />
-          <p className="text-sm text-slate-500 mt-3">جاري تحميل بيانات العملاء...</p>
+          <p className="text-xs text-slate-500 mt-2">جاري تحميل بيانات العملاء...</p>
         </div>
       ) : filteredCustomers.length === 0 ? (
-        <Card className="py-16 text-center border-dashed border-2 border-slate-200">
-          <Users className="w-12 h-12 text-slate-300 mx-auto mb-2" />
-          <h3 className="text-base font-bold text-slate-700">لا يوجد عملاء مطابقين</h3>
+        <Card className="py-10 text-center border-dashed border-2 border-slate-200">
+          <Users className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+          <h3 className="text-sm font-bold text-slate-700">لا يوجد عملاء مطابقين</h3>
           <p className="text-xs text-slate-400 mt-1">
             يتم تسجيل العملاء تلقائياً عند حفظ فواتير بيع بآجل.
           </p>
         </Card>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {filteredCustomers.map((cust) => {
             const hasDebt = cust.currentBalance > 0.01;
             const hasCredit = cust.currentBalance < -0.01;
@@ -293,74 +294,74 @@ export const CustomersListPage: React.FC = () => {
               <Card
                 key={cust.id}
                 onClick={() => navigate(`/customers/${cust.id}`)}
-                className="p-4 border border-slate-200 hover:border-[#14b8a6]/50 hover:shadow-md transition-all cursor-pointer group"
+                className="p-2.5 border border-slate-200 hover:border-[#14b8a6]/50 hover:shadow-md transition-all cursor-pointer group"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  {/* بيانات العميل */}
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-slate-900 text-base group-hover:text-[#14b8a6] transition-colors">
-                        {cust.name}
-                      </h3>
-                      {hasDebt ? (
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-rose-100 text-rose-700">
-                          مدين
-                        </span>
-                      ) : hasCredit ? (
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700">
-                          دائن (دفعة مقدمة)
-                        </span>
-                      ) : (
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
-                          خالص الحساب
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-3 text-xs text-slate-500">
-                      {cust.phone && (
-                        <span className="flex items-center gap-1">
-                          <Phone className="w-3.5 h-3.5 text-slate-400" />
-                          <span dir="ltr">{cust.phone}</span>
-                        </span>
-                      )}
-                      {cust.address && <span>{cust.address}</span>}
-                    </div>
+                {/* السطر الأول: الاسم + الشارة على اليمين، والرصيد الحالي على الشمال */}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                    <h3 className="font-bold text-slate-900 text-sm truncate group-hover:text-[#14b8a6] transition-colors">
+                      {cust.name}
+                    </h3>
+                    {hasDebt ? (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 shrink-0">
+                        مدين
+                      </span>
+                    ) : hasCredit ? (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 shrink-0">
+                        دائن (دفعة مقدمة)
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 shrink-0">
+                        خالص الحساب
+                      </span>
+                    )}
                   </div>
 
-                  {/* الرصيد وزر التحصيل السريع */}
-                  <div className="flex items-center justify-between sm:justify-end gap-4 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                    <div className="text-right sm:text-left">
-                      <span className="text-[10px] text-slate-400 block">الرصيد الحالي</span>
-                      <span
-                        className={`text-base font-black ${
-                          hasDebt
-                            ? 'text-rose-600'
-                            : hasCredit
-                            ? 'text-emerald-700'
-                            : 'text-slate-700'
-                        }`}
-                      >
-                        {formatCurrency(Math.abs(cust.currentBalance))}
-                        {hasDebt && ' (عليه)'}
-                        {hasCredit && ' (له)'}
-                      </span>
-                    </div>
+                  <div className="text-left shrink-0 leading-tight">
+                    <span className="text-[10px] text-slate-400 block">الرصيد الحالي</span>
+                    <span
+                      className={`text-sm font-black ${
+                        hasDebt
+                          ? 'text-rose-600'
+                          : hasCredit
+                          ? 'text-emerald-700'
+                          : 'text-slate-700'
+                      }`}
+                    >
+                      {formatCurrency(Math.abs(cust.currentBalance))}
+                      {hasDebt && ' (عليه)'}
+                      {hasCredit && ' (له)'}
+                    </span>
+                  </div>
+                </div>
 
+                {/* السطر الثاني: رقم الهاتف والعنوان على اليمين، وزر تحصيل الصغير على الشمال */}
+                <div className="flex items-center justify-between gap-2 mt-1.5 text-[11px] text-slate-500">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
+                    {cust.phone && (
+                      <span className="flex items-center gap-1 shrink-0">
+                        <Phone className="w-3 h-3 text-slate-400" />
+                        <span dir="ltr">{cust.phone}</span>
+                      </span>
+                    )}
+                    {cust.address && <span className="truncate">{cust.address}</span>}
+                  </div>
+
+                  <div className="flex items-center gap-1.5 shrink-0">
                     {hasDebt && (
                       <Button
                         type="button"
                         variant="primary"
                         size="sm"
                         onClick={(e) => handleOpenCollect(e, cust)}
-                        className="gap-1.5 shadow-2xs"
+                        className="gap-1 py-0.5 px-2 h-6 text-[11px] shadow-2xs"
                       >
-                        <Banknote className="w-3.5 h-3.5" />
+                        <Banknote className="w-3 h-3" />
                         <span>تحصيل</span>
                       </Button>
                     )}
 
-                    <ChevronLeft className="w-5 h-5 text-slate-400 group-hover:text-[#14b8a6] transition-colors hidden sm:block" />
+                    <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-[#14b8a6] transition-colors hidden sm:block" />
                   </div>
                 </div>
               </Card>

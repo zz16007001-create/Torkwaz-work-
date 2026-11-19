@@ -56,9 +56,7 @@ export const AddPurchasePage: React.FC = () => {
 
   // صفوف المقاسات للأحذية
   const [sizeRows, setSizeRows] = useState<SizeRow[]>([
-    { size: 37, quantity: 1 },
-    { size: 38, quantity: 1 },
-    { size: 39, quantity: 1 },
+    { size: '', quantity: 1 },
   ]);
 
   // صفوف الألوان والكميات للشنط والإكسسوارات
@@ -110,7 +108,12 @@ export const AddPurchasePage: React.FC = () => {
 
   // التحكم في صفوف المقاسات للأحذية
   const addSizeRow = () => {
-    const lastSize = Number(sizeRows[sizeRows.length - 1]?.size) || 36;
+    const rawLast = sizeRows[sizeRows.length - 1]?.size;
+    if (rawLast === undefined || rawLast === null || String(rawLast).trim() === '') {
+      setSizeRows((prev) => [...prev, { size: '', quantity: 1 }]);
+      return;
+    }
+    const lastSize = Number(rawLast) || 36;
     setSizeRows((prev) => [...prev, { size: lastSize + 1, quantity: 1 }]);
   };
 
@@ -176,6 +179,13 @@ export const AddPurchasePage: React.FC = () => {
       setErrorMsg('يرجى إضافة كمية صحيحة واحدة على الأقل');
       return;
     }
+    if (
+      category === 'shoes' &&
+      sizeRows.some((r) => Number(r.quantity) > 0 && String(r.size ?? '').trim() === '')
+    ) {
+      setErrorMsg('اكتب المقاس لكل صف');
+      return;
+    }
 
     if (checkItemPriceVsCostAnomaly(sell, cost) === 'confirm') {
       const reason = sell < cost ? 'أقل من سعر التكلفة' : 'أكبر من 3 أضعاف التكلفة';
@@ -237,9 +247,7 @@ export const AddPurchasePage: React.FC = () => {
       setPurchaseCostStr('');
       setSellPriceStr('');
       setSizeRows([
-        { size: 37, quantity: 1 },
-        { size: 38, quantity: 1 },
-        { size: 39, quantity: 1 },
+        { size: '', quantity: 1 },
       ]);
       setBagRows([{ color: 'أسود', quantity: 2 }]);
     } catch (err: any) {
@@ -259,7 +267,7 @@ export const AddPurchasePage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-2">
       {/* عنوان الصفحة */}
-      <h1 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-1.5">
+      <h1 className="text-lg font-bold text-slate-900 flex items-center gap-1.5">
         <PackagePlus className="w-5 h-5 text-[#14b8a6]" />
         <span>تسجيل بضاعة جديدة</span>
       </h1>
@@ -358,7 +366,6 @@ export const AddPurchasePage: React.FC = () => {
               </label>
               <input
                 type="text"
-                placeholder="مثال: كوتشي جلد"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
@@ -455,7 +462,13 @@ export const AddPurchasePage: React.FC = () => {
                       <input
                         type="number"
                         value={row.size}
-                        onChange={(e) => updateSizeRow(idx, 'size', Number(e.target.value))}
+                        onChange={(e) =>
+                          updateSizeRow(
+                            idx,
+                            'size',
+                            e.target.value === '' ? '' : Number(e.target.value)
+                          )
+                        }
                         className="w-full h-7 bg-white border border-slate-300 rounded-md px-1 text-xs text-center font-bold text-slate-900"
                       />
                     </div>
