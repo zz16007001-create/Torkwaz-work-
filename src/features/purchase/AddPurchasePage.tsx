@@ -5,10 +5,16 @@ import { calculateProfitMargin } from '../../domain/profit';
 import { checkItemPriceVsCostAnomaly } from '../../domain/validation';
 import { createPurchase } from '../../lib/data';
 import { parseArabicNumber, round2, formatCurrency } from '../../domain/money';
-import { Card } from '../../components/ui/Card';
+import {
+  Card,
+  GreenCard,
+  GREEN_CARD_CHIP_ACTIVE_CLASS,
+  GREEN_CARD_CHIP_INACTIVE_CLASS,
+} from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Modal } from '../../components/ui/Modal';
+import { Icon3D } from '../../components/ui/Icons3D';
 import { LabelPrintModal, PrintableLabelItem } from '../items/LabelPrintModal';
 import {
   PackagePlus,
@@ -16,9 +22,6 @@ import {
   X,
   CheckCircle2,
   AlertCircle,
-  Footprints,
-  ShoppingBag,
-  Sparkles,
   Printer,
   ArrowRight,
   ChevronDown,
@@ -314,48 +317,48 @@ export const AddPurchasePage: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="space-y-2">
         {/* اختيار القسم */}
-        <Card className="p-1.5 border-brand-100">
+        <GreenCard className="p-1.5">
           <div className="grid grid-cols-3 gap-1.5">
             <button
               type="button"
               onClick={() => setCategory('shoes')}
-              className={`h-9 flex items-center justify-center gap-1.5 rounded-lg font-bold text-xs transition-all ${
+              className={`h-10 flex items-center justify-center gap-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                 category === 'shoes'
-                  ? 'bg-brand-600 text-white shadow-sm'
-                  : 'bg-brand-50/70 text-brand-800 hover:bg-brand-100'
+                  ? GREEN_CARD_CHIP_ACTIVE_CLASS
+                  : GREEN_CARD_CHIP_INACTIVE_CLASS
               }`}
             >
-              <Footprints className="w-3.5 h-3.5" />
+              <Icon3D name="shoe" size={22} />
               <span>أحذية</span>
             </button>
 
             <button
               type="button"
               onClick={() => setCategory('bags')}
-              className={`h-9 flex items-center justify-center gap-1.5 rounded-lg font-bold text-xs transition-all ${
+              className={`h-10 flex items-center justify-center gap-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                 category === 'bags'
-                  ? 'bg-brand-600 text-white shadow-sm'
-                  : 'bg-brand-50/70 text-brand-800 hover:bg-brand-100'
+                  ? GREEN_CARD_CHIP_ACTIVE_CLASS
+                  : GREEN_CARD_CHIP_INACTIVE_CLASS
               }`}
             >
-              <ShoppingBag className="w-3.5 h-3.5" />
+              <Icon3D name="bag" size={22} />
               <span>شنط</span>
             </button>
 
             <button
               type="button"
               onClick={() => setCategory('accessories')}
-              className={`h-9 flex items-center justify-center gap-1.5 rounded-lg font-bold text-xs transition-all ${
+              className={`h-10 flex items-center justify-center gap-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                 category === 'accessories'
-                  ? 'bg-brand-600 text-white shadow-sm'
-                  : 'bg-brand-50/70 text-brand-800 hover:bg-brand-100'
+                  ? GREEN_CARD_CHIP_ACTIVE_CLASS
+                  : GREEN_CARD_CHIP_INACTIVE_CLASS
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Icon3D name="ring" size={22} />
               <span>إكسسوارات</span>
             </button>
           </div>
-        </Card>
+        </GreenCard>
 
         {/* بيانات الموديل والأسعار في صف واحد */}
         <Card className="p-2.5 sm:p-3 border-brand-100 space-y-2">
@@ -596,18 +599,18 @@ export const AddPurchasePage: React.FC = () => {
                 setPaymentSource('cash');
                 setShowOtherPayments(false);
               }}
-              className="flex-1 h-9 px-3 rounded-lg border border-brand-600 bg-brand-50 text-brand-800 text-xs font-bold flex items-center justify-between transition-colors"
+              className="flex-1 h-9 px-3 rounded-lg border border-brand-800 bg-brand-800 text-white text-xs font-bold flex items-center justify-between transition-colors shadow-2xs"
             >
               <span>{paymentMethodLabels[paymentSource]}</span>
               {paymentSource !== 'cash' && (
-                <span className="text-[10px] font-medium text-brand-700">رجوع للنقدية</span>
+                <span className="text-[10px] font-medium text-accent-400">رجوع للنقدية</span>
               )}
             </button>
 
             <button
               type="button"
               onClick={() => setShowOtherPayments((prev) => !prev)}
-              className="h-9 px-2.5 rounded-lg border border-brand-200 bg-white hover:bg-brand-50 text-brand-700 text-xs font-bold flex items-center gap-1 shrink-0 transition-colors"
+              className="h-9 px-2.5 rounded-lg border border-brand-200 bg-white hover:bg-brand-50 text-brand-800 text-xs font-bold flex items-center gap-1 shrink-0 transition-colors"
             >
               <span>طرق أخرى</span>
               <ChevronDown
@@ -634,7 +637,7 @@ export const AddPurchasePage: React.FC = () => {
                   }}
                   className={`py-2 px-1.5 rounded-lg border text-[11px] font-bold text-center transition-colors ${
                     paymentSource === method.id
-                      ? 'border-brand-600 bg-brand-600 text-white'
+                      ? 'border-brand-800 bg-brand-800 text-white'
                       : 'border-brand-200 bg-white text-brand-800 hover:bg-brand-50'
                   }`}
                 >

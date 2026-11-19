@@ -17,7 +17,7 @@ import {
   calculateMismatch,
 } from '../../domain/profit';
 import { formatCurrency, parseArabicNumber, round2 } from '../../domain/money';
-import { Card } from '../../components/ui/Card';
+import { Card, GreenCard } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Spinner } from '../../components/ui/Spinner';
@@ -27,11 +27,7 @@ import {
   AlertCircle,
   Lock,
   CheckCircle2,
-  TrendingUp,
-  Receipt,
   Wallet,
-  Building,
-  HelpCircle,
   Banknote,
   CreditCard,
   Smartphone,
@@ -397,50 +393,50 @@ export const SnapshotPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-3">
       {/* رأس الصفحة */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <Camera className="w-6 h-6 text-brand-600" />
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-1.5">
+            <Camera className="w-5 h-5 text-brand-600 shrink-0" />
             <span>صورة المحل وقفل الشهر ({formatMonth(new Date())})</span>
           </h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-0.5">
+          <p className="text-[11px] text-slate-500 mt-0.5">
             تدقيق الخزائن الفعلية ومطابقة الأرباح الحقيقية وقفل الشهر المالي
           </p>
         </div>
 
         {isCurrentMonthLocked && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-brand-100 text-brand-800 self-start sm:self-auto">
-            <Lock className="w-4 h-4" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-brand-100 text-brand-800 self-start sm:self-auto">
+            <Lock className="w-3.5 h-3.5" />
             <span>الشهر الحالي مقفل رسمياً</span>
           </span>
         )}
       </div>
 
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
+        <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-brand-600" />
+        <div className="p-2.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 shrink-0 text-brand-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {/* تنبيه الميسماتش (إن وجد فرق أكبر من 50 ج.م) */}
       {isMismatchWarning && (
-        <div className="p-4 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-900 flex items-start gap-3 shadow-sm animate-pulse">
-          <AlertTriangle className="w-6 h-6 text-rose-600 shrink-0 mt-0.5" />
+        <div className="p-3 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-900 flex items-start gap-2.5 shadow-sm">
+          <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-bold text-sm sm:text-base">
+            <h3 className="font-bold text-xs sm:text-sm">
               ⚠️ في حاجة مش متسجلة، راجع المخزون والمصاريف
             </h3>
-            <p className="text-xs text-rose-700 mt-1">
+            <p className="text-[11px] text-rose-700 mt-0.5">
               الفرق بين الربح الحقيقي وربح الفواتير ({formatCurrency(Math.abs(mismatch))}) يتجاوز
               حد الأمان المسموح به ({formatCurrency(mismatchThreshold)}). تأكد من تسجيل كافة
               المصاريف أو فروق الجرد.
@@ -450,59 +446,61 @@ export const SnapshotPage: React.FC = () => {
       )}
 
       {/* كروت رأس المال والأرباح */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
         {/* رأس المال */}
-        <Card className="p-5 border-brand-600 bg-gradient-to-br from-brand-600 to-brand-700 text-white flex flex-col justify-between">
+        <GreenCard className="p-3 flex flex-col justify-between">
           <div>
-            <span className="text-xs text-brand-100 block mb-1">رأس المال الفعلي الإجمالي</span>
-            <span className="text-2xl font-black text-white">{formatCurrency(currentCapital)}</span>
-            <div className="mt-3 space-y-1 text-xs text-brand-100 border-t border-white/15 pt-2">
-              <div className="flex justify-between">
+            <span className="text-[11px] text-brand-100 block">رأس المال الفعلي الإجمالي</span>
+            <span className="text-xl sm:text-2xl font-black text-white block mt-0.5">
+              {formatCurrency(currentCapital)}
+            </span>
+            <div className="mt-2 space-y-0.5 text-xs text-brand-100 border-t border-white/15 pt-1.5">
+              <div className="flex justify-between py-0.5">
                 <span>الخزائن الفعلية:</span>
                 <span className="font-bold text-white">{formatCurrency(actualWalletsTotal)}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between py-0.5">
                 <span>قيمة المخزون:</span>
                 <span className="font-bold text-white">{formatCurrency(inventoryValue)}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between py-0.5">
                 <span>ديون العملاء:</span>
                 <span className="font-bold text-accent-400">{formatCurrency(receivables)}</span>
               </div>
             </div>
           </div>
-        </Card>
+        </GreenCard>
 
         {/* ربح الفواتير */}
-        <Card className="p-5 border-brand-100 flex flex-col justify-between">
+        <Card className="p-3 border-brand-100 flex flex-col justify-between">
           <div>
-            <span className="text-xs text-slate-500 block mb-1">ربح الفواتير للشهر</span>
-            <span className="text-2xl font-black text-brand-700">
+            <span className="text-[11px] text-slate-500 block">ربح الفواتير للشهر</span>
+            <span className="text-xl sm:text-2xl font-black text-brand-700 block mt-0.5">
               {formatCurrency(invoiceProfit)}
             </span>
-            <div className="mt-3 space-y-1 text-xs text-slate-600 border-t border-brand-100 pt-2">
-              <div className="flex justify-between">
+            <div className="mt-2 space-y-0.5 text-xs text-slate-600 border-t border-brand-100 pt-1.5">
+              <div className="flex justify-between py-0.5">
                 <span>صافي المبيعات:</span>
-                <span>{formatCurrency(totalSalesNet)}</span>
+                <span className="font-bold text-slate-800">{formatCurrency(totalSalesNet)}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between py-0.5">
                 <span>تكلفة البضاعة:</span>
-                <span>-{formatCurrency(costOfGoodsSold)}</span>
+                <span dir="ltr">-{formatCurrency(costOfGoodsSold)}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between py-0.5">
                 <span>مصاريف الشهر:</span>
-                <span>-{formatCurrency(monthExpenses)}</span>
+                <span dir="ltr">-{formatCurrency(monthExpenses)}</span>
               </div>
               {returnsValue > 0 && (
-                <div className="flex justify-between text-slate-500">
-                  <span>(المبيعات أعلاه بعد خصم مرتجعات):</span>
+                <div className="flex justify-between py-0.5 text-slate-500">
+                  <span>(بعد خصم مرتجعات):</span>
                   <span>{formatCurrency(returnsValue)}</span>
                 </div>
               )}
               {monthBadDebt > 0 && (
-                <div className="flex justify-between">
+                <div className="flex justify-between py-0.5">
                   <span>ديون معدومة:</span>
-                  <span>-{formatCurrency(monthBadDebt)}</span>
+                  <span dir="ltr">-{formatCurrency(monthBadDebt)}</span>
                 </div>
               )}
             </div>
@@ -510,32 +508,32 @@ export const SnapshotPage: React.FC = () => {
         </Card>
 
         {/* الربح الحقيقي والفرق */}
-        <Card className="p-5 border-brand-100 flex flex-col justify-between">
+        <Card className="p-3 border-brand-100 flex flex-col justify-between">
           <div>
-            <span className="text-xs text-slate-500 block mb-1">الربح الحقيقي الصافي</span>
-            <span className="text-2xl font-black text-slate-900">
+            <span className="text-[11px] text-slate-500 block">الربح الحقيقي الصافي</span>
+            <span className="text-xl sm:text-2xl font-black text-slate-900 block mt-0.5">
               {formatCurrency(realProfit)}
             </span>
 
-            <div className="mt-3 space-y-1 text-xs border-t border-brand-100 pt-2">
-              <div className="flex justify-between text-slate-600">
+            <div className="mt-2 space-y-0.5 text-xs border-t border-brand-100 pt-1.5">
+              <div className="flex justify-between py-0.5 text-slate-600">
                 <span>المسحوبات الشخصية:</span>
-                <span>{formatCurrency(monthDrawings)}</span>
+                <span className="font-bold text-slate-800">{formatCurrency(monthDrawings)}</span>
               </div>
-              <div className="flex justify-between text-slate-600">
+              <div className="flex justify-between py-0.5 text-slate-600">
                 <span>تمويل شخصي مضاف:</span>
-                <span>{formatCurrency(monthCapitalIn)}</span>
+                <span className="font-bold text-slate-800">{formatCurrency(monthCapitalIn)}</span>
               </div>
               <div
-                className={`flex justify-between font-bold pt-1 border-t border-brand-100 ${
+                className={`flex justify-between py-1 font-bold border-t border-brand-100 ${
                   isMismatchWarning ? 'text-rose-600' : 'text-brand-700'
                 }`}
               >
                 <span>فرق الربح (Mismatch):</span>
-                <span>{formatCurrency(mismatch)}</span>
+                <span dir="ltr">{formatCurrency(mismatch)}</span>
               </div>
               {!hasBaseline && (
-                <p className="text-[11px] text-slate-500 pt-1">
+                <p className="text-[11px] text-slate-500 pt-1 leading-snug">
                   لا يوجد قفل شهر سابق، فالربح الحقيقي = ربح الفواتير حالياً. بعد أول قفل شهري يبدأ حساب الفرق الحقيقي.
                 </p>
               )}
@@ -545,131 +543,97 @@ export const SnapshotPage: React.FC = () => {
       </div>
 
       {/* قسم الرصيد الفعلي في الدرج وتدقيق الخزائن */}
-      <Card className="p-6 border-brand-100 space-y-5">
+      <Card className="p-3 border-brand-100 space-y-2.5">
         <div>
-          <h2 className="text-base font-bold text-brand-800 flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-brand-600" />
+          <h2 className="text-sm font-bold text-brand-800 flex items-center gap-1.5">
+            <Wallet className="w-4 h-4 text-brand-600 shrink-0" />
             <span>الرصيد الفعلي في الدرج والخزائن</span>
           </h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-[11px] text-slate-500 mt-0.5">
             أدخل المبالغ النقدية المعدودة في الواقع لمطابقتها مع رصيد النظام وتسجيل أي فروق جرد
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* نقدية كاش */}
-          <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-100 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <Banknote className="w-4 h-4 text-brand-600" />
-                <span>خزينة المحل (كاش)</span>
-              </span>
-              <span className="text-xs text-slate-500">
-                النظام: <strong>{formatCurrency(walletBalances.cash || 0)}</strong>
-              </span>
-            </div>
-
-            <Input
-              label="الرصيد الفعلي المعدود:"
-              type="text"
-              value={actualCashStr}
-              onChange={(e) => setActualCashStr(e.target.value)}
-              disabled={isCurrentMonthLocked}
-              required
-            />
-
-            <div className="text-[11px] font-bold flex justify-between pt-1">
-              <span className="text-slate-500">الفرق:</span>
-              <span
-                className={
-                  round2(actualCash - (walletBalances.cash || 0)) === 0
-                    ? 'text-slate-600'
-                    : round2(actualCash - (walletBalances.cash || 0)) > 0
-                    ? 'text-brand-700'
-                    : 'text-rose-600'
-                }
+        <div className="divide-y divide-brand-100 rounded-xl border border-brand-100 bg-brand-50/40">
+          {[
+            {
+              key: 'cash',
+              label: 'خزينة المحل (كاش)',
+              icon: <Banknote className="w-3.5 h-3.5 text-brand-600 shrink-0" />,
+              sysVal: walletBalances.cash || 0,
+              actualNum: actualCash,
+              inputVal: actualCashStr,
+              onChange: setActualCashStr,
+            },
+            {
+              key: 'bank',
+              label: 'البنك / إنستاباي',
+              icon: <CreditCard className="w-3.5 h-3.5 text-brand-700 shrink-0" />,
+              sysVal: walletBalances.bank || 0,
+              actualNum: actualBank,
+              inputVal: actualBankStr,
+              onChange: setActualBankStr,
+            },
+            {
+              key: 'wallet',
+              label: 'فودافون كاش',
+              icon: <Smartphone className="w-3.5 h-3.5 text-rose-600 shrink-0" />,
+              sysVal: walletBalances.wallet || 0,
+              actualNum: actualWallet,
+              inputVal: actualWalletStr,
+              onChange: setActualWalletStr,
+            },
+          ].map((w) => {
+            const diff = round2(w.actualNum - w.sysVal);
+            return (
+              <div
+                key={w.key}
+                className="px-2.5 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3"
               >
-                {round2(actualCash - (walletBalances.cash || 0)) > 0 ? '+' : ''}
-                {formatCurrency(round2(actualCash - (walletBalances.cash || 0)))}
-              </span>
-            </div>
-          </div>
+                <div className="flex items-center justify-between sm:justify-start gap-2 sm:flex-1 min-w-0">
+                  <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5 truncate">
+                    {w.icon}
+                    <span>{w.label}</span>
+                  </span>
+                  <span className="text-[11px] text-slate-500 shrink-0">
+                    النظام: <strong className="text-slate-700">{formatCurrency(w.sysVal)}</strong>
+                  </span>
+                </div>
 
-          {/* بنك إنستاباي */}
-          <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-100 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <CreditCard className="w-4 h-4 text-brand-700" />
-                <span>البنك / إنستاباي</span>
-              </span>
-              <span className="text-xs text-slate-500">
-                النظام: <strong>{formatCurrency(walletBalances.bank || 0)}</strong>
-              </span>
-            </div>
+                <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] text-slate-500">الفعلي:</span>
+                    <input
+                      type="text"
+                      dir="ltr"
+                      value={w.inputVal}
+                      onChange={(e) => w.onChange(e.target.value)}
+                      disabled={isCurrentMonthLocked}
+                      required
+                      className="w-24 sm:w-28 h-8 px-2 rounded-lg border border-brand-200 bg-white text-xs font-bold text-slate-900 text-center focus:outline-none focus:border-brand-600 disabled:opacity-60"
+                    />
+                  </div>
 
-            <Input
-              label="الرصيد الفعلي في الحساب:"
-              type="text"
-              value={actualBankStr}
-              onChange={(e) => setActualBankStr(e.target.value)}
-              disabled={isCurrentMonthLocked}
-              required
-            />
-
-            <div className="text-[11px] font-bold flex justify-between pt-1">
-              <span className="text-slate-500">الفرق:</span>
-              <span
-                className={
-                  round2(actualBank - (walletBalances.bank || 0)) === 0
-                    ? 'text-slate-600'
-                    : round2(actualBank - (walletBalances.bank || 0)) > 0
-                    ? 'text-brand-700'
-                    : 'text-rose-600'
-                }
-              >
-                {round2(actualBank - (walletBalances.bank || 0)) > 0 ? '+' : ''}
-                {formatCurrency(round2(actualBank - (walletBalances.bank || 0)))}
-              </span>
-            </div>
-          </div>
-
-          {/* فودافون كاش */}
-          <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-100 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <Smartphone className="w-4 h-4 text-rose-600" />
-                <span>فودافون كاش</span>
-              </span>
-              <span className="text-xs text-slate-500">
-                النظام: <strong>{formatCurrency(walletBalances.wallet || 0)}</strong>
-              </span>
-            </div>
-
-            <Input
-              label="الرصيد الفعلي في المحفظة:"
-              type="text"
-              value={actualWalletStr}
-              onChange={(e) => setActualWalletStr(e.target.value)}
-              disabled={isCurrentMonthLocked}
-              required
-            />
-
-            <div className="text-[11px] font-bold flex justify-between pt-1">
-              <span className="text-slate-500">الفرق:</span>
-              <span
-                className={
-                  round2(actualWallet - (walletBalances.wallet || 0)) === 0
-                    ? 'text-slate-600'
-                    : round2(actualWallet - (walletBalances.wallet || 0)) > 0
-                    ? 'text-brand-700'
-                    : 'text-rose-600'
-                }
-              >
-                {round2(actualWallet - (walletBalances.wallet || 0)) > 0 ? '+' : ''}
-                {formatCurrency(round2(actualWallet - (walletBalances.wallet || 0)))}
-              </span>
-            </div>
-          </div>
+                  <div className="text-[11px] font-bold flex items-center gap-1 min-w-[82px] justify-end">
+                    <span className="text-slate-500">الفرق:</span>
+                    <span
+                      dir="ltr"
+                      className={
+                        diff === 0
+                          ? 'text-slate-600'
+                          : diff > 0
+                          ? 'text-brand-700'
+                          : 'text-rose-600'
+                      }
+                    >
+                      {diff > 0 ? '+' : ''}
+                      {formatCurrency(diff)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         <Input
@@ -681,23 +645,21 @@ export const SnapshotPage: React.FC = () => {
         />
 
         {/* زر قفل الشهر */}
-        <div className="pt-2">
-          <Button
-            type="button"
-            variant="accent"
-            onClick={handleCloseMonth}
-            disabled={isCurrentMonthLocked || isSubmitting || pendingCount > 0}
-            isLoading={isSubmitting}
-            className="w-full py-4 text-base font-bold shadow-sm gap-2"
-          >
-            <Lock className="w-5 h-5" />
-            <span>
-              {isCurrentMonthLocked
-                ? `الشهر مقفل (${currentMonthKey})`
-                : `قفل حسابات شهر ${formatMonth(new Date())}`}
-            </span>
-          </Button>
-        </div>
+        <Button
+          type="button"
+          variant="accent"
+          onClick={handleCloseMonth}
+          disabled={isCurrentMonthLocked || isSubmitting || pendingCount > 0}
+          isLoading={isSubmitting}
+          className="w-full py-2.5 text-sm font-bold shadow-sm gap-2"
+        >
+          <Lock className="w-4 h-4" />
+          <span>
+            {isCurrentMonthLocked
+              ? `الشهر مقفل (${currentMonthKey})`
+              : `قفل حسابات شهر ${formatMonth(new Date())}`}
+          </span>
+        </Button>
       </Card>
     </div>
   );

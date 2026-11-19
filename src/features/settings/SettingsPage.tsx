@@ -3,6 +3,7 @@ import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { DEFAULT_SETTINGS, StoreSettings } from '../../lib/settings';
 import { Card } from '../../components/ui/Card';
+import { CollapsibleSection } from '../../components/ui/CollapsibleSection';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Modal } from '../../components/ui/Modal';
@@ -230,15 +231,15 @@ export const SettingsPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+    <div className="max-w-4xl mx-auto space-y-2.5 pb-8">
       {/* رأس الصفحة وزر الحفظ */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <SettingsIcon className="w-6 h-6 text-brand-600" />
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-1.5">
+            <SettingsIcon className="w-5 h-5 text-brand-600 shrink-0" />
             <span>إعدادات النظام</span>
           </h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-0.5">
+          <p className="text-[11px] text-slate-500 mt-0.5 truncate">
             تخصيص بيانات المتجر، الخزائن، الحسابات، وقواعد التنبيه
           </p>
         </div>
@@ -247,35 +248,34 @@ export const SettingsPage: React.FC = () => {
           onClick={handleSaveSettings}
           isLoading={isSaving}
           variant="primary"
-          className="shadow-sm gap-2 self-start sm:self-auto py-3 px-6"
+          size="sm"
+          className="shadow-sm gap-1.5 shrink-0 px-3"
         >
-          <Save className="w-4 h-4" />
+          <Save className="w-3.5 h-3.5" />
           <span>حفظ الإعدادات</span>
         </Button>
       </div>
 
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
+        <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-brand-600" />
+        <div className="p-2.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 shrink-0 text-brand-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {/* 1. بيانات المحل */}
-      <Card className="p-5 border-brand-100 space-y-4">
-        <div className="flex items-center gap-2 border-b border-brand-100 pb-2">
-          <Store className="w-5 h-5 text-brand-600" />
-          <h2 className="text-sm font-bold text-brand-800">بيانات المحل الأساسية</h2>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <CollapsibleSection
+        title="بيانات المحل الأساسية"
+        icon={<Store className="w-4 h-4 text-brand-600" />}
+      >
+        <div className="grid grid-cols-2 gap-2.5">
           <Input
             label="اسم المحل / المتجر"
             value={storeName}
@@ -289,7 +289,7 @@ export const SettingsPage: React.FC = () => {
             onChange={(e) => setStorePhone(e.target.value)}
           />
 
-          <div className="sm:col-span-2">
+          <div className="col-span-2">
             <Input
               label="العنوان / الفرع"
               value={storeAddress}
@@ -297,49 +297,35 @@ export const SettingsPage: React.FC = () => {
             />
           </div>
         </div>
-      </Card>
+      </CollapsibleSection>
 
       {/* 2. الخزائن */}
-      <Card className="p-5 border-brand-100 space-y-4">
-        <div className="flex items-center justify-between border-b border-brand-100 pb-2">
-          <div className="flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-brand-600" />
-            <h2 className="text-sm font-bold text-brand-800">الخزائن وطرق الدفع</h2>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setIsAddWalletModalOpen(true)}
-            className="gap-1.5"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>إضافة خزينة جديدة</span>
-          </Button>
-        </div>
-
-        <div className="space-y-2">
+      <CollapsibleSection
+        title="الخزائن وطرق الدفع"
+        icon={<Wallet className="w-4 h-4 text-brand-600" />}
+        bodyClassName="space-y-2.5"
+      >
+        <div className="space-y-1.5">
           {wallets.map((w) => (
             <div
               key={w.id}
-              className="flex items-center justify-between p-3 rounded-xl bg-brand-50/60 border border-brand-100 text-sm"
+              className="flex items-center justify-between px-2.5 py-2 rounded-xl bg-brand-50/60 border border-brand-100 text-xs"
             >
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-800">{w.name}</span>
-                <span className="font-mono text-xs text-slate-400">({w.id})</span>
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="font-bold text-slate-800 truncate">{w.name}</span>
+                <span className="font-mono text-[10px] text-slate-400 shrink-0">({w.id})</span>
               </div>
 
               {/* مفتاح Toggle لتفعيل/تعطيل الخزينة */}
               <button
                 type="button"
                 onClick={() => toggleWallet(w.id)}
-                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                   w.enabled ? 'bg-brand-600' : 'bg-slate-300'
                 }`}
               >
                 <span
-                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
                     w.enabled ? '-translate-x-5' : 'translate-x-0'
                   }`}
                 />
@@ -347,187 +333,169 @@ export const SettingsPage: React.FC = () => {
             </div>
           ))}
         </div>
-      </Card>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setIsAddWalletModalOpen(true)}
+          className="gap-1 text-xs"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          <span>إضافة خزينة جديدة</span>
+        </Button>
+      </CollapsibleSection>
 
       {/* 3. إعدادات عامة وتنبيهات الأمان */}
-      <Card className="p-5 border-brand-100 space-y-4">
-        <div className="flex items-center gap-2 border-b border-brand-100 pb-2">
-          <Sliders className="w-5 h-5 text-brand-600" />
-          <h2 className="text-sm font-bold text-brand-800">حدود التنبيهات والأمان</h2>
-        </div>
+      <CollapsibleSection
+        title="حدود التنبيهات والأمان"
+        icon={<Sliders className="w-4 h-4 text-brand-600" />}
+      >
+        <div className="grid grid-cols-2 gap-2.5">
+          <Input
+            label="حد تنبيه نقص الرصيد"
+            type="number"
+            min="1"
+            value={lowStockDefault}
+            onChange={(e) => setLowStockDefault(Number(e.target.value))}
+            hint="يظهر بالأحمر تحته"
+          />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <Input
-              label="حد التنبيه الافتراضي لرصيد الصنف بالمخزن (lowStockDefault)"
-              type="number"
-              min="1"
-              value={lowStockDefault}
-              onChange={(e) => setLowStockDefault(Number(e.target.value))}
-              hint="الأصناف التي يقل رصيدها عن هذا الرقم تظهر باللون الأحمر"
-            />
-          </div>
-
-          <div>
-            <Input
-              label="حد تنبيه فرق الربح المسموح به (mismatchThreshold)"
-              type="number"
-              min="0"
-              value={mismatchThreshold}
-              onChange={(e) => setMismatchThreshold(Number(e.target.value))}
-              hint="القيمة الافتراضية 50 ج.م؛ عند تجاوز الفرق يظهر تنبيه الميسماتش"
-            />
-          </div>
+          <Input
+            label="حد فرق الربح المسموح"
+            type="number"
+            min="0"
+            value={mismatchThreshold}
+            onChange={(e) => setMismatchThreshold(Number(e.target.value))}
+            hint="الافتراضي 50 ج.م"
+          />
         </div>
-      </Card>
+      </CollapsibleSection>
 
       {/* 4. الالتزامات (Liabilities) */}
-      <Card className="p-5 border-brand-100 space-y-4">
-        <div className="flex items-center justify-between border-b border-brand-100 pb-2">
-          <div className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-brand-600" />
-            <h2 className="text-sm font-bold text-brand-800">الالتزامات والديون على المحل</h2>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={addLiability}
-            className="gap-1.5"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>إضافة التزام</span>
-          </Button>
-        </div>
-
+      <CollapsibleSection
+        title="الالتزامات والديون على المحل"
+        icon={<DollarSign className="w-4 h-4 text-brand-600" />}
+        bodyClassName="space-y-2.5"
+      >
         {liabilities.length === 0 ? (
-          <p className="text-xs text-slate-400 py-3 text-center">
+          <p className="text-xs text-slate-400 py-2 text-center">
             لا توجد التزامات مسجلة على المحل حالياً.
           </p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {liabilities.map((item) => (
-              <div key={item.id} className="flex items-center gap-3">
+              <div key={item.id} className="flex items-center gap-2">
                 <input
                   type="text"
-                  placeholder="اسم الالتزام (مثال: مستحق لمورد أو قسط)"
+                  placeholder="اسم الالتزام (مثال: لمورد أو قسط)"
                   value={item.name}
                   onChange={(e) => updateLiability(item.id, 'name', e.target.value)}
-                  className="flex-1 bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-brand-600"
+                  className="flex-1 min-w-0 bg-brand-50/70 focus:bg-white border border-brand-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-brand-600"
                 />
-                <div className="w-36">
+                <div className="w-24 sm:w-32 shrink-0">
                   <input
                     type="number"
                     min="0"
-                    placeholder="المبلغ (ج.م)"
+                    dir="ltr"
+                    placeholder="المبلغ"
                     value={item.amount || ''}
                     onChange={(e) =>
                       updateLiability(item.id, 'amount', Number(e.target.value) || 0)
                     }
-                    className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
+                    className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-900 text-center focus:outline-none focus:border-brand-600"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={() => removeLiability(item.id)}
-                  className="p-2 text-slate-400 hover:text-rose-600 rounded-lg transition-colors"
+                  className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors shrink-0"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
             ))}
           </div>
         )}
-      </Card>
 
-      {/* 5. حروف الألوان */}
-      <Card className="p-5 border-brand-100 space-y-4">
-        <div className="flex items-center justify-between border-b border-brand-100 pb-2">
-          <div className="flex items-center gap-2">
-            <Palette className="w-5 h-5 text-brand-600" />
-            <h2 className="text-sm font-bold text-brand-800">حروف ورموز الألوان التلقائية</h2>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setIsAddColorModalOpen(true)}
-            className="gap-1.5"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>لون جديد</span>
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-          {Object.entries(colorLetters).map(([name, letter]) => (
-            <div
-              key={name}
-              className="p-2.5 rounded-xl bg-brand-50/60 border border-brand-100 flex items-center justify-between gap-2"
-            >
-              <span className="text-xs font-bold text-slate-800">{name}</span>
-              <input
-                type="text"
-                maxLength={4}
-                value={letter}
-                onChange={(e) => updateColorLetter(name, e.target.value)}
-                className="w-12 text-center font-mono font-bold bg-white border border-brand-200 rounded-lg px-1 py-1 text-xs uppercase focus:outline-none focus:border-brand-600"
-              />
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      {/* 6. الشهر المقفول حالياً (Read-only) */}
-      <Card className="p-5 border-brand-100 bg-brand-50/60 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center">
-            <Lock className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-xs text-slate-500 font-bold block">
-              حالة قفل الفترات المحاسبية (عرض فقط)
-            </span>
-            <span className="text-sm font-extrabold text-brand-900">
-              الشهر المقفول حالياً: {lockedThroughMonth}
-            </span>
-          </div>
-        </div>
-        <span className="text-[11px] font-semibold text-brand-700 bg-white border border-brand-200 px-3 py-1 rounded-full">
-          مقفل عبر شاشة صورة المحل
-        </span>
-      </Card>
-
-      {/* رابط النسخ الاحتياطي وبداية جديدة */}
-      <Card className="p-5 border-brand-200 bg-brand-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h3 className="font-bold text-brand-900 text-sm">النسخ الاحتياطي وبداية جديدة</h3>
-          <p className="text-xs text-brand-700 mt-0.5">
-            تصدير واستيراد ملفات JSON لقاعدة البيانات وتأسيس الأرصدة الافتتاحية
-          </p>
-        </div>
         <Button
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => window.location.hash = '#/backup'}
-          className="bg-white text-brand-700 border-brand-600 hover:bg-brand-100 font-bold"
+          onClick={addLiability}
+          className="gap-1 text-xs"
         >
-          الانتقال للنسخ الاحتياطي
+          <Plus className="w-3.5 h-3.5" />
+          <span>إضافة التزام</span>
         </Button>
+      </CollapsibleSection>
+
+      {/* 5. حروف الألوان */}
+      <CollapsibleSection
+        title="حروف ورموز الألوان التلقائية"
+        icon={<Palette className="w-4 h-4 text-brand-600" />}
+        bodyClassName="space-y-2.5"
+      >
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {Object.entries(colorLetters).map(([name, letter]) => (
+            <div
+              key={name}
+              className="p-2 rounded-xl bg-brand-50/60 border border-brand-100 flex items-center justify-between gap-1.5"
+            >
+              <span className="text-xs font-bold text-slate-800 truncate">{name}</span>
+              <input
+                type="text"
+                maxLength={4}
+                dir="ltr"
+                value={letter}
+                onChange={(e) => updateColorLetter(name, e.target.value)}
+                className="w-11 text-center font-mono font-bold bg-white border border-brand-200 rounded-lg px-1 py-1 text-xs uppercase focus:outline-none focus:border-brand-600 shrink-0"
+              />
+            </div>
+          ))}
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setIsAddColorModalOpen(true)}
+          className="gap-1 text-xs"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          <span>لون جديد</span>
+        </Button>
+      </CollapsibleSection>
+
+      {/* 6. الشهر المقفول حالياً (Read-only) */}
+      <Card className="p-3 border-brand-100 bg-brand-50/60 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
+            <Lock className="w-4 h-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] text-slate-500 font-bold block">
+              حالة قفل الفترات المحاسبية (عرض فقط)
+            </span>
+            <span className="text-xs font-extrabold text-brand-900 truncate block">
+              الشهر المقفول حالياً: {lockedThroughMonth}
+            </span>
+          </div>
+        </div>
+        <span className="text-[10px] font-semibold text-brand-700 bg-white border border-brand-200 px-2.5 py-0.5 rounded-full shrink-0">
+          عبر صورة المحل
+        </span>
       </Card>
 
       {/* زر الحفظ السفلي */}
-      <div className="pt-2">
+      <div className="pt-1">
         <Button
           onClick={handleSaveSettings}
           isLoading={isSaving}
           variant="accent"
-          className="w-full py-4 text-base font-bold shadow-sm gap-2"
+          className="w-full py-3 text-sm font-bold shadow-sm gap-2"
         >
-          <Save className="w-5 h-5" />
+          <Save className="w-4 h-4" />
           <span>حفظ وتطبيق كافة الإعدادات</span>
         </Button>
       </div>

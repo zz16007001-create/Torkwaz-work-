@@ -10,7 +10,7 @@ import {
   calculateCustomerCredits,
 } from '../../domain/capital';
 import { formatCurrency, round2 } from '../../domain/money';
-import { Card } from '../../components/ui/Card';
+import { Card, GreenCard } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Spinner } from '../../components/ui/Spinner';
 import { Icon3D } from '../../components/ui/Icons3D';
@@ -262,7 +262,7 @@ export const DashboardPage: React.FC = () => {
       {/* شبكة الكروت الأساسية */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* كارت رأس المال المدمج */}
-        <Card className="col-span-2 p-5 border-brand-700 bg-gradient-to-br from-brand-600 to-brand-700 text-white flex flex-col justify-between shadow-sm print:bg-white print:text-slate-900 print:border-slate-300">
+        <GreenCard className="col-span-2 p-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs text-brand-100 font-medium print:text-slate-600">
@@ -286,49 +286,49 @@ export const DashboardPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowWalletDetails((prev) => !prev)}
-              className="text-right rounded-xl bg-white/10 p-2 hover:bg-white/15 transition-colors cursor-pointer"
+              className="text-right rounded-xl bg-white/95 p-2 hover:bg-white transition-colors cursor-pointer shadow-2xs print:border print:border-slate-300"
             >
-              <span className="text-brand-100 flex items-center gap-1 text-[11px] print:text-slate-600">
+              <span className="text-brand-800 font-semibold flex items-center gap-1 text-[11px] print:text-slate-600">
                 <Icon3D name="wallets" size={20} className="print:hidden" />
                 <span>الخزائن</span>
                 {showWalletDetails ? (
-                  <ChevronUp className="w-3.5 h-3.5 text-accent-400 shrink-0" />
+                  <ChevronUp className="w-3.5 h-3.5 text-brand-700 shrink-0" />
                 ) : (
-                  <ChevronDown className="w-3.5 h-3.5 text-brand-100 shrink-0" />
+                  <ChevronDown className="w-3.5 h-3.5 text-brand-600 shrink-0" />
                 )}
               </span>
-              <span className="font-bold text-white text-sm block mt-0.5 print:text-slate-900">
+              <span className="font-extrabold text-brand-800 text-sm block mt-0.5 print:text-slate-900">
                 {formatCurrency(totalWallets)}
               </span>
             </button>
 
-            <div className="rounded-xl bg-white/10 p-2">
-              <span className="text-brand-100 flex items-center gap-1 text-[11px] print:text-slate-600">
+            <div className="rounded-xl bg-white/95 p-2 shadow-2xs print:border print:border-slate-300">
+              <span className="text-brand-800 font-semibold flex items-center gap-1 text-[11px] print:text-slate-600">
                 <Icon3D name="inventory" size={20} className="print:hidden" />
                 <span>البضاعة</span>
               </span>
-              <span className="font-bold text-white text-sm block mt-0.5 print:text-slate-900">
+              <span className="font-extrabold text-brand-800 text-sm block mt-0.5 print:text-slate-900">
                 {formatCurrency(inventoryValue)}
               </span>
             </div>
 
-            <div className="rounded-xl bg-white/10 p-2">
-              <span className="text-brand-100 flex items-center gap-1 text-[11px] print:text-slate-600">
+            <div className="rounded-xl bg-white/95 p-2 shadow-2xs print:border print:border-slate-300">
+              <span className="text-brand-800 font-semibold flex items-center gap-1 text-[11px] print:text-slate-600">
                 <Icon3D name="receivables" size={20} className="print:hidden" />
                 <span>ديون لنا</span>
               </span>
-              <span className="font-bold text-accent-400 text-sm block mt-0.5 print:text-slate-900">
+              <span className="font-extrabold text-accent-700 text-sm block mt-0.5 print:text-slate-900">
                 {formatCurrency(receivables)}
               </span>
             </div>
 
             {customerCredits > 0 && (
-              <div className="rounded-xl bg-white/10 p-2">
-                <span className="text-brand-100 flex items-center gap-1 text-[11px] print:text-slate-600">
+              <div className="rounded-xl bg-white/95 p-2 shadow-2xs print:border print:border-slate-300">
+                <span className="text-brand-800 font-semibold flex items-center gap-1 text-[11px] print:text-slate-600">
                   <Icon3D name="credit" size={20} className="print:hidden" />
                   <span>فلوس عملاء عندنا</span>
                 </span>
-                <span className="font-bold text-rose-200 text-sm block mt-0.5 print:text-slate-900">
+                <span className="font-extrabold text-rose-600 text-sm block mt-0.5 print:text-slate-900">
                   {formatCurrency(customerCredits)}
                 </span>
               </div>
@@ -369,7 +369,7 @@ export const DashboardPage: React.FC = () => {
               </div>
             </div>
           )}
-        </Card>
+        </GreenCard>
 
         {/* كارت مبيعات اليوم */}
         <Card className="p-4 sm:p-5 bg-accent-500 border-accent-600 text-slate-900 flex flex-col justify-between hover:shadow-md transition-shadow print:bg-white print:border-slate-300">

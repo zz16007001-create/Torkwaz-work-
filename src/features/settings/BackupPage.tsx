@@ -3,7 +3,8 @@ import { exportBackup, importBackup, createOpening } from '../../lib/data';
 import { getPendingCount } from '../../lib/pending';
 import { formatCurrency, parseArabicNumber, round2 } from '../../domain/money';
 import { getCairoDate, getDayKey } from '../../domain/dates';
-import { Card } from '../../components/ui/Card';
+import { GreenCard } from '../../components/ui/Card';
+import { CollapsibleSection } from '../../components/ui/CollapsibleSection';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import {
@@ -176,120 +177,123 @@ export const BackupPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+    <div className="max-w-4xl mx-auto space-y-2.5 pb-8">
       {/* رأس الصفحة */}
       <div>
-        <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <Database className="w-6 h-6 text-brand-600" />
+        <h1 className="text-lg font-bold text-slate-900 flex items-center gap-1.5">
+          <Database className="w-5 h-5 text-brand-600 shrink-0" />
           <span>النسخ الاحتياطي وبداية جديدة</span>
         </h1>
-        <p className="text-xs md:text-sm text-slate-500 mt-0.5">
+        <p className="text-[11px] text-slate-500 mt-0.5 truncate">
           حفظ وتصدير بياناتك محلياً بصيغة JSON، أو إعادة تأسيس الأرصدة الافتتاحية للمحل
         </p>
       </div>
 
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
+        <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-brand-600" />
+        <div className="p-2.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 shrink-0 text-brand-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {/* 1. قسم النسخ الاحتياطي (تصدير واستيراد) */}
-      <Card className="p-6 border-brand-100 space-y-5">
-        <div className="flex items-center gap-2 border-b border-brand-100 pb-3">
-          <ShieldCheck className="w-5 h-5 text-brand-600" />
-          <div>
-            <h2 className="text-base font-bold text-brand-800">النسخ الاحتياطي لبيانات النظام</h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              احتفظ بنسخة من كافة الفواتير، الأصناف، العملاء، والخزائن على جهازك بأمان
-            </p>
+      <CollapsibleSection
+        title="النسخ الاحتياطي لبيانات النظام"
+        subtitle="احتفظ بنسخة من الفواتير والأصناف والعملاء والخزائن على جهازك"
+        icon={<ShieldCheck className="w-4 h-4 text-brand-600" />}
+        bodyClassName="space-y-2"
+      >
+        {/* تصدير نسخة */}
+        <CollapsibleSection
+          variant="sub"
+          title="تصدير نسخة احتياطية كاملة"
+          subtitle="تحميل ملف JSON كامل يحتوي على كل السجلات"
+          icon={<Download className="w-3.5 h-3.5 text-brand-600" />}
+          bodyClassName="space-y-2.5"
+        >
+          <p className="text-xs text-slate-600 leading-relaxed">
+            تحميل ملف JSON كامل يحتوي على كل السجلات المحاسبية والمخزون حتى اللحظة.
+          </p>
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
+            onClick={handleExportBackup}
+            isLoading={isExporting}
+            className="w-full gap-1.5 font-bold"
+          >
+            <Download className="w-4 h-4" />
+            <span>تصدير وتحميل الملف</span>
+          </Button>
+        </CollapsibleSection>
+
+        {/* استيراد نسخة */}
+        <CollapsibleSection
+          variant="sub"
+          title="استيراد واستعادة نسخة احتياطية"
+          subtitle="رفع ملف JSON سابق لاسترجاع البيانات"
+          icon={<Upload className="w-3.5 h-3.5 text-rose-600" />}
+          bodyClassName="space-y-2.5"
+        >
+          <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-[11px] flex items-start gap-2">
+            <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+            <span>
+              تحذير هام: الاستعادة تمسح كافة البيانات الحالية وتستبدلها بملف النسخة الاحتياطية. تأكد من استقرار الإنترنت وتصدير نسخة حديثة أولاً.
+            </span>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* تصدير نسخة */}
-          <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-100 flex flex-col justify-between space-y-3">
-            <div>
-              <span className="font-bold text-slate-800 text-sm block mb-1">
-                تصدير نسخة احتياطية كاملة
-              </span>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                تحميل ملف JSON كامل يحتوي على كل السجلات المحاسبية والمخزون حتى اللحظة.
-              </p>
-            </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept=".json"
+            className="hidden"
+          />
 
-            <Button
-              type="button"
-              variant="primary"
-              onClick={handleExportBackup}
-              isLoading={isExporting}
-              className="w-full gap-2 font-bold shadow-2xs"
-            >
-              <Download className="w-4 h-4" />
-              <span>تصدير وتحميل الملف</span>
-            </Button>
-          </div>
-
-          {/* استيراد نسخة */}
-          <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-100 flex flex-col justify-between space-y-3">
-            <div>
-              <span className="font-bold text-slate-800 text-sm block mb-1">
-                استيراد واستعادة نسخة احتياطية
-              </span>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                رفع ملف JSON تم تصديره سابقاً لاسترجاع كافة البيانات واستبدال السجلات.
-              </p>
-            </div>
-
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              accept=".json"
-              className="hidden"
-            />
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => fileInputRef.current?.click()}
-              isLoading={isImporting}
-              className="w-full gap-2 font-bold"
-            >
-              <Upload className="w-4 h-4 text-brand-600" />
-              <span>اختيار ملف والاستيراد</span>
-            </Button>
-          </div>
-        </div>
-      </Card>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            isLoading={isImporting}
+            className="w-full gap-1.5 font-bold"
+          >
+            <Upload className="w-4 h-4 text-brand-600" />
+            <span>اختيار ملف والاستيراد</span>
+          </Button>
+        </CollapsibleSection>
+      </CollapsibleSection>
 
       {/* 2. قسم بداية جديدة (إعادة تأسيس) */}
-      <Card className="p-6 border-brand-100 space-y-5">
-        <div className="flex items-center gap-2 border-b border-brand-100 pb-3">
-          <RefreshCw className="w-5 h-5 text-brand-600" />
-          <div>
-            <h2 className="text-base font-bold text-brand-800">بداية جديدة (إعادة تأسيس الأرصدة)</h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              تهيئة الأرصدة الافتتاحية للمحل للبدء برأس مال تشغيلي جديد ومضبوط
-            </p>
-          </div>
-        </div>
-
-        <form onSubmit={handleCreateOpening} className="space-y-5">
-          {/* أرصدة الخزائن الافتتاحية */}
-          <div>
-            <span className="text-xs font-bold text-slate-700 block mb-2">
-              الأرصدة النقدية الافتتاحية في الخزائن:
+      <CollapsibleSection
+        title="بداية جديدة (إعادة تأسيس الأرصدة)"
+        subtitle="تهيئة الأرصدة الافتتاحية للمحل للبدء برأس مال تشغيلي مضبوط"
+        icon={<RefreshCw className="w-4 h-4 text-brand-600" />}
+      >
+        <form onSubmit={handleCreateOpening} className="space-y-2.5">
+          {/* تحذير البداية الجديدة ظاهر عند فتح القسم */}
+          <div className="p-2.5 rounded-lg bg-accent-50 border border-accent-400 text-accent-700 text-[11px] flex items-start gap-2">
+            <AlertTriangle className="w-4 h-4 text-accent-600 shrink-0 mt-0.5" />
+            <span>
+              تنبيه: البداية الجديدة تُثبّت أرصدة الخزائن الافتتاحية ورأس المال الأساسي. لإدخال الأصناف استخدم شاشة الشراء بالدفع «من الجيب»، وللعملاء شاشة العملاء.
             </span>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          </div>
+
+          {/* أرصدة الخزائن الافتتاحية */}
+          <CollapsibleSection
+            variant="sub"
+            title="الأرصدة النقدية الافتتاحية في الخزائن"
+            subtitle="كاش المحل، إنستاباي، وفودافون كاش"
+            icon={<Banknote className="w-3.5 h-3.5 text-brand-600" />}
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <div>
                 <label className="text-[11px] font-medium text-slate-600 mb-1 flex items-center gap-1">
                   <Banknote className="w-3.5 h-3.5 text-brand-600" />
@@ -297,10 +301,11 @@ export const BackupPage: React.FC = () => {
                 </label>
                 <input
                   type="text"
+                  dir="ltr"
                   placeholder="0.00"
                   value={openCash}
                   onChange={(e) => setOpenCash(e.target.value)}
-                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
+                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                 />
               </div>
 
@@ -311,10 +316,11 @@ export const BackupPage: React.FC = () => {
                 </label>
                 <input
                   type="text"
+                  dir="ltr"
                   placeholder="0.00"
                   value={openBank}
                   onChange={(e) => setOpenBank(e.target.value)}
-                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
+                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                 />
               </div>
 
@@ -325,94 +331,106 @@ export const BackupPage: React.FC = () => {
                 </label>
                 <input
                   type="text"
+                  dir="ltr"
                   placeholder="0.00"
                   value={openWallet}
                   onChange={(e) => setOpenWallet(e.target.value)}
-                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
+                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                 />
               </div>
             </div>
-          </div>
+          </CollapsibleSection>
 
           {/* المخزون والديون والالتزامات */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-brand-100">
-            <div>
-              <label className="text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                <Boxes className="w-3.5 h-3.5 text-brand-600" />
-                <span>قيمة المخزون الحالي (ج.م) — للعلم فقط، أضف الأصناف من شاشة الشراء بالدفع «من الجيب»:</span>
-              </label>
-              <input
-                type="text"
-                placeholder="0.00"
-                value={openInventoryVal}
-                onChange={(e) => setOpenInventoryVal(e.target.value)}
-                className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
-              />
+          <CollapsibleSection
+            variant="sub"
+            title="المخزون والديون والالتزامات والملاحظات"
+            subtitle="تقدير قيمة البضاعة والمديونيات والملاحظات"
+            icon={<Boxes className="w-3.5 h-3.5 text-brand-600" />}
+            bodyClassName="space-y-2.5"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div>
+                <label className="text-[11px] font-bold text-slate-700 mb-1 flex items-center gap-1">
+                  <Boxes className="w-3.5 h-3.5 text-brand-600 shrink-0" />
+                  <span>قيمة المخزون الحالي (للعلم)</span>
+                </label>
+                <input
+                  type="text"
+                  dir="ltr"
+                  placeholder="0.00"
+                  value={openInventoryVal}
+                  onChange={(e) => setOpenInventoryVal(e.target.value)}
+                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-brand-600"
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] font-bold text-slate-700 mb-1 flex items-center gap-1">
+                  <Users className="w-3.5 h-3.5 text-accent-600 shrink-0" />
+                  <span>ديون العملاء (للعلم)</span>
+                </label>
+                <input
+                  type="text"
+                  dir="ltr"
+                  placeholder="0.00"
+                  value={openReceivables}
+                  onChange={(e) => setOpenReceivables(e.target.value)}
+                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-brand-600"
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] font-bold text-slate-700 mb-1 flex items-center gap-1">
+                  <Building className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                  <span>الالتزامات على المحل (ج.م)</span>
+                </label>
+                <input
+                  type="text"
+                  dir="ltr"
+                  placeholder="0.00"
+                  value={openLiabilities}
+                  onChange={(e) => setOpenLiabilities(e.target.value)}
+                  className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-brand-600"
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                <Users className="w-3.5 h-3.5 text-accent-600" />
-                <span>ديون العملاء المستحقة (ج.م) — للعلم فقط، سجّل كل عميل من شاشة العملاء:</span>
-              </label>
-              <input
-                type="text"
-                placeholder="0.00"
-                value={openReceivables}
-                onChange={(e) => setOpenReceivables(e.target.value)}
-                className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                <Building className="w-3.5 h-3.5 text-rose-600" />
-                <span>الالتزامات على المحل (ج.م):</span>
-              </label>
-              <input
-                type="text"
-                placeholder="0.00"
-                value={openLiabilities}
-                onChange={(e) => setOpenLiabilities(e.target.value)}
-                className="w-full bg-brand-50/70 focus:bg-white border border-brand-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-brand-600"
-              />
-            </div>
-          </div>
-
-          <Input
-            label="ملاحظات التأسيس (اختياري)"
-            placeholder="مثال: جرد بداية العام الجديد 2026..."
-            value={openNotes}
-            onChange={(e) => setOpenNotes(e.target.value)}
-          />
+            <Input
+              label="ملاحظات التأسيس (اختياري)"
+              placeholder="مثال: جرد بداية العام الجديد 2026..."
+              value={openNotes}
+              onChange={(e) => setOpenNotes(e.target.value)}
+            />
+          </CollapsibleSection>
 
           {/* عرض رأس المال الافتتاحي المحسوب */}
-          <div className="p-4 rounded-xl bg-gradient-to-br from-brand-600 to-brand-700 text-white flex items-center justify-between shadow-2xs">
+          <GreenCard className="p-3 flex items-center justify-between">
             <div>
-              <span className="text-xs text-brand-100 block mb-0.5">
+              <span className="text-[11px] text-brand-100 block">
                 رأس المال الافتتاحي المحسوب (Capital):
               </span>
-              <span className="text-xl sm:text-2xl font-black text-accent-400">
+              <span className="text-lg sm:text-xl font-black text-accent-400">
                 {formatCurrency(calculatedCapital)}
               </span>
             </div>
-            <p className="text-[11px] text-brand-100 text-left max-w-[200px] hidden sm:block">
+            <p className="text-[11px] text-brand-100 text-left max-w-[180px] hidden sm:block">
               الخزائن + المخزون + الديون - الالتزامات
             </p>
-          </div>
+          </GreenCard>
 
           {/* زر بدء العمل */}
           <Button
             type="submit"
             variant="accent"
             isLoading={isOpeningSubmitting}
-            className="w-full py-4 text-base font-bold shadow-sm gap-2"
+            className="w-full py-2.5 text-sm font-bold shadow-sm gap-2"
           >
-            <CheckCircle2 className="w-5 h-5" />
+            <CheckCircle2 className="w-4 h-4" />
             <span>بدء العمل وتثبيت الأرصدة الافتتاحية</span>
           </Button>
         </form>
-      </Card>
+      </CollapsibleSection>
     </div>
   );
 };

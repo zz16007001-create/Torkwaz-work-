@@ -5,7 +5,7 @@ import { db } from '../../lib/firebase';
 import { normalizeAr } from '../../domain/arabic';
 import { formatCurrency } from '../../domain/money';
 import { formatDate } from '../../domain/dates';
-import { Card } from '../../components/ui/Card';
+import { Card, GreenCard, GREEN_CARD_INPUT_CLASS, GREEN_CARD_BTN_CLASS } from '../../components/ui/Card';
 import { Spinner } from '../../components/ui/Spinner';
 import {
   Receipt,
@@ -138,7 +138,7 @@ export const InvoicesListPage: React.FC = () => {
       </div>
 
       {/* شريط البحث وتصفية الملغى */}
-      <Card className="p-2 border-brand-100 flex flex-row items-center gap-2">
+      <GreenCard className="p-2 flex flex-row items-center gap-2">
         <div className="relative flex-1 min-w-0">
           <input
             type="text"
@@ -146,7 +146,7 @@ export const InvoicesListPage: React.FC = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="ابحث برقم الفاتورة، أو اسم العميل..."
             dir="rtl"
-            className="w-full rounded-lg border border-brand-200 bg-brand-50/70 focus:bg-white pr-8 pl-2.5 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 transition-all"
+            className={`w-full rounded-lg pr-8 pl-2.5 py-1.5 text-xs ${GREEN_CARD_INPUT_CLASS}`}
           />
           <Search className="absolute right-2.5 top-2 w-3.5 h-3.5 text-brand-600 pointer-events-none" />
         </div>
@@ -155,16 +155,16 @@ export const InvoicesListPage: React.FC = () => {
         <button
           type="button"
           onClick={() => setShowCancelled(!showCancelled)}
-          className={`inline-flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg border text-[11px] font-bold transition-colors shrink-0 whitespace-nowrap ${
+          className={`inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-colors shrink-0 whitespace-nowrap ${
             showCancelled
-              ? 'bg-rose-50 border-rose-300 text-rose-800'
-              : 'bg-white border-brand-200 text-brand-700 hover:bg-brand-50'
+              ? 'bg-rose-500/90 border border-rose-300 text-white'
+              : GREEN_CARD_BTN_CLASS
           }`}
         >
-          {showCancelled ? <Eye className="w-3.5 h-3.5 text-rose-600 shrink-0" /> : <EyeOff className="w-3.5 h-3.5 shrink-0" />}
+          {showCancelled ? <Eye className="w-3.5 h-3.5 shrink-0" /> : <EyeOff className="w-3.5 h-3.5 shrink-0" />}
           <span>{showCancelled ? 'إخفاء الفواتير الملغاة' : 'إظهار الفواتير الملغاة'}</span>
         </button>
-      </Card>
+      </GreenCard>
 
       {/* قائمة الفواتير */}
       {loading ? (
@@ -197,7 +197,7 @@ export const InvoicesListPage: React.FC = () => {
                 {/* السطر الأول: رقم الفاتورة + الشارة على اليمين، وإجمالي الفاتورة على الشمال */}
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 min-w-0 flex-1">
-                    <span className="font-mono text-xs font-extrabold px-1.5 py-0.5 rounded bg-brand-50 text-brand-800 border border-brand-200 shrink-0">
+                    <span className="font-mono text-xs font-extrabold px-2 py-0.5 rounded bg-accent-500 text-slate-900 shrink-0">
                       {inv.invoiceNumber}
                     </span>
 

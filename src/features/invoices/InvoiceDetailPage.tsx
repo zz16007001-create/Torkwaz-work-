@@ -8,13 +8,13 @@ import { calculateLineReturn } from '../../domain/invoice';
 import { formatCurrency, round2 } from '../../domain/money';
 import { formatDate } from '../../domain/dates';
 import { WalletId } from '../../domain/types';
-import { Card } from '../../components/ui/Card';
+import { Card, GreenCard } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { Spinner } from '../../components/ui/Spinner';
+import { Icon3D } from '../../components/ui/Icons3D';
 import {
   ArrowRight,
-  User,
   Phone,
   Printer,
   RotateCcw,
@@ -307,26 +307,26 @@ export const InvoiceDetailPage: React.FC = () => {
       )}
 
       {/* بيانات العميل */}
-      <Card className="p-3 border-brand-100">
+      <GreenCard className="p-3">
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs">
-          <div className="flex items-center gap-1.5 font-bold text-slate-800 min-w-0">
-            <User className="w-3.5 h-3.5 text-brand-600 shrink-0 print:hidden" />
+          <div className="flex items-center gap-2 font-bold text-white min-w-0 print:text-slate-900">
+            <Icon3D name="customer" size={26} className="print:hidden" />
             <span className="truncate">{invoice.customerName || 'عميل نقدي'}</span>
           </div>
 
-          <div className="flex items-center gap-1.5 font-medium text-slate-600 shrink-0">
-            <Phone className="w-3.5 h-3.5 text-brand-600 shrink-0 print:hidden" />
+          <div className="flex items-center gap-1.5 font-medium text-brand-100 shrink-0 print:text-slate-700">
+            <Phone className="w-3.5 h-3.5 text-accent-400 shrink-0 print:hidden" />
             <span dir="ltr">{invoice.customerPhone || '-'}</span>
           </div>
         </div>
 
         {invoice.notes && (
-          <div className="mt-2 pt-2 border-t border-brand-100 text-[11px] text-slate-600">
+          <div className="mt-2 pt-2 border-t border-white/15 text-[11px] text-brand-50 print:border-slate-200 print:text-slate-700">
             <span className="font-bold ml-1">ملاحظات:</span>
             <span>{invoice.notes}</span>
           </div>
         )}
-      </Card>
+      </GreenCard>
 
       {/* بنود الفاتورة - ممنوع تماماً إظهار سعر الشراء أو الربح */}
       <Card className="p-0 overflow-hidden border-brand-100">

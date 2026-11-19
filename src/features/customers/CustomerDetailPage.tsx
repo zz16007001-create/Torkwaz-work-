@@ -6,14 +6,13 @@ import { collectPayment, writeOffDebt, generateTransactionId } from '../../lib/d
 import { formatCurrency, parseArabicNumber } from '../../domain/money';
 import { formatDate } from '../../domain/dates';
 import { WalletId } from '../../domain/types';
-import { Card } from '../../components/ui/Card';
+import { Card, GreenCard } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Modal } from '../../components/ui/Modal';
 import { Spinner } from '../../components/ui/Spinner';
 import {
   ArrowRight,
-  User,
   Phone,
   Banknote,
   Send,
@@ -215,135 +214,121 @@ export const CustomerDetailPage: React.FC = () => {
   const hasDebt = (customer.currentBalance || 0) > 0.01;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-3">
       {/* رأس الصفحة والأزرار */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => navigate('/customers')}
-            className="p-2 rounded-xl border border-brand-200 bg-white text-brand-700 hover:bg-brand-50 transition-colors"
+            className="p-1.5 rounded-lg border border-brand-200 bg-white text-brand-700 hover:bg-brand-50 transition-colors shrink-0"
             title="رجوع لسجل العملاء"
           >
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-4 h-4" />
           </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">{customer.name}</h1>
-              {hasDebt && (
-                <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-rose-100 text-rose-700">
-                  مدين
-                </span>
-              )}
-            </div>
-            {customer.phone && (
-              <p className="text-xs text-slate-500 mt-0.5" dir="ltr">
-                {customer.phone}
-              </p>
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <h1 className="text-lg font-bold text-slate-900 truncate">{customer.name}</h1>
+            {hasDebt && (
+              <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-rose-100 text-rose-700 shrink-0">
+                مدين
+              </span>
             )}
           </div>
         </div>
 
-        {/* أزرار الإجراءات */}
-        <div className="flex flex-wrap items-center gap-2">
-          {hasDebt && (
+        {/* أزرار الإجراءات في صف واحد */}
+        {hasDebt && (
+          <div className="flex items-center gap-1.5">
             <Button
               type="button"
               variant="primary"
               size="sm"
               onClick={openCollectModal}
-              className="gap-1.5"
+              className="flex-1 justify-center gap-1 h-8 px-2 text-xs"
             >
-              <Banknote className="w-4 h-4" />
+              <Banknote className="w-3.5 h-3.5 shrink-0" />
               <span>تحصيل</span>
             </Button>
-          )}
 
-          {hasDebt && (
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={handleSendWhatsAppReminder}
-              className="gap-1.5 text-brand-700 border-brand-200 hover:bg-brand-50"
+              className="flex-1 justify-center gap-1 h-8 px-2 text-xs text-brand-700 border-brand-200 hover:bg-brand-50"
             >
-              <Send className="w-4 h-4 text-brand-600" />
+              <Send className="w-3.5 h-3.5 text-brand-600 shrink-0" />
               <span>تذكير واتساب</span>
             </Button>
-          )}
 
-          {hasDebt && (
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={() => setIsWriteOffOpen(true)}
-              className="gap-1.5 text-rose-600 border-rose-200 hover:bg-rose-50"
+              className="flex-1 justify-center gap-1 h-8 px-2 text-xs text-rose-600 border-rose-200 hover:bg-rose-50"
             >
-              <Ban className="w-4 h-4" />
+              <Ban className="w-3.5 h-3.5 shrink-0" />
               <span>دين معدوم</span>
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
+        <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-brand-600" />
+        <div className="p-2.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 shrink-0 text-brand-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
-      {/* بطاقة ملخص الحساب */}
-      <Card className="p-5 border-brand-100">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-          <div>
-            <span className="text-xs text-slate-400 block mb-1">الرصيد الحالي</span>
+      {/* بطاقة ملخص الحساب (كارت أخضر مدمج) */}
+      <GreenCard className="p-3 space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs text-brand-100 font-medium">الرصيد الحالي</span>
+          <div className="text-left">
             <span
-              className={`text-xl font-black ${
-                hasDebt ? 'text-rose-600' : 'text-brand-700'
+              className={`text-xl sm:text-2xl font-black ${
+                hasDebt ? 'text-accent-400' : 'text-white'
               }`}
             >
               {formatCurrency(customer.currentBalance || 0)}
-              {hasDebt && ' (مستحق على العميل)'}
             </span>
-          </div>
-
-          <div>
-            <span className="text-xs text-slate-400 block mb-1">رقم الهاتف</span>
-            <div className="flex items-center gap-1.5 font-bold text-slate-800" dir="ltr">
-              <Phone className="w-4 h-4 text-brand-600" />
-              <span>{customer.phone || 'غير مسجل'}</span>
-            </div>
-          </div>
-
-          <div>
-            <span className="text-xs text-slate-400 block mb-1">تاريخ فتح الحساب</span>
-            <span className="font-medium text-slate-600">
-              {customer.createdAt ? formatDate(customer.createdAt, false) : '-'}
-            </span>
+            {hasDebt && (
+              <span className="text-[10px] text-brand-100 mr-1.5">(مستحق على العميل)</span>
+            )}
           </div>
         </div>
-      </Card>
 
-      {/* جدول فواتير العميل */}
+        <div className="pt-1.5 border-t border-white/15 flex items-center justify-between gap-2 text-[11px] text-brand-100">
+          <div className="flex items-center gap-1 font-medium" dir="ltr">
+            <Phone className="w-3 h-3 text-accent-400 shrink-0" />
+            <span>{customer.phone || 'غير مسجل'}</span>
+          </div>
+          <span>
+            فتح الحساب: {customer.createdAt ? formatDate(customer.createdAt, false) : '-'}
+          </span>
+        </div>
+      </GreenCard>
+
+      {/* فواتير العميل */}
       <Card className="p-0 overflow-hidden border-brand-100">
-        <div className="p-4 bg-brand-50 border-b border-brand-100 flex items-center justify-between">
-          <h2 className="text-sm font-bold text-brand-800 flex items-center gap-2">
-            <Receipt className="w-4 h-4 text-brand-600" />
+        <div className="px-3 py-2 bg-brand-50 border-b border-brand-100 flex items-center justify-between">
+          <h2 className="text-xs font-bold text-brand-800 flex items-center gap-1.5">
+            <Receipt className="w-3.5 h-3.5 text-brand-600" />
             <span>فواتير العميل ({invoices.length})</span>
           </h2>
         </div>
 
         {invoices.length === 0 ? (
-          <div className="py-12 text-center text-slate-400">
-            <Clock className="w-10 h-10 mx-auto mb-2 text-brand-200" />
+          <div className="py-8 text-center text-slate-400">
+            <Clock className="w-8 h-8 mx-auto mb-1.5 text-brand-200" />
             <p className="text-xs font-medium">لا توجد فواتير مسجلة لهذا العميل</p>
           </div>
         ) : (
@@ -352,35 +337,26 @@ export const CustomerDetailPage: React.FC = () => {
               <div
                 key={inv.id}
                 onClick={() => navigate(`/invoices/${inv.id}`)}
-                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-brand-50/50 cursor-pointer transition-colors"
+                className="px-3 py-2 flex items-center justify-between gap-2 hover:bg-brand-50/50 cursor-pointer transition-colors"
               >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-brand-800">
-                      {inv.invoiceNumber}
-                    </span>
-                    <span className="text-xs text-slate-400">
-                      {formatDate(inv.createdAt, true)}
-                    </span>
-                  </div>
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <span className="font-mono text-[11px] font-extrabold px-1.5 py-0.5 rounded bg-accent-500 text-slate-900 shrink-0">
+                    {inv.invoiceNumber}
+                  </span>
+                  <span className="text-[11px] text-slate-500 truncate">
+                    {formatDate(inv.createdAt, true)}
+                  </span>
                 </div>
 
-                <div className="flex items-center gap-6 text-sm">
+                <div className="flex items-center gap-2 shrink-0 text-xs">
                   {(inv.remainingAmount || 0) > 0 && inv.status !== 'cancelled' && (
-                    <div className="text-right">
-                      <span className="text-[10px] text-slate-400 block">المتبقي آجل</span>
-                      <span className="font-bold text-rose-600">
-                        {formatCurrency(inv.remainingAmount)}
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="text-left">
-                    <span className="text-[10px] text-slate-400 block">الإجمالي</span>
-                    <span className="font-black text-slate-900">
-                      {formatCurrency(inv.grandTotal)}
+                    <span className="text-[10px] font-bold text-rose-600">
+                      متبقي {formatCurrency(inv.remainingAmount)}
                     </span>
-                  </div>
+                  )}
+                  <span className="font-black text-slate-900">
+                    {formatCurrency(inv.grandTotal)}
+                  </span>
                 </div>
               </div>
             ))}

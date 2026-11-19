@@ -15,12 +15,9 @@ import {
   TrendingDown,
   TrendingUp,
   UserMinus,
-  PlusCircle,
   AlertCircle,
   CheckCircle2,
-  Calendar,
-  Wallet,
-  Receipt,
+  RotateCcw,
   FileSpreadsheet,
 } from 'lucide-react';
 
@@ -56,6 +53,43 @@ const EXPENSE_CATEGORIES = [
   'شحن ومواصلات',
   'مصروفات نثريات أخرى',
 ];
+
+const BADGE_STYLE_BY_TYPE: Record<string, { label: string; cls: string }> = {
+  collection: { label: 'تحصيل من عميل', cls: 'bg-emerald-600 text-white' },
+  capital_in: { label: 'إضافة رأس مال', cls: 'bg-emerald-600 text-white' },
+  expense: { label: 'مصروف', cls: 'bg-rose-600 text-white' },
+  purchase_payment: { label: 'سداد مشتريات', cls: 'bg-accent-500 text-slate-900' },
+  refund: { label: 'رد مرتجع', cls: 'bg-orange-500 text-white' },
+  withdrawal: { label: 'سحب شخصي', cls: 'bg-violet-600 text-white' },
+  transfer: { label: 'تحويل', cls: 'bg-sky-600 text-white' },
+};
+
+function getCompactTxSummary(tx: TransactionItem, badgeLabel: string): string {
+  const cleanText = (raw: string) =>
+    raw
+      .replace(/^تحصيل دفعة حساب من العميل:\s*/i, '')
+      .replace(/^رد مرتجع\s*/i, '')
+      .replace(/^سداد مشتريات\s*/i, '')
+      .replace(/^إضافة رأس مال\s*/i, '')
+      .replace(/^سحب شخصي\s*/i, '')
+      .replace(/^تحويل بين الخزائن\s*/i, '')
+      .replace(/^مصروف:\s*/i, '')
+      .replace(/\s*\(?\bOPENING-[A-Za-z0-9_-]+\b\)?/g, '')
+      .trim();
+
+  const cat = cleanText(tx.category || '');
+  const desc = cleanText(tx.description || '');
+
+  const parts: string[] = [];
+  if (cat && cat !== badgeLabel) parts.push(cat);
+  if (desc && desc !== badgeLabel && desc !== cat) parts.push(desc);
+
+  if (parts.length > 0) return parts.join(' · ');
+  if (tx.type === 'transfer' && tx.targetWalletId) {
+    return `إلى ${WALLET_NAMES[tx.targetWalletId] || tx.targetWalletId}`;
+  }
+  return tx.referenceNumber || '-';
+}
 
 export const TransactionsPage: React.FC = () => {
   const [transactions, setTransactions] = useState<TransactionItem[]>([]);
@@ -277,14 +311,14 @@ export const TransactionsPage: React.FC = () => {
           </p>
         </div>
 
-        {/* 4 أزرار في الأعلى */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+        {/* 4 أزرار في شبكة 2×2 مدمجة */}
+        <div className="grid grid-cols-2 gap-1.5">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={() => openModal('expense')}
-            className="w-full justify-center gap-1 py-1 px-2 h-8 text-xs text-rose-700 border-rose-200 hover:bg-rose-50"
+            className="w-full justify-center gap-1.5 py-1 px-2 h-8 text-xs bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
           >
             <TrendingDown className="w-3.5 h-3.5 text-rose-600 shrink-0" />
             <span className="truncate">مصروف</span>
@@ -295,9 +329,9 @@ export const TransactionsPage: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => openModal('withdrawal')}
-            className="w-full justify-center gap-1 py-1 px-2 h-8 text-xs text-accent-700 border-accent-400 hover:bg-accent-50"
+            className="w-full justify-center gap-1.5 py-1 px-2 h-8 text-xs bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100"
           >
-            <UserMinus className="w-3.5 h-3.5 text-accent-600 shrink-0" />
+            <UserMinus className="w-3.5 h-3.5 text-violet-600 shrink-0" />
             <span className="truncate">سحب شخصي</span>
           </Button>
 
@@ -306,9 +340,9 @@ export const TransactionsPage: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => openModal('capital_in')}
-            className="w-full justify-center gap-1 py-1 px-2 h-8 text-xs text-brand-700 border-brand-200 hover:bg-brand-50"
+            className="w-full justify-center gap-1.5 py-1 px-2 h-8 text-xs bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
           >
-            <TrendingUp className="w-3.5 h-3.5 text-brand-600 shrink-0" />
+            <TrendingUp className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             <span className="truncate">إضافة رأس مال</span>
           </Button>
 
@@ -317,9 +351,9 @@ export const TransactionsPage: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => openModal('transfer')}
-            className="w-full justify-center gap-1 py-1 px-2 h-8 text-xs text-brand-800 border-brand-200 hover:bg-brand-50"
+            className="w-full justify-center gap-1.5 py-1 px-2 h-8 text-xs bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100"
           >
-            <ArrowLeftRight className="w-3.5 h-3.5 text-brand-600 shrink-0" />
+            <ArrowLeftRight className="w-3.5 h-3.5 text-sky-600 shrink-0" />
             <span className="truncate">تحويل</span>
           </Button>
         </div>
@@ -371,53 +405,35 @@ export const TransactionsPage: React.FC = () => {
               const isPurchase = tx.type === 'purchase_payment';
 
               const isOutflow = isExpense || isWithdrawal || isRefund || isPurchase;
+              const isInflow = isCapitalIn || isCollection;
+
+              const badgeInfo = BADGE_STYLE_BY_TYPE[tx.type] || {
+                label: tx.type,
+                cls: 'bg-slate-600 text-white',
+              };
+              const summaryText = getCompactTxSummary(tx, badgeInfo.label);
+              const canReverse =
+                tx.status !== 'reversed' &&
+                ['expense', 'withdrawal', 'capital_in', 'transfer'].includes(tx.type) &&
+                tx.walletId !== 'pocket' &&
+                !tx.referenceNumber;
 
               return (
                 <div
                   key={tx.id}
                   className="px-3 py-2 hover:bg-brand-50/40 transition-colors"
                 >
-                  {/* السطر الأول: الشارة + الوصف على اليمين، والمبلغ على الشمال */}
+                  {/* السطر الأول: شارة النوع + وصف مختصر + المبلغ */}
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5 min-w-0 flex-1">
-                      {isExpense && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 shrink-0">
-                          مصروف
-                        </span>
-                      )}
-                      {isWithdrawal && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-accent-100 text-accent-700 shrink-0">
-                          مسحوبات شخصية
-                        </span>
-                      )}
-                      {isCapitalIn && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-100 text-brand-800 shrink-0">
-                          تمويل رأس مال
-                        </span>
-                      )}
-                      {isTransfer && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-200 shrink-0">
-                          تحويل خزائن
-                        </span>
-                      )}
-                      {isCollection && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-100 text-brand-800 shrink-0">
-                          تحصيل عميل
-                        </span>
-                      )}
-                      {isRefund && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-accent-100 text-accent-700 shrink-0">
-                          رد مرتجع
-                        </span>
-                      )}
-                      {isPurchase && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 shrink-0">
-                          سداد مشتريات
-                        </span>
-                      )}
+                      <span
+                        className={`text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 ${badgeInfo.cls}`}
+                      >
+                        {badgeInfo.label}
+                      </span>
 
                       <span className="font-bold text-slate-800 text-xs truncate">
-                        {tx.category || tx.description || 'معاملة مالية'}
+                        {summaryText}
                       </span>
                     </div>
 
@@ -427,63 +443,42 @@ export const TransactionsPage: React.FC = () => {
                       }${
                         isOutflow
                           ? 'text-rose-600'
-                          : isCapitalIn || isCollection
-                          ? 'text-brand-700'
-                          : 'text-brand-800'
+                          : isInflow
+                          ? 'text-emerald-600'
+                          : 'text-slate-700'
                       }`}
                     >
-                      {isOutflow ? '-' : isCapitalIn || isCollection ? '+' : ''}
+                      {isOutflow ? '−' : isInflow ? '+' : ''}
                       {formatCurrency(tx.amount)}
                     </span>
                   </div>
 
-                  {/* السطر الثاني: الخزينة والتاريخ + شارة الوصف الإضافي + علامة معكوسة وزر العكس */}
-                  <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 text-[11px] text-slate-400 mt-1">
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
-                      <span className="flex items-center gap-1">
-                        <Wallet className="w-3 h-3 text-brand-500 shrink-0" />
-                        <span>
-                          {WALLET_NAMES[tx.walletId] || tx.walletId}
-                          {isTransfer && tx.targetWalletId && (
-                            <> &rarr; {WALLET_NAMES[tx.targetWalletId] || tx.targetWalletId}</>
-                          )}
-                        </span>
-                      </span>
-
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3 text-brand-500 shrink-0" />
-                        <span>{formatDate(tx.createdAt, true)}</span>
-                      </span>
-
-                      {tx.description && tx.category && tx.description !== tx.category && (
-                        <span className="text-brand-800 bg-brand-50 px-1.5 py-0 rounded text-[10px]">
-                          {tx.description}
-                        </span>
+                  {/* السطر الثاني: التاريخ والوقت · اسم الخزينة + زر عكس الحركة */}
+                  <div className="flex items-center justify-between gap-2 text-[11px] text-slate-400 mt-1">
+                    <span className="truncate min-w-0">
+                      {formatDate(tx.createdAt, true)} ·{' '}
+                      {WALLET_NAMES[tx.walletId] || tx.walletId}
+                      {isTransfer && tx.targetWalletId && (
+                        <> &rarr; {WALLET_NAMES[tx.targetWalletId] || tx.targetWalletId}</>
                       )}
-                    </div>
+                    </span>
 
-                    {(tx.status === 'reversed' ||
-                      (tx.status !== 'reversed' &&
-                        ['expense', 'withdrawal', 'capital_in', 'transfer'].includes(tx.type) &&
-                        tx.walletId !== 'pocket' &&
-                        !tx.referenceNumber)) && (
-                      <div className="flex items-center gap-2 shrink-0">
+                    {(tx.status === 'reversed' || canReverse) && (
+                      <div className="flex items-center gap-1.5 shrink-0">
                         {tx.status === 'reversed' && (
                           <span className="text-[10px] text-slate-400">معكوسة</span>
                         )}
-                        {tx.status !== 'reversed' &&
-                          ['expense', 'withdrawal', 'capital_in', 'transfer'].includes(tx.type) &&
-                          tx.walletId !== 'pocket' &&
-                          !tx.referenceNumber && (
-                            <button
-                              type="button"
-                              disabled={reversingTxId === tx.id}
-                              onClick={() => handleReverse(tx)}
-                              className="text-[11px] text-rose-600 underline disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {reversingTxId === tx.id ? 'جاري العكس...' : 'عكس الحركة'}
-                            </button>
-                          )}
+                        {canReverse && (
+                          <button
+                            type="button"
+                            disabled={reversingTxId === tx.id}
+                            onClick={() => handleReverse(tx)}
+                            className="inline-flex items-center gap-0.5 text-[10px] font-bold text-rose-600 hover:text-rose-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                          >
+                            <RotateCcw className="w-3 h-3 shrink-0" />
+                            <span>{reversingTxId === tx.id ? 'جاري العكس...' : 'عكس الحركة'}</span>
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>

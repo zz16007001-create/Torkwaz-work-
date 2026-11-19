@@ -18,7 +18,11 @@ export type Icon3DName =
   | 'piecesSold'
   | 'expenses'
   | 'stagnant'
-  | 'closings';
+  | 'closings'
+  | 'customer'
+  | 'shoe'
+  | 'bag'
+  | 'ring';
 
 interface Icon3DProps {
   name: Icon3DName;
@@ -287,6 +291,99 @@ export const Icon3D: React.FC<Icon3DProps> = ({ name, size = 40, className = '' 
             <path d="M29.5 26v-2.2a3.8 3.8 0 017.6 0V26" stroke="#285045" strokeWidth="2.6" strokeLinecap="round" fill="none" />
             <rect x="25.8" y="25.5" width="15" height="12.5" rx="3.5" fill={`url(#${gGold})`} />
             <circle cx="33.3" cy="31.5" r="1.8" fill="#285045" />
+          </g>
+        );
+
+      case 'customer':
+        // أيقونة عميل مجسمة
+        return (
+          <g>
+            <ellipse cx="24" cy="43" rx="14" ry="2.4" fill={`url(#${gShadow})`} />
+            <path
+              d="M9.5 39c1-7.8 6.8-12 14.5-12s13.5 4.2 14.5 12c.2 1.6-1.1 2.8-2.7 2.8H12.2c-1.6 0-2.9-1.2-2.7-2.8z"
+              fill={`url(#${gGold})`}
+            />
+            <path
+              d="M12.5 34.5c2.2-3.5 6.4-5.5 11.5-5.5 4.2 0 7.7 1.3 10 3.7"
+              stroke={`url(#${gGloss})`}
+              strokeWidth="3"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <circle cx="24" cy="17" r="8.5" fill={`url(#${gPaper})`} />
+            <ellipse cx="21.5" cy="13.5" rx="4.2" ry="2.2" fill={`url(#${gGloss})`} />
+            <circle cx="24" cy="17" r="8.5" stroke={`url(#${gGold})`} strokeWidth="1.4" fill="none" />
+          </g>
+        );
+
+      case 'shoe':
+        // حذاء رياضي مجسم
+        return (
+          <g>
+            <ellipse cx="24" cy="41.5" rx="16.5" ry="2.4" fill={`url(#${gShadow})`} />
+            <path
+              d="M7 33.5h33.5c1.5 0 2.5 1.1 2.5 2.5 0 1.7-1.2 3-3 3H9.5c-2 0-3.5-1.3-3.5-3.2 0-1.3.4-2.3 1-2.3z"
+              fill={`url(#${gPaper})`}
+            />
+            <path
+              d="M8.5 33.5c.2-5.8.8-11 2.2-14.2.7-1.5 2.4-1.7 3.6-.5 2.4 2.4 5.2 3.2 8.2 1.5l1.6-1c.8-.5 1.9-.2 2.4.6 1.5 2.4 4.2 4.3 8.2 5.2 4 .9 6.3 2.8 6.8 5.6.2 1.5-.6 2.8-2.2 2.8H8.5z"
+              fill={`url(#${gGreen})`}
+            />
+            <path
+              d="M11 21c1.8 2 4.8 3.2 8.5 2.5"
+              stroke={`url(#${gGloss})`}
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <rect x="24" y="23.5" width="4.5" height="2" rx="1" fill={`url(#${gGoldLight})`} transform="rotate(-22 24 23.5)" />
+            <rect x="27" y="25.8" width="4.5" height="2" rx="1" fill={`url(#${gGoldLight})`} transform="rotate(-22 27 25.8)" />
+            <path d="M12.5 33.5c1.5-2.5 3.6-4.5 6.5-5.5" stroke={`url(#${gGold})`} strokeWidth="2.4" strokeLinecap="round" fill="none" />
+          </g>
+        );
+
+      case 'bag':
+        // شنطة يد مجسمة
+        return (
+          <g>
+            <ellipse cx="24" cy="42.5" rx="15" ry="2.4" fill={`url(#${gShadow})`} />
+            <path
+              d="M17.5 16.5v-3.2a6.5 6.5 0 0113 0v3.2"
+              stroke={`url(#${gGold})`}
+              strokeWidth="3.2"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <path
+              d="M9 17.5a3.5 3.5 0 013.5-3.5h23a3.5 3.5 0 013.5 3.5l1.5 18a4.5 4.5 0 01-4.5 4.8H12a4.5 4.5 0 01-4.5-4.8l1.5-18z"
+              fill={`url(#${gGreen})`}
+            />
+            <path
+              d="M9.5 16.5h29l-1.5 9.2c-.3 1.8-1.8 3.1-3.6 3.1H14.6c-1.8 0-3.3-1.3-3.6-3.1l-1.5-9.2z"
+              fill={`url(#${gGreenLight})`}
+            />
+            <rect x="11.5" y="16" width="25" height="4.5" rx="2.2" fill={`url(#${gGloss})`} />
+            <rect x="21" y="25.5" width="6" height="5.5" rx="2" fill={`url(#${gGold})`} />
+            <circle cx="24" cy="28.3" r="1.3" fill="#285045" />
+          </g>
+        );
+
+      case 'ring':
+        // خاتم ذهب مجسم بفص لامع
+        return (
+          <g>
+            <ellipse cx="24" cy="42.5" rx="13.5" ry="2.3" fill={`url(#${gShadow})`} />
+            <circle cx="24" cy="27.5" r="12.5" stroke={`url(#${gGold})`} strokeWidth="5.2" fill="none" />
+            <path
+              d="M15 21.5a11.5 11.5 0 0114-3"
+              stroke={`url(#${gGoldLight})`}
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <polygon points="24,6.5 30.5,11.5 27.5,16.5 20.5,16.5 17.5,11.5" fill={`url(#${gPaper})`} stroke={`url(#${gGold})`} strokeWidth="1.5" />
+            <polygon points="24,6.5 27.5,11.5 24,16 20.5,11.5" fill={`url(#${gGreenLight})`} opacity="0.65" />
+            <path d="M12 10.5l1.2-2.5 1.2 2.5 2.5 1.2-2.5 1.2-1.2 2.5-1.2-2.5-2.5-1.2z" fill={`url(#${gGoldLight})`} />
           </g>
         );
     }

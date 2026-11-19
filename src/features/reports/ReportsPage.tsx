@@ -3,7 +3,7 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { getCairoDate, getDayKey, getMonthKey, formatDate } from '../../domain/dates';
 import { formatCurrency, round2 } from '../../domain/money';
-import { Card } from '../../components/ui/Card';
+import { Card, GreenCard, GREEN_CARD_INPUT_CLASS } from '../../components/ui/Card';
 import { Spinner } from '../../components/ui/Spinner';
 import { Icon3D } from '../../components/ui/Icons3D';
 import {
@@ -449,90 +449,102 @@ export const ReportsPage: React.FC = () => {
       {activeTab === 'sales' && (
         <div className="space-y-3">
           {/* حقلا التاريخ فقط */}
-          <div className="grid grid-cols-2 gap-2 sm:max-w-md print:hidden">
-            <label className="flex flex-col gap-0.5 text-[11px] font-bold text-brand-800">
-              <span>من تاريخ</span>
-              <input
-                type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                className="w-full bg-white border border-brand-200 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20"
-              />
-            </label>
-            <label className="flex flex-col gap-0.5 text-[11px] font-bold text-brand-800">
-              <span>إلى تاريخ</span>
-              <input
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                className="w-full bg-white border border-brand-200 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20"
-              />
-            </label>
-          </div>
+          <GreenCard className="p-2.5 sm:max-w-md print:hidden">
+            <div className="grid grid-cols-2 gap-2">
+              <label className="flex flex-col gap-0.5 text-[11px] font-bold text-brand-100">
+                <span>من تاريخ</span>
+                <input
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  className={`w-full rounded-lg px-2 py-1.5 text-xs font-bold ${GREEN_CARD_INPUT_CLASS}`}
+                />
+              </label>
+              <label className="flex flex-col gap-0.5 text-[11px] font-bold text-brand-100">
+                <span>إلى تاريخ</span>
+                <input
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  className={`w-full rounded-lg px-2 py-1.5 text-xs font-bold ${GREEN_CARD_INPUT_CLASS}`}
+                />
+              </label>
+            </div>
+          </GreenCard>
 
           <div className="grid grid-cols-2 gap-2">
-            <Card className="p-3 border-brand-100 flex items-center justify-between gap-2">
+            {/* 1. صافي المبيعات: كارت أخضر صلب brand-600 */}
+            <Card className="p-3 bg-brand-600 border-brand-700 text-white flex items-center justify-between gap-2 print:bg-white print:text-slate-900">
               <div className="min-w-0">
-                <span className="text-[11px] text-slate-500 block mb-0.5">صافي المبيعات</span>
-                <span className="text-lg font-black text-brand-700 block">
+                <span className="text-[11px] text-brand-100 block mb-0.5 print:text-slate-600">
+                  صافي المبيعات
+                </span>
+                <span className="text-lg font-black text-white block print:text-slate-900">
                   {formatCurrency(totalSales)}
                 </span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-brand-50 flex items-center justify-center shrink-0 print:hidden">
+              <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0 print:hidden">
                 <Icon3D name="netSales" size={28} />
               </div>
             </Card>
 
-            <Card className="p-3 border-brand-100 flex items-center justify-between gap-2">
+            {/* 2. ربح المبيعات قبل المصاريف: كارت أصفر accent-500 */}
+            <Card className="p-3 bg-accent-500 border-accent-600 text-slate-900 flex items-center justify-between gap-2 print:bg-white print:text-slate-900">
               <div className="min-w-0">
-                <span className="text-[11px] text-slate-500 block mb-0.5">
+                <span className="text-[11px] text-slate-800 font-medium block mb-0.5">
                   ربح المبيعات قبل المصاريف
                 </span>
                 <span
                   className={`text-lg font-black block ${
                     periodProfit.salesProfitBeforeExpenses >= 0
-                      ? 'text-brand-700'
-                      : 'text-rose-600'
+                      ? 'text-slate-900'
+                      : 'text-rose-800'
                   }`}
                 >
                   {formatCurrency(periodProfit.salesProfitBeforeExpenses)}
                 </span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-accent-50 flex items-center justify-center shrink-0 print:hidden">
+              <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0 print:hidden">
                 <Icon3D name="grossProfit" size={28} />
               </div>
             </Card>
 
-            <Card className="p-3 border-brand-100 flex items-center justify-between gap-2">
+            {/* 3. الصافي بعد المصاريف: كارت brand-100 بحد brand-200 */}
+            <Card className="p-3 bg-brand-100 border-brand-200 text-brand-800 flex items-center justify-between gap-2 print:bg-white print:text-slate-900">
               <div className="min-w-0">
-                <span className="text-[11px] leading-snug text-slate-500 block mb-0.5">
+                <span className="text-[11px] leading-snug text-brand-800/85 block mb-0.5">
                   {periodProfit.exact
                     ? 'الصافي بعد المصاريف (من القفل)'
                     : 'الصافي (بعد خصم المصاريف والديون المعدومة، ومن غير تسويات الجرد)'}
                 </span>
                 <span
                   className={`text-lg font-black block ${
-                    periodProfit.value >= 0 ? 'text-brand-700' : 'text-rose-600'
+                    periodProfit.value >= 0 ? 'text-brand-800' : 'text-rose-700'
                   }`}
                 >
                   {formatCurrency(periodProfit.value)}
                 </span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-brand-50 flex items-center justify-center shrink-0 print:hidden">
+              <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shrink-0 print:hidden">
                 <Icon3D name="netProfit" size={28} />
               </div>
             </Card>
 
-            <Card className="p-3 border-brand-100 flex items-center justify-between gap-2">
+            {/* 4. عدد الفواتير: كارت accent-100 */}
+            <Card className="p-3 bg-accent-100 border-accent-400/50 text-accent-700 flex items-center justify-between gap-2 print:bg-white print:text-slate-900">
               <div className="min-w-0">
-                <span className="text-[11px] text-slate-500 block mb-0.5">عدد الفواتير المنفذة</span>
-                <span className="text-lg font-black text-slate-800 block">{periodInvoices.length}</span>
-                <span className="text-[11px] text-slate-500 font-bold flex items-center gap-1 mt-0.5">
+                <span className="text-[11px] text-accent-700 font-medium block mb-0.5">
+                  عدد الفواتير المنفذة
+                </span>
+                <span className="text-lg font-black text-slate-900 block">
+                  {periodInvoices.length}
+                </span>
+                <span className="text-[11px] text-accent-700 font-bold flex items-center gap-1 mt-0.5">
                   <Icon3D name="piecesSold" size={18} className="print:hidden" />
                   <span>عدد القطع المباعة: {periodPiecesSold} قطعة</span>
                 </span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-brand-50 flex items-center justify-center shrink-0 print:hidden">
+              <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shrink-0 print:hidden">
                 <Icon3D name="invoices" size={28} />
               </div>
             </Card>
