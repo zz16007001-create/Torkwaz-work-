@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useItems, ExtendedItem } from '../../hooks/useItems';
+import { useBarcodeScanner } from '../../hooks/useBarcodeScanner';
 import { normalizeAr } from '../../domain/arabic';
 import { formatCurrency, parseArabicNumber, round2 } from '../../domain/money';
 import { calculateInvoiceTotals } from '../../domain/invoice';
@@ -31,6 +32,7 @@ import {
   CreditCard,
   Banknote,
   Smartphone,
+  ScanBarcode,
 } from 'lucide-react';
 
 interface CartItem {
@@ -97,6 +99,135 @@ export const CashierPage: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successInvoiceNum, setSuccessInvoiceNum] = useState<string | null>(null);
   const [savedOffline, setSavedOffline] = useState(false);
+
+  // مرجع خانة البحث وحالة أخطاء السكانر ومؤقتات الصوت والخمول
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [scanErrorMsg, setScanErrorMsg] = useState<string | null>(null);
+  const scanErrorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cartInputIdleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  const focusSearchInput = () => {
+    searchInputRef.current?.focus();
+  };
+
+  const clearCartInputIdleTimer = () => {
+    if (cartInputIdleTimerRef.current) {
+      clearTimeout(cartInputIdleTimerRef.current);
+      cartInputIdleTimerRef.current = null;
+    }
+  };
+
+  const resetCartInputIdleTimer = () => {
+    clearCartInputIdleTimer();
+    cartInputIdleTimerRef.current = setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 8000);
+  };
+
+  const playBeep = (type: 'success' | 'error') => {
+    try {
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtx) return;
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new AudioCtx();
+      }
+      const ctx = audioCtxRef.current;
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (type === 'success') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1046.5, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.1);
+      } else {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(240, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.18);
+      }
+    } catch {
+      // تجاهل أخطاء الصوت بصمت
+    }
+  };
+
+  useEffect(() => {
+    focusSearchInput();
+    return () => {
+      if (scanErrorTimerRef.current) clearTimeout(scanErrorTimerRef.current);
+      clearCartInputIdleTimer();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (successInvoiceNum !== null) {
+      focusSearchInput();
+    }
+  }, [successInvoiceNum]);
+
+  useBarcodeScanner({
+    enabled: !isSubmitting,
+    onScan: (code) => {
+      const q = normalizeAr(code.trim());
+      const hit = items.find((it) => it.isActive && normalizeAr(String(it.code || '')) === q);
+      if (hit) {
+        if (scanErrorTimerRef.current) {
+          clearTimeout(scanErrorTimerRef.current);
+          scanErrorTimerRef.current = null;
+        }
+        setScanErrorMsg(null);
+        addToCart(hit);
+        playBeep('success');
+        focusSearchInput();
+      } else {
+        const hasArabic = /[\u0600-\u06FF]/.test(code);
+        const msg = hasArabic
+          ? `الكود غير موجود: ${code} (تأكد أن لغة الكيبورد إنجليزي)`
+          : `الكود غير موجود: ${code}`;
+        setScanErrorMsg(msg);
+        if (scanErrorTimerRef.current) {
+          clearTimeout(scanErrorTimerRef.current);
+        }
+        scanErrorTimerRef.current = setTimeout(() => {
+          setScanErrorMsg(null);
+          scanErrorTimerRef.current = null;
+        }, 3000);
+        playBeep('error');
+      }
+    },
+  });
+
+  const handleCartNumericKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.ctrlKey || e.metaKey) {
+      return;
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      clearCartInputIdleTimer();
+      focusSearchInput();
+      return;
+    }
+    if (e.key.length === 1) {
+      const isAllowedChar = /^[0-9\u0660-\u0669\u06F0-\u06F9.,\u066B]$/.test(e.key);
+      if (!isAllowedChar) {
+        e.preventDefault();
+        return;
+      }
+    }
+    resetCartInputIdleTimer();
+  };
 
   // تصفية نتائج البحث السريع
   const searchResults = useMemo(() => {
@@ -439,7 +570,10 @@ export const CashierPage: React.FC = () => {
             type="button"
             variant="primary"
             size="sm"
-            onClick={() => setSuccessInvoiceNum(null)}
+            onClick={() => {
+              setSuccessInvoiceNum(null);
+              focusSearchInput();
+            }}
           >
             فاتورة جديدة
           </Button>
@@ -456,8 +590,21 @@ export const CashierPage: React.FC = () => {
 
       {/* شريط البحث المباشر عن الأصناف */}
       <div className="relative z-20">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#14b8a6]">
+            <ScanBarcode className="w-3.5 h-3.5 shrink-0" />
+            <span>السكانر جاهز</span>
+          </span>
+          {scanErrorMsg && (
+            <span className="text-xs font-bold text-rose-600 flex items-center gap-1">
+              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+              <span>{scanErrorMsg}</span>
+            </span>
+          )}
+        </div>
         <div className="relative">
           <input
+            ref={searchInputRef}
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -468,7 +615,10 @@ export const CashierPage: React.FC = () => {
                 e.preventDefault();
                 const q = normalizeAr(searchTerm.trim());
                 const hit = items.find((it) => it.isActive && normalizeAr(String(it.code || '')) === q);
-                if (hit) addToCart(hit);
+                if (hit) {
+                  addToCart(hit);
+                  focusSearchInput();
+                }
               }
             }}
             placeholder="ابحث بالكود، أو اسم الصنف، أو اللون، أو المقاس..."
@@ -488,7 +638,10 @@ export const CashierPage: React.FC = () => {
               return (
                 <div
                   key={item.id}
-                  onClick={() => addToCart(item)}
+                  onClick={() => {
+                    addToCart(item);
+                    focusSearchInput();
+                  }}
                   className="p-3 hover:bg-slate-50 cursor-pointer rounded-xl flex items-center justify-between gap-3 transition-colors"
                 >
                   <div className="flex items-center gap-3">
@@ -596,6 +749,9 @@ export const CashierPage: React.FC = () => {
                             type="number"
                             min="1"
                             value={it.quantity}
+                            onFocus={resetCartInputIdleTimer}
+                            onBlur={clearCartInputIdleTimer}
+                            onKeyDown={handleCartNumericKeyDown}
                             onChange={(e) =>
                               updateQuantity(it.itemId, Math.max(1, parseInt(e.target.value) || 1))
                             }
@@ -615,6 +771,9 @@ export const CashierPage: React.FC = () => {
                             <input
                               type="text"
                               value={it.unitPriceStr !== undefined ? it.unitPriceStr : it.unitPrice}
+                              onFocus={resetCartInputIdleTimer}
+                              onBlur={clearCartInputIdleTimer}
+                              onKeyDown={handleCartNumericKeyDown}
                               onChange={(e) => updateUnitPrice(it.itemId, e.target.value)}
                               className="w-16 px-1.5 py-0.5 text-center text-xs font-bold text-slate-800 border border-slate-200 rounded-lg focus:outline-none focus:border-[#14b8a6] bg-white"
                               title="سعر القطعة (قابل للتعديل)"
