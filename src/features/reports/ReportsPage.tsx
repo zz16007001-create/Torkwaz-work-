@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
-import { getCairoDate, getMonthKey, formatMonth, formatDate } from '../../domain/dates';
+import { getCairoDate, getDayKey, getMonthKey, formatDate } from '../../domain/dates';
 import { formatCurrency, round2 } from '../../domain/money';
 import { Card } from '../../components/ui/Card';
 import { Spinner } from '../../components/ui/Spinner';
@@ -21,9 +21,20 @@ import {
 
 export const ReportsPage: React.FC = () => {
   const currentMonth = getMonthKey(getCairoDate());
+  const [todayKey, setTodayKey] = useState<string>(() => getDayKey(getCairoDate()));
   const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
+  const [fromDate, setFromDate] = useState<string>(() => getDayKey(getCairoDate()));
+  const [toDate, setToDate] = useState<string>(() => getDayKey(getCairoDate()));
   const [activeTab, setActiveTab] = useState<'sales' | 'expenses' | 'stagnant' | 'closings'>('sales');
   const [snapshotsList, setSnapshotsList] = useState<any[]>([]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const current = getDayKey(getCairoDate());
+      setTodayKey((prev) => (prev !== current ? current : prev));
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   const [invoices, setInvoices] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -134,30 +145,82 @@ export const ReportsPage: React.FC = () => {
     return Array.from(monthsSet).sort().reverse();
   }, [invoices, transactions, currentMonth]);
 
-  // فواتير الشهر المختار (النشطة فقط)
-  const monthInvoices = useMemo(() => {
-    return invoices.filter(
-      (inv) => inv.monthKey === selectedMonth && inv.status !== 'cancelled'
-    );
-  }, [invoices, selectedMonth]);
+  // نطاق الأيام المختار لتبويب المبيعات (بتوقيت القاهرة)
+  const salesDateRange = useMemo(() => {
+    const rawFrom = fromDate.trim() || todayKey;
+    const rawTo = toDate.trim() || todayKey;
+    const from = rawFrom;
+    const to = rawTo < rawFrom ? rawFrom : rawTo;
 
-  // إجمالي مبيعات الشهر وعدد الفواتير
-  const totalSales = useMemo(() => {
-    const gross = monthInvoices.reduce((sum, inv) => sum + (Number(inv.grandTotal) || 0), 0);
-    const returned = returnsList
-      .filter((r) => r.monthKey === selectedMonth)
-      .reduce((sum, r) => sum + (Number(r.totalRefund) || 0), 0);
-    return round2(gross - returned); // صافي المبيعات بعد المرتجعات
-  }, [monthInvoices, returnsList, selectedMonth]);
-
-  // ربح الشهر: الرقم المعتمد من لقطة القفل إن وُجدت، وإلا تقدير تقريبي
-  const monthProfit = useMemo(() => {
-    const snap = snapshotsList.find((x) => x.monthKey === selectedMonth);
-    if (snap) {
-      return { value: Number(snap.invoiceProfit) || 0, exact: true };
+    let fullMonthKey: string | null = null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(from) && /^\d{4}-\d{2}-\d{2}$/.test(to)) {
+      const [fy, fm, fd] = from.split('-').map(Number);
+      if (fd === 1) {
+        const monthEndKey = getDayKey(new Date(Date.UTC(fy, fm, 0, 12, 0, 0)));
+        if (to === monthEndKey) {
+          fullMonthKey = from.slice(0, 7);
+        }
+      }
     }
-    // تكلفة البضاعة المباعة الأصلية لفواتير الشهر المختار
-    const grossMonthCogs = monthInvoices.reduce(
+
+    const title = from === to ? `فواتير ${from}` : `فواتير من ${from} إلى ${to}`;
+
+    return {
+      from,
+      to,
+      fullMonthKey,
+      title,
+    };
+  }, [fromDate, toDate, todayKey]);
+
+  // فواتير الفترة المختارة (النشطة فقط)
+  const periodInvoices = useMemo(() => {
+    return invoices.filter(
+      (inv) =>
+        inv.status !== 'cancelled' &&
+        Boolean(inv.dayKey) &&
+        inv.dayKey >= salesDateRange.from &&
+        inv.dayKey <= salesDateRange.to
+    );
+  }, [invoices, salesDateRange]);
+
+  // مرتجعات الفترة المختارة
+  const periodReturns = useMemo(() => {
+    return returnsList.filter(
+      (r) =>
+        r.type === 'return' &&
+        Boolean(r.dayKey) &&
+        r.dayKey >= salesDateRange.from &&
+        r.dayKey <= salesDateRange.to
+    );
+  }, [returnsList, salesDateRange]);
+
+  // صافي مبيعات الفترة بعد المرتجعات
+  const totalSales = useMemo(() => {
+    const gross = periodInvoices.reduce((sum, inv) => sum + (Number(inv.grandTotal) || 0), 0);
+    const returned = periodReturns.reduce((sum, r) => sum + (Number(r.totalRefund) || 0), 0);
+    return round2(gross - returned); // صافي المبيعات بعد المرتجعات
+  }, [periodInvoices, periodReturns]);
+
+  // عدد القطع المباعة في الفترة (بعد خصم القطع المرتجعة)
+  const periodPiecesSold = useMemo(() => {
+    const grossPieces = periodInvoices.reduce(
+      (sum, inv) =>
+        sum + (inv.items || []).reduce((s2: number, l: any) => s2 + (Number(l.quantity) || 0), 0),
+      0
+    );
+    const returnedPieces = periodReturns.reduce(
+      (sum, r) =>
+        sum + (r.items || []).reduce((s2: number, it: any) => s2 + (Number(it.quantity) || 0), 0),
+      0
+    );
+    return grossPieces - returnedPieces;
+  }, [periodInvoices, periodReturns]);
+
+  // ربح المبيعات قبل المصاريف + الصافي بعد المصاريف والديون المعدومة (أو من لقطة القفل للشهر الكامل)
+  const periodProfit = useMemo(() => {
+    // تكلفة البضاعة المباعة الأصلية لفواتير الفترة المختارة
+    const grossPeriodCogs = periodInvoices.reduce(
       (sum, inv) =>
         sum +
         (inv.items || []).reduce(
@@ -167,28 +230,55 @@ export const ReportsPage: React.FC = () => {
       0
     );
 
-    // تكلفة البضاعة التي أُرجعت خلال هذا الشهر (سواء بيعت في نفس الشهر أو في نهاية الشهر السابق)
-    const monthReturnsCost = returnsList
-      .filter((r) => r.monthKey === selectedMonth)
-      .reduce(
-        (sum, r) =>
-          sum +
-          (r.items || []).reduce(
-            (s2: number, it: any) => s2 + (Number(it.costPrice) || 0) * (Number(it.quantity) || 0),
-            0
-          ),
-        0
-      );
+    // تكلفة البضاعة التي أُرجعت خلال هذه الفترة
+    const periodReturnsCost = periodReturns.reduce(
+      (sum, r) =>
+        sum +
+        (r.items || []).reduce(
+          (s2: number, it: any) => s2 + (Number(it.costPrice) || 0) * (Number(it.quantity) || 0),
+          0
+        ),
+      0
+    );
 
-    const cogs = round2(grossMonthCogs - monthReturnsCost);
+    const cogs = round2(grossPeriodCogs - periodReturnsCost);
+    const salesProfitBeforeExpenses = round2(totalSales - cogs);
+
+    const snap = salesDateRange.fullMonthKey
+      ? snapshotsList.find((x) => x.monthKey === salesDateRange.fullMonthKey)
+      : undefined;
+    if (snap) {
+      return {
+        salesProfitBeforeExpenses,
+        value: Number(snap.invoiceProfit) || 0,
+        exact: true,
+      };
+    }
+
     const exp = transactions
-      .filter((tx) => tx.monthKey === selectedMonth && tx.type === 'expense')
+      .filter(
+        (tx) =>
+          tx.type === 'expense' &&
+          Boolean(tx.dayKey) &&
+          tx.dayKey >= salesDateRange.from &&
+          tx.dayKey <= salesDateRange.to
+      )
       .reduce((sum, tx) => sum + (Number(tx.amount) || 0), 0);
     const badDebt = transactions
-      .filter((tx) => tx.monthKey === selectedMonth && tx.type === 'bad_debt')
+      .filter(
+        (tx) =>
+          tx.type === 'bad_debt' &&
+          Boolean(tx.dayKey) &&
+          tx.dayKey >= salesDateRange.from &&
+          tx.dayKey <= salesDateRange.to
+      )
       .reduce((sum, tx) => sum + (Number(tx.amount) || 0), 0);
-    return { value: round2(totalSales - cogs - exp - badDebt), exact: false };
-  }, [snapshotsList, selectedMonth, monthInvoices, returnsList, transactions, totalSales]);
+    return {
+      salesProfitBeforeExpenses,
+      value: round2(totalSales - cogs - exp - badDebt),
+      exact: false,
+    };
+  }, [snapshotsList, salesDateRange, periodInvoices, periodReturns, transactions, totalSales]);
 
   // مصروفات الشهر المختار مقسمة حسب التصنيف
   const monthExpensesList = useMemo(() => {
@@ -278,22 +368,24 @@ export const ReportsPage: React.FC = () => {
           </p>
         </div>
 
-        {/* قائمة اختيار الشهر المالي */}
-        <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs self-start sm:self-auto">
-          <Calendar className="w-4 h-4 text-slate-400" />
-          <span className="text-xs text-slate-500 font-medium">الشهر:</span>
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer"
-          >
-            {availableMonths.map((m) => (
-              <option key={m} value={m}>
-                {m} {m === currentMonth ? '(الحالي)' : ''}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* قائمة اختيار الشهر المالي (تُخفى في تبويب المبيعات منعاً للبس مع حقلي التاريخ) */}
+        {activeTab !== 'sales' && (
+          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs self-start sm:self-auto">
+            <Calendar className="w-4 h-4 text-slate-400" />
+            <span className="text-xs text-slate-500 font-medium">الشهر:</span>
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer"
+            >
+              {availableMonths.map((m) => (
+                <option key={m} value={m}>
+                  {m} {m === currentMonth ? '(الحالي)' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       {/* تبويبات التقارير (Tabs) */}
@@ -309,7 +401,7 @@ export const ReportsPage: React.FC = () => {
             }`}
           >
             <Receipt className="w-4 h-4" />
-            <span>تقرير المبيعات ({monthInvoices.length})</span>
+            <span>تقرير المبيعات ({periodInvoices.length})</span>
           </button>
 
           <button
@@ -356,10 +448,32 @@ export const ReportsPage: React.FC = () => {
       {/* 1. تقرير المبيعات */}
       {activeTab === 'sales' && (
         <div className="space-y-4">
+          {/* حقلا التاريخ فقط */}
+          <div className="grid grid-cols-2 gap-2.5 sm:max-w-md">
+            <label className="flex flex-col gap-1 text-xs font-bold text-slate-600">
+              <span>من تاريخ</span>
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+                className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-xs font-bold text-slate-600">
+              <span>إلى تاريخ</span>
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+              />
+            </label>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Card className="p-5 border-slate-200 flex items-center justify-between">
               <div>
-                <span className="text-xs text-slate-400 block mb-1">إجمالي مبيعات الشهر</span>
+                <span className="text-xs text-slate-400 block mb-1">صافي المبيعات</span>
                 <span className="text-2xl font-black text-[#14b8a6]">
                   {formatCurrency(totalSales)}
                 </span>
@@ -372,10 +486,33 @@ export const ReportsPage: React.FC = () => {
             <Card className="p-5 border-slate-200 flex items-center justify-between">
               <div>
                 <span className="text-xs text-slate-400 block mb-1">
-                  {monthProfit.exact ? 'ربح الشهر (من القفل)' : 'ربح الشهر (تقريبي، قبل الديون المعدومة وتسويات الجرد)'}
+                  ربح المبيعات قبل المصاريف
                 </span>
-                <span className={`text-2xl font-black ${monthProfit.value >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                  {formatCurrency(monthProfit.value)}
+                <span
+                  className={`text-2xl font-black ${
+                    periodProfit.salesProfitBeforeExpenses >= 0
+                      ? 'text-emerald-600'
+                      : 'text-rose-600'
+                  }`}
+                >
+                  {formatCurrency(periodProfit.salesProfitBeforeExpenses)}
+                </span>
+              </div>
+            </Card>
+
+            <Card className="p-5 border-slate-200 flex items-center justify-between">
+              <div>
+                <span className="text-xs text-slate-400 block mb-1">
+                  {periodProfit.exact
+                    ? 'الصافي بعد المصاريف (من القفل)'
+                    : 'الصافي بعد المصاريف والديون المعدومة، قبل تسويات الجرد'}
+                </span>
+                <span
+                  className={`text-2xl font-black ${
+                    periodProfit.value >= 0 ? 'text-emerald-600' : 'text-rose-600'
+                  }`}
+                >
+                  {formatCurrency(periodProfit.value)}
                 </span>
               </div>
             </Card>
@@ -383,7 +520,10 @@ export const ReportsPage: React.FC = () => {
             <Card className="p-5 border-slate-200 flex items-center justify-between">
               <div>
                 <span className="text-xs text-slate-400 block mb-1">عدد الفواتير المنفذة</span>
-                <span className="text-2xl font-black text-slate-800">{monthInvoices.length}</span>
+                <span className="text-2xl font-black text-slate-800">{periodInvoices.length}</span>
+                <span className="text-xs text-slate-500 font-bold block mt-1">
+                  عدد القطع المباعة: {periodPiecesSold} قطعة
+                </span>
               </div>
               <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
                 <Receipt className="w-6 h-6" />
@@ -393,12 +533,14 @@ export const ReportsPage: React.FC = () => {
 
           <Card className="p-0 overflow-hidden border-slate-200">
             <div className="p-4 bg-slate-50 border-b border-slate-200">
-              <h2 className="text-sm font-bold text-slate-800">سجل فواتير شهر ({selectedMonth})</h2>
+              <h2 className="text-sm font-bold text-slate-800">
+                {salesDateRange.title}
+              </h2>
             </div>
 
-            {monthInvoices.length === 0 ? (
+            {periodInvoices.length === 0 ? (
               <div className="py-12 text-center text-slate-400 text-sm">
-                لا توجد فواتير مبيعات مسجلة في هذا الشهر
+                لا توجد فواتير مبيعات مسجلة في هذه الفترة
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -413,7 +555,7 @@ export const ReportsPage: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {monthInvoices.map((inv) => (
+                    {periodInvoices.map((inv) => (
                       <tr key={inv.id} className="hover:bg-slate-50/50">
                         <td className="p-3 font-mono text-xs font-bold text-slate-700">
                           {inv.invoiceNumber}

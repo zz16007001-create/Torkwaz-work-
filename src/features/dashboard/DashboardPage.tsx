@@ -14,20 +14,14 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Spinner } from '../../components/ui/Spinner';
 import {
-  Wallet,
   ShoppingCart,
   Boxes,
-  Users,
   AlertTriangle,
-  PackagePlus,
-  TrendingDown,
-  ArrowRight,
   Database,
   Building,
-  CreditCard,
-  Banknote,
-  Smartphone,
   ChevronLeft,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
@@ -46,6 +40,7 @@ export const DashboardPage: React.FC = () => {
 
   const [loading, setLoading] = useState(true);
   const [backupAlert, setBackupAlert] = useState(false);
+  const [showWalletDetails, setShowWalletDetails] = useState(false);
 
   // تحديث todayKey كل دقيقة بتوقيت القاهرة
   const [todayKey, setTodayKey] = useState<string>(() => getDayKey(getCairoDate()));
@@ -267,9 +262,9 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* شبكة الكروت الأساسية */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* كارت رأس المال */}
-        <Card className="p-5 border-slate-200 bg-gradient-to-br from-slate-900 via-slate-850 to-slate-800 text-white flex flex-col justify-between shadow-xs lg:col-span-2">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {/* كارت رأس المال المدمج */}
+        <Card className="col-span-2 p-5 border-slate-200 bg-gradient-to-br from-slate-900 via-slate-850 to-slate-800 text-white flex flex-col justify-between shadow-xs">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs text-slate-300 font-medium">رأس المال التشغيلي الحالي</span>
@@ -278,70 +273,99 @@ export const DashboardPage: React.FC = () => {
             <div className="text-3xl sm:text-4xl font-black text-white mt-2 tracking-tight">
               {formatCurrency(currentCapital)}
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">
-              صافي قيمة المحل = الخزائن + بضاعة المخزن + ديون العملاء
-            </p>
           </div>
 
-          {/* تفصيل رأس المال */}
-          <div className="grid grid-cols-3 gap-2 pt-4 mt-4 border-t border-white/10 text-xs">
-            <div>
-              <span className="text-slate-400 block text-[11px]">الخزائن</span>
-              <span className="font-bold text-white text-sm">
+          {/* مربعات مكونات رأس المال */}
+          <div
+            className={`grid gap-2 pt-4 mt-4 border-t border-white/10 text-xs ${
+              customerCredits > 0 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'
+            }`}
+          >
+            <button
+              type="button"
+              onClick={() => setShowWalletDetails((prev) => !prev)}
+              className="text-right rounded-lg p-1.5 -m-1.5 hover:bg-white/5 transition-colors cursor-pointer"
+            >
+              <span className="text-slate-400 flex items-center gap-1 text-[11px]">
+                <span>الخزائن</span>
+                {showWalletDetails ? (
+                  <ChevronUp className="w-3.5 h-3.5 text-[#14b8a6] shrink-0" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                )}
+              </span>
+              <span className="font-bold text-white text-sm block mt-0.5">
                 {formatCurrency(totalWallets)}
               </span>
-            </div>
+            </button>
+
             <div>
-              <span className="text-slate-400 block text-[11px]">بضاعة المخزن</span>
-              <span className="font-bold text-white text-sm">
+              <span className="text-slate-400 block text-[11px]">البضاعة</span>
+              <span className="font-bold text-white text-sm block mt-0.5">
                 {formatCurrency(inventoryValue)}
               </span>
             </div>
+
             <div>
-              <span className="text-slate-400 block text-[11px]">ديون العملاء</span>
-              <span className="font-bold text-amber-400 text-sm">
+              <span className="text-slate-400 block text-[11px]">ديون لنا</span>
+              <span className="font-bold text-amber-400 text-sm block mt-0.5">
                 {formatCurrency(receivables)}
               </span>
             </div>
+
+            {customerCredits > 0 && (
+              <div>
+                <span className="text-slate-400 block text-[11px]">فلوس عملاء عندنا</span>
+                <span className="font-bold text-rose-300 text-sm block mt-0.5">
+                  {formatCurrency(customerCredits)}
+                </span>
+              </div>
+            )}
           </div>
 
-          {/* تفصيل الخزائن وأرصدة العملاء الدائنة */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 mt-3 border-t border-white/10 text-xs">
-            <div>
-              <span className="text-slate-400 block text-[11px]">كاش (الدرج)</span>
-              <span className="font-bold text-white text-sm">{formatCurrency(walletBalances.cash || 0)}</span>
+          {/* تفاصيل الخزائن ومعادلة رأس المال (مغلقة افتراضياً) */}
+          {showWalletDetails && (
+            <div className="pt-3 mt-3 border-t border-white/10 space-y-3">
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div>
+                  <span className="text-slate-400 block text-[11px]">كاش (الدرج)</span>
+                  <span className="font-bold text-white text-sm">
+                    {formatCurrency(walletBalances.cash || 0)}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[11px]">إنستاباي</span>
+                  <span className="font-bold text-white text-sm">
+                    {formatCurrency(walletBalances.bank || 0)}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[11px]">فودافون</span>
+                  <span className="font-bold text-white text-sm">
+                    {formatCurrency(walletBalances.wallet || 0)}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                رأس المال = {formatCurrency(totalWallets)} + {formatCurrency(inventoryValue)} +{' '}
+                {formatCurrency(receivables)} - {formatCurrency(customerCredits)}. لمعرفة ربح الشهر
+                والفرق الحقيقي افتح «الجرد والإغلاق».
+              </p>
             </div>
-            <div>
-              <span className="text-slate-400 block text-[11px]">بنك / إنستاباي</span>
-              <span className="font-bold text-white text-sm">{formatCurrency(walletBalances.bank || 0)}</span>
-            </div>
-            <div>
-              <span className="text-slate-400 block text-[11px]">محفظة إلكترونية</span>
-              <span className="font-bold text-white text-sm">{formatCurrency(walletBalances.wallet || 0)}</span>
-            </div>
-            <div>
-              <span className="text-slate-400 block text-[11px]">رصيد دائن للعملاء (-)</span>
-              <span className="font-bold text-rose-300 text-sm">{formatCurrency(customerCredits)}</span>
-            </div>
-          </div>
-          <p className="text-[11px] text-slate-400 mt-3">
-            رأس المال = {formatCurrency(totalWallets)} + {formatCurrency(inventoryValue)} + {formatCurrency(receivables)} - {formatCurrency(customerCredits)}.
-            لمعرفة ربح الشهر والفرق الحقيقي افتح «الجرد والإغلاق».
-          </p>
+          )}
         </Card>
 
         {/* كارت مبيعات اليوم */}
-        <Card className="p-5 border-slate-200 flex flex-col justify-between hover:shadow-md transition-shadow">
+        <Card className="p-4 sm:p-5 border-slate-200 flex flex-col justify-between hover:shadow-md transition-shadow">
           <div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-600">
-                صافي حركة اليوم
-              </span>
-              <div className="w-8 h-8 rounded-lg bg-teal-50 text-[#14b8a6] flex items-center justify-center">
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-xs font-bold text-slate-600">صافي حركة اليوم</span>
+              <div className="w-8 h-8 rounded-lg bg-teal-50 text-[#14b8a6] flex items-center justify-center shrink-0">
                 <ShoppingCart className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl font-black text-slate-900 mt-2">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 mt-2">
               {formatCurrency(todayNetSales)}
             </div>
             {todayReturnsTotal > 0 ? (
@@ -356,25 +380,26 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <button
-            onClick={() => navigate('/invoices')}
+            type="button"
+            onClick={() => navigate('/reports?period=today')}
             className="flex items-center justify-between text-xs font-bold text-[#14b8a6] hover:text-[#0d9488] pt-3 border-t border-slate-100 mt-3"
           >
-            <span>عرض الفواتير</span>
+            <span>عرض التفاصيل</span>
             <ChevronLeft className="w-4 h-4" />
           </button>
         </Card>
 
         {/* كارت نواقص المخزون */}
-        <Card className="p-5 border-slate-200 flex flex-col justify-between hover:shadow-md transition-shadow">
+        <Card className="p-4 sm:p-5 border-slate-200 flex flex-col justify-between hover:shadow-md transition-shadow">
           <div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-1">
               <span className="text-xs font-bold text-slate-600">نواقص المخزون</span>
-              <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
                 <Boxes className="w-4 h-4" />
               </div>
             </div>
             <div
-              className={`text-2xl font-black mt-2 ${
+              className={`text-xl sm:text-2xl font-black mt-2 ${
                 lowStockItems.length > 0 ? 'text-rose-600' : 'text-slate-900'
               }`}
             >
@@ -386,6 +411,7 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <button
+            type="button"
             onClick={() => navigate('/items')}
             className="flex items-center justify-between text-xs font-bold text-rose-600 hover:text-rose-700 pt-3 border-t border-slate-100 mt-3"
           >
@@ -393,104 +419,6 @@ export const DashboardPage: React.FC = () => {
             <ChevronLeft className="w-4 h-4" />
           </button>
         </Card>
-      </div>
-
-      {/* تفاصيل الخزائن الثلاث */}
-      <Card className="p-5 border-slate-200 space-y-3">
-        <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-          تفاصيل الخزائن والحسابات النقدية
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
-                <Banknote className="w-4 h-4" />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-slate-800 block">خزينة المحل (كاش)</span>
-                <span className="text-[11px] text-slate-400">الدرج النقدي</span>
-              </div>
-            </div>
-            <span className="text-sm font-extrabold text-slate-900">
-              {formatCurrency(walletBalances.cash || 0)}
-            </span>
-          </div>
-
-          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center">
-                <CreditCard className="w-4 h-4" />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-slate-800 block">البنك / إنستاباي</span>
-                <span className="text-[11px] text-slate-400">الحساب البنكي</span>
-              </div>
-            </div>
-            <span className="text-sm font-extrabold text-slate-900">
-              {formatCurrency(walletBalances.bank || 0)}
-            </span>
-          </div>
-
-          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center">
-                <Smartphone className="w-4 h-4" />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-slate-800 block">فودافون كاش</span>
-                <span className="text-[11px] text-slate-400">محفظة الهاتف</span>
-              </div>
-            </div>
-            <span className="text-sm font-extrabold text-slate-900">
-              {formatCurrency(walletBalances.wallet || 0)}
-            </span>
-          </div>
-        </div>
-      </Card>
-
-      {/* الإجراءات السريعة (3 أزرار سريعة) */}
-      <div className="space-y-3">
-        <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-          إجراءات سريعة
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Button
-            onClick={() => navigate('/cashier')}
-            variant="primary"
-            className="py-4 justify-between text-sm shadow-xs font-bold"
-          >
-            <div className="flex items-center gap-2.5">
-              <ShoppingCart className="w-5 h-5" />
-              <span>بيع جديد (الكاشير)</span>
-            </div>
-            <ArrowRight className="w-4 h-4 rotate-180" />
-          </Button>
-
-          <Button
-            onClick={() => navigate('/purchase')}
-            variant="outline"
-            className="py-4 justify-between text-sm shadow-2xs font-bold bg-white text-slate-800 hover:bg-slate-50"
-          >
-            <div className="flex items-center gap-2.5">
-              <PackagePlus className="w-5 h-5 text-[#14b8a6]" />
-              <span>إضافة بضاعة جديدة</span>
-            </div>
-            <ArrowRight className="w-4 h-4 rotate-180" />
-          </Button>
-
-          <Button
-            onClick={() => navigate('/transactions')}
-            variant="outline"
-            className="py-4 justify-between text-sm shadow-2xs font-bold bg-white text-slate-800 hover:bg-slate-50"
-          >
-            <div className="flex items-center gap-2.5">
-              <TrendingDown className="w-5 h-5 text-rose-600" />
-              <span>تسجيل مصروف</span>
-            </div>
-            <ArrowRight className="w-4 h-4 rotate-180" />
-          </Button>
-        </div>
       </div>
     </div>
   );

@@ -21,9 +21,10 @@ export function round2(num: number): number {
  */
 export function formatCurrency(amount: number, currency: string = 'ج.م'): string {
   const rounded = round2(amount);
+  const isWhole = Number.isInteger(rounded);
   const formatted = rounded.toLocaleString('ar-EG', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: isWhole ? 0 : 2,
+    maximumFractionDigits: isWhole ? 0 : 2,
   });
 
   return `${formatted} ${currency}`;
