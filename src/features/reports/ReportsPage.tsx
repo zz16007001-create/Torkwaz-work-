@@ -473,81 +473,73 @@ export const ReportsPage: React.FC = () => {
           </GreenCard>
 
           <div className="grid grid-cols-2 gap-2">
-            {/* 1. صافي المبيعات: كارت أخضر صلب brand-600 */}
-            <Card className="p-3 bg-brand-600 border-brand-700 text-white flex items-center justify-between gap-2 print:bg-white print:text-slate-900">
+            {/* 1. صافي المبيعات: خلفية صلبة brand-600 */}
+            <div className="rounded-2xl p-3 bg-brand-600 text-white flex items-center justify-between gap-2 print:border print:border-slate-300 print:bg-white print:text-slate-900">
               <div className="min-w-0">
-                <span className="text-[11px] text-brand-100 block mb-0.5 print:text-slate-600">
+                <span className="text-[11px] text-white/90 font-medium block mb-0.5 print:text-slate-600">
                   صافي المبيعات
                 </span>
                 <span className="text-lg font-black text-white block print:text-slate-900">
                   {formatCurrency(totalSales)}
                 </span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0 print:hidden">
+              <div className="w-9 h-9 rounded-xl bg-white/25 flex items-center justify-center shrink-0 print:hidden">
                 <Icon3D name="netSales" size={28} />
               </div>
-            </Card>
+            </div>
 
-            {/* 2. ربح المبيعات قبل المصاريف: كارت أصفر accent-500 */}
-            <Card className="p-3 bg-accent-500 border-accent-600 text-slate-900 flex items-center justify-between gap-2 print:bg-white print:text-slate-900">
+            {/* 2. ربح المبيعات قبل المصاريف: خلفية صلبة accent-500 */}
+            <div className="rounded-2xl p-3 bg-accent-500 text-slate-900 flex items-center justify-between gap-2 print:border print:border-slate-300 print:bg-white print:text-slate-900">
               <div className="min-w-0">
-                <span className="text-[11px] text-slate-800 font-medium block mb-0.5">
+                <span className="text-[11px] text-slate-900/90 font-medium block mb-0.5 print:text-slate-600">
                   ربح المبيعات قبل المصاريف
                 </span>
-                <span
-                  className={`text-lg font-black block ${
-                    periodProfit.salesProfitBeforeExpenses >= 0
-                      ? 'text-slate-900'
-                      : 'text-rose-800'
-                  }`}
-                >
+                <span className="text-lg font-black text-slate-900 block">
                   {formatCurrency(periodProfit.salesProfitBeforeExpenses)}
                 </span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0 print:hidden">
+              <div className="w-9 h-9 rounded-xl bg-white/25 flex items-center justify-center shrink-0 print:hidden">
                 <Icon3D name="grossProfit" size={28} />
               </div>
-            </Card>
+            </div>
 
-            {/* 3. الصافي بعد المصاريف: كارت brand-100 بحد brand-200 */}
-            <Card className="p-3 bg-brand-100 border-brand-200 text-brand-800 flex items-center justify-between gap-2 print:bg-white print:text-slate-900">
+            {/* 3. الصافي بعد المصاريف: خلفية صلبة brand-800 */}
+            <div className="rounded-2xl p-3 bg-brand-800 text-white flex items-center justify-between gap-2 print:border print:border-slate-300 print:bg-white print:text-slate-900">
               <div className="min-w-0">
-                <span className="text-[11px] leading-snug text-brand-800/85 block mb-0.5">
+                <span className="text-[11px] leading-snug text-white/90 font-medium block mb-0.5 print:text-slate-600">
                   {periodProfit.exact
                     ? 'الصافي بعد المصاريف (من القفل)'
                     : 'الصافي (بعد خصم المصاريف والديون المعدومة، ومن غير تسويات الجرد)'}
                 </span>
-                <span
-                  className={`text-lg font-black block ${
-                    periodProfit.value >= 0 ? 'text-brand-800' : 'text-rose-700'
-                  }`}
-                >
-                  {formatCurrency(periodProfit.value)}
+                <span className="text-lg font-black text-white block print:text-slate-900">
+                  {round2(periodProfit.value) < 0
+                    ? `− ${formatCurrency(Math.abs(periodProfit.value))}`
+                    : formatCurrency(periodProfit.value)}
                 </span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shrink-0 print:hidden">
+              <div className="w-9 h-9 rounded-xl bg-white/25 flex items-center justify-center shrink-0 print:hidden">
                 <Icon3D name="netProfit" size={28} />
               </div>
-            </Card>
+            </div>
 
-            {/* 4. عدد الفواتير: كارت accent-100 */}
-            <Card className="p-3 bg-accent-100 border-accent-400/50 text-accent-700 flex items-center justify-between gap-2 print:bg-white print:text-slate-900">
+            {/* 4. عدد الفواتير: خلفية صلبة accent-700 */}
+            <div className="rounded-2xl p-3 bg-accent-700 text-white flex items-center justify-between gap-2 print:border print:border-slate-300 print:bg-white print:text-slate-900">
               <div className="min-w-0">
-                <span className="text-[11px] text-accent-700 font-medium block mb-0.5">
+                <span className="text-[11px] text-white/90 font-medium block mb-0.5 print:text-slate-600">
                   عدد الفواتير المنفذة
                 </span>
-                <span className="text-lg font-black text-slate-900 block">
+                <span className="text-lg font-black text-white block print:text-slate-900">
                   {periodInvoices.length}
                 </span>
-                <span className="text-[11px] text-accent-700 font-bold flex items-center gap-1 mt-0.5">
+                <span className="text-[11px] text-white/90 font-bold flex items-center gap-1 mt-0.5 print:text-slate-700">
                   <Icon3D name="piecesSold" size={18} className="print:hidden" />
                   <span>عدد القطع المباعة: {periodPiecesSold} قطعة</span>
                 </span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shrink-0 print:hidden">
+              <div className="w-9 h-9 rounded-xl bg-white/25 flex items-center justify-center shrink-0 print:hidden">
                 <Icon3D name="invoices" size={28} />
               </div>
-            </Card>
+            </div>
           </div>
 
           <Card className="p-0 overflow-hidden border-brand-100">
