@@ -1,0 +1,6 @@
+{
+  "name": "محلي - نظام كاشير ومخزون ومحاسبة",
+  "description": "نظام كاشير ومخزون ومحاسبة وإدارة نقاط البيع لمحل أحذية وشنط وإكسسوارات حريمي",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
