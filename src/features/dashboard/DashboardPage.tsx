@@ -346,12 +346,6 @@ export const DashboardPage: React.FC = () => {
                   </span>
                 </div>
               </div>
-
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                رأس المال = {formatCurrency(totalWallets)} + {formatCurrency(inventoryValue)} +{' '}
-                {formatCurrency(receivables)} - {formatCurrency(customerCredits)}. لمعرفة ربح الشهر
-                والفرق الحقيقي افتح «الجرد والإغلاق».
-              </p>
             </div>
           )}
         </Card>

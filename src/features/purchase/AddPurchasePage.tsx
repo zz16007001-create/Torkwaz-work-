@@ -13,15 +13,15 @@ import { LabelPrintModal, PrintableLabelItem } from '../items/LabelPrintModal';
 import {
   PackagePlus,
   Plus,
-  Trash2,
+  X,
   CheckCircle2,
-  Eye,
   AlertCircle,
   Footprints,
   ShoppingBag,
   Sparkles,
   Printer,
   ArrowRight,
+  ChevronDown,
 } from 'lucide-react';
 
 interface SizeRow {
@@ -44,7 +44,6 @@ export const AddPurchasePage: React.FC = () => {
   const [description, setDescription] = useState('');
   const [purchaseCostStr, setPurchaseCostStr] = useState('');
   const [sellPriceStr, setSellPriceStr] = useState('');
-  const [supplierName, setSupplierName] = useState('');
 
   // إدارة الألوان
   const [colorLetters, setColorLetters] = useState<Record<string, string>>(DEFAULT_SETTINGS.colorLetters);
@@ -69,6 +68,7 @@ export const AddPurchasePage: React.FC = () => {
 
   // طريقة ومصدر الدفع
   const [paymentSource, setPaymentSource] = useState<'cash' | 'instapay' | 'wallet' | 'pocket'>('cash');
+  const [showOtherPayments, setShowOtherPayments] = useState(false);
 
   // حالات الإرسال والرسائل
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -143,23 +143,6 @@ export const AddPurchasePage: React.FC = () => {
     });
   };
 
-  // معاينة الأكواد التي سيتم توليدها
-  const previewCodes = useMemo(() => {
-    const colorCode = colorLetters[selectedColor] || selectedColor.charAt(0).toUpperCase() || 'X';
-
-    if (category === 'shoes') {
-      return sizeRows
-        .filter((r) => r.quantity > 0)
-        .map((r) => `S?-${colorCode}${r.size}`);
-    } else {
-      return bagRows
-        .filter((r) => r.quantity > 0)
-        .map((r) => {
-          const cCode = colorLetters[r.color] || r.color.charAt(0).toUpperCase() || 'X';
-          return category === 'bags' ? `B?-${cCode}` : `ACC?-${cCode}`;
-        });
-    }
-  }, [category, sizeRows, bagRows, selectedColor, colorLetters]);
 
   // إجمالي الكمية وإجمالي التكلفة
   const totalQuantity = useMemo(() => {
@@ -232,7 +215,6 @@ export const AddPurchasePage: React.FC = () => {
               }));
 
       const res = await createPurchase({
-        supplierName: supplierName.trim() || undefined,
         paymentSource,
         paidAmount: totalCost,
         items: itemsToCreate,
@@ -254,7 +236,6 @@ export const AddPurchasePage: React.FC = () => {
       setDescription('');
       setPurchaseCostStr('');
       setSellPriceStr('');
-      setSupplierName('');
       setSizeRows([
         { size: 37, quantity: 1 },
         { size: 38, quantity: 1 },
@@ -268,32 +249,32 @@ export const AddPurchasePage: React.FC = () => {
     }
   };
 
+  const paymentMethodLabels: Record<'cash' | 'instapay' | 'wallet' | 'pocket', string> = {
+    cash: 'نقدية (خزينة المحل)',
+    instapay: 'إنستاباي (البنك)',
+    wallet: 'فودافون كاش',
+    pocket: 'من الجيب الشخصي',
+  };
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-2">
       {/* عنوان الصفحة */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <PackagePlus className="w-6 h-6 text-[#14b8a6]" />
-            <span>إضافة بضاعة جديدة (فاتورة شراء)</span>
-          </h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-1">
-            تسجيل وصول موديل جديد وتوليد الأكواد وإضافتها إلى المخزون
-          </p>
-        </div>
-      </div>
+      <h1 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-1.5">
+        <PackagePlus className="w-5 h-5 text-[#14b8a6]" />
+        <span>تسجيل بضاعة جديدة</span>
+      </h1>
 
       {errorMsg && (
-        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
+        <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-          <div className="flex items-center gap-2.5 font-bold text-sm">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+        <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs">
+          <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>{successMsg}</span>
           </div>
 
@@ -323,123 +304,126 @@ export const AddPurchasePage: React.FC = () => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* اختيار القسم (تبويبات Tabs) */}
-        <Card className="p-2 border-slate-200">
-          <div className="grid grid-cols-3 gap-2">
+      <form onSubmit={handleSubmit} className="space-y-2">
+        {/* اختيار القسم */}
+        <Card className="p-1.5 border-slate-200">
+          <div className="grid grid-cols-3 gap-1.5">
             <button
               type="button"
               onClick={() => setCategory('shoes')}
-              className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${
+              className={`h-9 flex items-center justify-center gap-1.5 rounded-lg font-bold text-xs transition-all ${
                 category === 'shoes'
                   ? 'bg-[#14b8a6] text-white shadow-sm'
                   : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
               }`}
             >
-              <Footprints className="w-4 h-4" />
+              <Footprints className="w-3.5 h-3.5" />
               <span>أحذية</span>
             </button>
 
             <button
               type="button"
               onClick={() => setCategory('bags')}
-              className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${
+              className={`h-9 flex items-center justify-center gap-1.5 rounded-lg font-bold text-xs transition-all ${
                 category === 'bags'
                   ? 'bg-[#14b8a6] text-white shadow-sm'
                   : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
               }`}
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-3.5 h-3.5" />
               <span>شنط</span>
             </button>
 
             <button
               type="button"
               onClick={() => setCategory('accessories')}
-              className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${
+              className={`h-9 flex items-center justify-center gap-1.5 rounded-lg font-bold text-xs transition-all ${
                 category === 'accessories'
                   ? 'bg-[#14b8a6] text-white shadow-sm'
                   : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
               }`}
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-3.5 h-3.5" />
               <span>إكسسوارات</span>
             </button>
           </div>
         </Card>
 
-        {/* البيانات الأساسية للموديل والأسعار */}
-        <Card className="p-5 border-slate-200 space-y-4">
-          <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">
-            بيانات الموديل والأسعار
-          </h2>
+        {/* بيانات الموديل والأسعار في صف واحد */}
+        <Card className="p-2.5 sm:p-3 border-slate-200 space-y-2">
+          <div className="grid grid-cols-12 gap-1.5">
+            <div className="col-span-6">
+              <label className="block text-[11px] font-medium text-slate-600 mb-0.5 truncate">
+                اسم الصنف / الموديل *
+              </label>
+              <input
+                type="text"
+                placeholder="مثال: كوتشي جلد"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                className="w-full h-10 rounded-lg border border-slate-300 bg-white px-2.5 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#14b8a6]"
+              />
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="الوصف / اسم الموديل (إلزامي)"
-              placeholder="مثال: كوتشي جلد طبيعي مستورد"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
+            <div className="col-span-3">
+              <label className="block text-[11px] font-medium text-slate-600 mb-0.5 truncate">
+                سعر الشراء
+              </label>
+              <input
+                type="text"
+                placeholder="0"
+                value={purchaseCostStr}
+                onChange={(e) => setPurchaseCostStr(e.target.value)}
+                required
+                className="w-full h-10 rounded-lg border border-slate-300 bg-white px-2 text-xs font-bold text-center text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#14b8a6]"
+              />
+            </div>
 
-            <Input
-              label="اسم المورد (اختياري)"
-              placeholder="مثال: مصنع النور / مستورد دبي"
-              value={supplierName}
-              onChange={(e) => setSupplierName(e.target.value)}
-            />
+            <div className="col-span-3">
+              <label className="block text-[11px] font-medium text-slate-600 mb-0.5 truncate">
+                سعر البيع
+              </label>
+              <input
+                type="text"
+                placeholder="0"
+                value={sellPriceStr}
+                onChange={(e) => setSellPriceStr(e.target.value)}
+                required
+                className="w-full h-10 rounded-lg border border-slate-300 bg-white px-2 text-xs font-bold text-center text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#14b8a6]"
+              />
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-            <Input
-              label="سعر الشراء (للقطعة الواحدة)"
-              type="text"
-              placeholder="0.00"
-              value={purchaseCostStr}
-              onChange={(e) => setPurchaseCostStr(e.target.value)}
-              required
-            />
-
-            <Input
-              label="سعر البيع المقترح (للقطعة)"
-              type="text"
-              placeholder="0.00"
-              value={sellPriceStr}
-              onChange={(e) => setSellPriceStr(e.target.value)}
-              required
-            />
-          </div>
-
-          {/* صندوق نسبة الربح يظهر فوراً عند كتابة السعرين */}
+          {/* سطر نسبة الربح بنفس حسابه الحالي */}
           {profitMargin !== null && (
             <div
-              className={`p-3 rounded-xl border text-sm font-bold flex items-center justify-between transition-colors ${
+              className={`px-2.5 py-1.5 rounded-lg border text-xs font-bold flex items-center justify-between transition-colors ${
                 profitMargin >= 0
                   ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                   : 'bg-rose-50 border-rose-200 text-rose-800'
               }`}
             >
               <span>نسبة الربح: {profitMargin}%</span>
-              <span className="text-xs font-medium">
+              <span className="text-[11px] font-medium">
                 {profitMargin >= 0
                   ? `(مكسب ${round2(sell - cost)} ج.م للقطعة)`
                   : `(خسارة ${round2(cost - sell)} ج.م للقطعة)`}
               </span>
             </div>
           )}
+        </Card>
 
-          {/* اختيار اللون الرئيسي (للأحذية) أو الافتراضي */}
+        {/* كارت اللون والكميات */}
+        <Card className="p-2.5 sm:p-3 border-slate-200 space-y-2">
+          {/* للأحذية: اللون الأساسي + زر إضافة لون + كروت المقاسات (2 في الصف) */}
           {category === 'shoes' && (
-            <div className="pt-2">
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                اللون الأساسي للحذاء
-              </label>
-              <div className="flex items-center gap-2">
+            <>
+              <div className="flex items-center gap-1.5">
                 <select
                   value={selectedColor}
                   onChange={(e) => setSelectedColor(e.target.value)}
-                  className="flex-1 rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#14b8a6] focus:ring-2 focus:ring-[#14b8a6]/20"
+                  className="flex-1 h-9 rounded-lg border border-slate-300 bg-white px-2.5 text-xs font-medium text-slate-900 focus:outline-none focus:border-[#14b8a6]"
                 >
                   {Object.entries(colorLetters).map(([name, letter]) => (
                     <option key={name} value={name}>
@@ -448,105 +432,89 @@ export const AddPurchasePage: React.FC = () => {
                   ))}
                 </select>
 
-                <Button
+                <button
                   type="button"
-                  variant="outline"
                   onClick={() => setIsColorModalOpen(true)}
-                  className="gap-1 shrink-0"
+                  title="إضافة لون جديد"
+                  className="h-9 w-9 shrink-0 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center transition-colors"
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>لون جديد</span>
-                </Button>
+                  <Plus className="w-4 h-4" />
+                </button>
               </div>
-            </div>
-          )}
-        </Card>
 
-        {/* صفوف المقاسات أو الألوان */}
-        <Card className="p-5 border-slate-200 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-            <h2 className="text-sm font-bold text-slate-800">
-              {category === 'shoes' ? 'المقاسات والكميات' : 'الألوان والكميات'}
-            </h2>
+              <div className="grid grid-cols-2 gap-1.5">
+                {sizeRows.map((row, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-1 bg-slate-50 p-1.5 rounded-lg border border-slate-200"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <label className="text-[10px] text-slate-500 block leading-tight mb-0.5 text-center">
+                        المقاس
+                      </label>
+                      <input
+                        type="number"
+                        value={row.size}
+                        onChange={(e) => updateSizeRow(idx, 'size', Number(e.target.value))}
+                        className="w-full h-7 bg-white border border-slate-300 rounded-md px-1 text-xs text-center font-bold text-slate-900"
+                      />
+                    </div>
 
-            {category === 'shoes' ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={addSizeRow}
-                className="gap-1"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>إضافة مقاس</span>
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={addBagRow}
-                className="gap-1"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>إضافة لون</span>
-              </Button>
-            )}
-          </div>
+                    <div className="flex-1 min-w-0">
+                      <label className="text-[10px] text-slate-500 block leading-tight mb-0.5 text-center">
+                        الكمية
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        value={row.quantity}
+                        onChange={(e) =>
+                          updateSizeRow(idx, 'quantity', Math.max(1, Number(e.target.value)))
+                        }
+                        className="w-full h-7 bg-white border border-slate-300 rounded-md px-1 text-xs text-center font-bold text-slate-900"
+                      />
+                    </div>
 
-          {/* محتوى صفوف الأحذية */}
-          {category === 'shoes' && (
-            <div className="space-y-3">
-              {sizeRows.map((row, idx) => (
-                <div key={idx} className="flex items-center gap-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                  <div className="w-1/2">
-                    <label className="text-xs text-slate-500 mb-1 block">المقاس</label>
-                    <input
-                      type="number"
-                      value={row.size}
-                      onChange={(e) => updateSizeRow(idx, 'size', Number(e.target.value))}
-                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm text-center font-bold"
-                    />
-                  </div>
-
-                  <div className="w-1/2">
-                    <label className="text-xs text-slate-500 mb-1 block">الكمية</label>
-                    <input
-                      type="number"
-                      min="1"
-                      value={row.quantity}
-                      onChange={(e) => updateSizeRow(idx, 'quantity', Math.max(1, Number(e.target.value)))}
-                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm text-center font-bold"
-                    />
-                  </div>
-
-                  <div className="pt-5">
                     <button
                       type="button"
                       disabled={sizeRows.length <= 1}
                       onClick={() => removeSizeRow(idx)}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 disabled:opacity-30 rounded-lg transition-colors"
-                      title="حذف السطر"
+                      className="p-1 text-slate-400 hover:text-rose-600 disabled:opacity-30 rounded transition-colors self-end mb-0.5"
+                      title="حذف"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={addSizeRow}
+                  className="min-h-[48px] rounded-lg border border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-100 text-slate-600 text-xs font-bold flex items-center justify-center gap-1 transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>مقاس</span>
+                </button>
+              </div>
+            </>
           )}
 
-          {/* محتوى صفوف الشنط والإكسسوارات */}
+          {/* للشنط والإكسسوارات: كروت اللون والكمية (2 في الصف) */}
           {category !== 'shoes' && (
-            <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-1.5">
               {bagRows.map((row, idx) => (
-                <div key={idx} className="flex items-center gap-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                  <div className="w-1/2">
-                    <label className="text-xs text-slate-500 mb-1 block">اللون</label>
+                <div
+                  key={idx}
+                  className="flex items-center gap-1 bg-slate-50 p-1.5 rounded-lg border border-slate-200"
+                >
+                  <div className="flex-[1.3] min-w-0">
+                    <label className="text-[10px] text-slate-500 block leading-tight mb-0.5">
+                      اللون
+                    </label>
                     <select
                       value={row.color}
                       onChange={(e) => updateBagRow(idx, 'color', e.target.value)}
-                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-medium"
+                      className="w-full h-7 bg-white border border-slate-300 rounded-md px-1 text-[11px] font-medium text-slate-900"
                     >
                       {Object.entries(colorLetters).map(([name, letter]) => (
                         <option key={name} value={name}>
@@ -556,108 +524,124 @@ export const AddPurchasePage: React.FC = () => {
                     </select>
                   </div>
 
-                  <div className="w-1/2">
-                    <label className="text-xs text-slate-500 mb-1 block">الكمية</label>
+                  <div className="flex-1 min-w-0">
+                    <label className="text-[10px] text-slate-500 block leading-tight mb-0.5 text-center">
+                      الكمية
+                    </label>
                     <input
                       type="number"
                       min="1"
                       value={row.quantity}
-                      onChange={(e) => updateBagRow(idx, 'quantity', Math.max(1, Number(e.target.value)))}
-                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm text-center font-bold"
+                      onChange={(e) =>
+                        updateBagRow(idx, 'quantity', Math.max(1, Number(e.target.value)))
+                      }
+                      className="w-full h-7 bg-white border border-slate-300 rounded-md px-1 text-xs text-center font-bold text-slate-900"
                     />
                   </div>
 
-                  <div className="pt-5">
-                    <button
-                      type="button"
-                      disabled={bagRows.length <= 1}
-                      onClick={() => removeBagRow(idx)}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 disabled:opacity-30 rounded-lg transition-colors"
-                      title="حذف السطر"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    disabled={bagRows.length <= 1}
+                    onClick={() => removeBagRow(idx)}
+                    className="p-1 text-slate-400 hover:text-rose-600 disabled:opacity-30 rounded transition-colors self-end mb-0.5"
+                    title="حذف"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               ))}
+
+              <button
+                type="button"
+                onClick={addBagRow}
+                className="min-h-[48px] rounded-lg border border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-100 text-slate-600 text-xs font-bold flex items-center justify-center gap-1 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>لون</span>
+              </button>
             </div>
           )}
 
-          {/* إجمالي الكميات والتكلفة */}
-          <div className="flex items-center justify-between pt-3 border-t border-slate-200 text-sm">
+          {/* إجمالي القطع والتكلفة */}
+          <div className="flex items-center justify-between pt-2 border-t border-slate-200 text-xs">
             <span className="text-slate-600">
               إجمالي القطع: <strong className="text-slate-900">{totalQuantity} قطعة</strong>
             </span>
             <span className="text-slate-600">
-              إجمالي التكلفة المطلوبة:{' '}
-              <strong className="text-[#14b8a6] text-base">{formatCurrency(totalCost)}</strong>
+              إجمالي التكلفة:{' '}
+              <strong className="text-[#14b8a6] text-sm">{formatCurrency(totalCost)}</strong>
             </span>
           </div>
         </Card>
 
-        {/* طريقة ومصدر الدفع */}
-        <Card className="p-5 border-slate-200 space-y-3">
-          <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">
-            مصدر وطريقة الدفع
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {[
-              { id: 'cash', label: 'نقدية (خزينة المحل)' },
-              { id: 'instapay', label: 'إنستاباي (البنك)' },
-              { id: 'wallet', label: 'فودافون كاش' },
-              { id: 'pocket', label: 'من الجيب الشخصي' },
-            ].map((method) => {
-              const isSelected = paymentSource === method.id;
-              return (
+        {/* كارت الدفع */}
+        <Card className="p-2 border-slate-200 space-y-1.5">
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => {
+                setPaymentSource('cash');
+                setShowOtherPayments(false);
+              }}
+              className="flex-1 h-9 px-3 rounded-lg border border-[#14b8a6] bg-[#14b8a6]/10 text-[#0d9488] text-xs font-bold flex items-center justify-between transition-colors"
+            >
+              <span>{paymentMethodLabels[paymentSource]}</span>
+              {paymentSource !== 'cash' && (
+                <span className="text-[10px] font-medium text-slate-500">رجوع للنقدية</span>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowOtherPayments((prev) => !prev)}
+              className="h-9 px-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-1 shrink-0 transition-colors"
+            >
+              <span>طرق أخرى</span>
+              <ChevronDown
+                className={`w-3.5 h-3.5 transition-transform ${showOtherPayments ? 'rotate-180' : ''}`}
+              />
+            </button>
+          </div>
+
+          {showOtherPayments && (
+            <div className="grid grid-cols-3 gap-1.5 pt-1 border-t border-slate-100">
+              {(
+                [
+                  { id: 'instapay', label: 'إنستاباي (البنك)' },
+                  { id: 'wallet', label: 'فودافون كاش' },
+                  { id: 'pocket', label: 'من الجيب الشخصي' },
+                ] as const
+              ).map((method) => (
                 <button
                   key={method.id}
                   type="button"
-                  onClick={() => setPaymentSource(method.id as any)}
-                  className={`p-3 rounded-xl border text-xs font-bold transition-all text-center ${
-                    isSelected
+                  onClick={() => {
+                    setPaymentSource(method.id);
+                    setShowOtherPayments(false);
+                  }}
+                  className={`py-2 px-1.5 rounded-lg border text-[11px] font-bold text-center transition-colors ${
+                    paymentSource === method.id
                       ? 'border-[#14b8a6] bg-[#14b8a6]/10 text-[#0d9488]'
-                      : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                      : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   {method.label}
                 </button>
-              );
-            })}
-          </div>
-        </Card>
-
-        {/* معاينة الأكواد التي سيتم توليدها */}
-        {previewCodes.length > 0 && (
-          <Card className="p-4 border-slate-200 bg-slate-50/60">
-            <div className="flex items-center gap-2 mb-2 text-xs font-bold text-slate-700">
-              <Eye className="w-4 h-4 text-[#14b8a6]" />
-              <span>معاينة الأكواد المتوقعة للأصناف:</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {previewCodes.map((code, i) => (
-                <span
-                  key={i}
-                  className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-800 shadow-2xs"
-                >
-                  {code}
-                </span>
               ))}
             </div>
-          </Card>
-        )}
+          )}
+        </Card>
 
         {/* زر الحفظ النهائي */}
-        <div className="pt-2">
-          <Button
-            type="submit"
-            variant="primary"
-            isLoading={isSubmitting}
-            className="w-full py-3.5 text-base shadow-sm gap-2"
-          >
-            <CheckCircle2 className="w-5 h-5" />
-            <span>حفظ البضاعة وإضافتها إلى المخزون</span>
-          </Button>
-        </div>
+        <Button
+          type="submit"
+          variant="primary"
+          isLoading={isSubmitting}
+          className="w-full py-2.5 text-sm shadow-sm gap-2"
+        >
+          <CheckCircle2 className="w-4 h-4" />
+          <span>حفظ البضاعة وإضافتها إلى المخزون</span>
+        </Button>
       </form>
 
       {/* نافذة إضافة لون جديد */}

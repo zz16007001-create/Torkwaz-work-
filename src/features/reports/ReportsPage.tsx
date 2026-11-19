@@ -505,7 +505,7 @@ export const ReportsPage: React.FC = () => {
                 <span className="text-xs text-slate-400 block mb-1">
                   {periodProfit.exact
                     ? 'الصافي بعد المصاريف (من القفل)'
-                    : 'الصافي بعد المصاريف والديون المعدومة، قبل تسويات الجرد'}
+                    : 'الصافي (بعد خصم المصاريف والديون المعدومة، ومن غير تسويات الجرد)'}
                 </span>
                 <span
                   className={`text-2xl font-black ${
