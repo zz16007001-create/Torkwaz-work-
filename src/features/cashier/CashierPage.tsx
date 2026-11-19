@@ -698,6 +698,17 @@ export const CashierPage: React.FC = () => {
               </span>
             </div>
 
+            {cart.length > 0 && (
+              <div className="px-2 sm:px-4 py-2 bg-slate-50/60 border-b border-slate-100 flex flex-row items-center gap-1.5 sm:gap-2 text-[11px] font-medium text-slate-500">
+                <div className="flex-1 min-w-0">الصنف</div>
+                <div className="w-[84px] sm:w-[120px] shrink-0 text-center">الكمية</div>
+                <div aria-hidden="true" className="w-3 sm:w-6 shrink-0" />
+                <div className="w-[60px] sm:w-[96px] shrink-0 text-center">السعر (ج.م)</div>
+                <div className="w-[72px] sm:w-[110px] shrink-0 text-left">الإجمالي</div>
+                <div aria-hidden="true" className="w-6 shrink-0" />
+              </div>
+            )}
+
             {cart.length === 0 ? (
               <div className="py-16 text-center text-slate-400">
                 <ShoppingCart className="w-12 h-12 mx-auto mb-2 text-slate-300" />
@@ -713,18 +724,21 @@ export const CashierPage: React.FC = () => {
                   return (
                     <div
                       key={it.itemId}
-                      className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 transition-colors"
+                      className="px-2 sm:px-4 py-3 flex flex-row items-center gap-1.5 sm:gap-2 hover:bg-slate-50/50 transition-colors"
                     >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-bold text-slate-600">
-                            {it.code}
-                          </span>
-                          <span className="font-bold text-slate-900 text-sm">{it.name}</span>
+                      {/* خانة الصنف */}
+                      <div className="flex-1 min-w-0">
+                        <div className="font-bold text-slate-900 text-sm break-words">
+                          {it.name}
                         </div>
 
-                        <div className="flex items-center gap-2 mt-1 text-xs text-slate-500">
+                        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 mt-1 text-xs text-slate-500">
+                          {it.code && (
+                            <span className="font-mono font-bold text-slate-600">{it.code}</span>
+                          )}
+                          {it.code && it.color && <span aria-hidden="true">·</span>}
                           {it.color && <span>{it.color}</span>}
+                          {(it.code || it.color) && it.size && <span aria-hidden="true">·</span>}
                           {it.size && <span>مقاس {it.size}</span>}
                           {isStockOut && (
                             <span className="text-rose-600 font-bold bg-rose-50 px-1.5 py-0.5 rounded text-[11px] flex items-center gap-1">
@@ -735,13 +749,13 @@ export const CashierPage: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* أزرار الكمية وسعر الوحدة والإجمالي */}
-                      <div className="flex items-center justify-between sm:justify-end gap-4">
-                        <div className="flex items-center border border-slate-200 rounded-xl bg-white shadow-2xs">
+                      {/* خانة الكمية */}
+                      <div className="w-[84px] sm:w-[120px] shrink-0">
+                        <div className="flex items-center justify-between border border-slate-200 rounded-xl bg-white shadow-2xs">
                           <button
                             type="button"
                             onClick={() => updateQuantity(it.itemId, it.quantity - 1)}
-                            className="p-1.5 text-slate-600 hover:text-rose-600 hover:bg-slate-50 rounded-r-xl transition-colors"
+                            className="p-1 sm:p-1.5 text-slate-600 hover:text-rose-600 hover:bg-slate-50 rounded-r-xl transition-colors"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
@@ -755,45 +769,54 @@ export const CashierPage: React.FC = () => {
                             onChange={(e) =>
                               updateQuantity(it.itemId, Math.max(1, parseInt(e.target.value) || 1))
                             }
-                            className="w-12 text-center text-sm font-bold text-slate-800 focus:outline-none"
+                            className="w-8 sm:w-12 text-center text-sm font-bold text-slate-800 focus:outline-none"
                           />
                           <button
                             type="button"
                             onClick={() => updateQuantity(it.itemId, it.quantity + 1)}
-                            className="p-1.5 text-slate-600 hover:text-[#14b8a6] hover:bg-slate-50 rounded-l-xl transition-colors"
+                            className="p-1 sm:p-1.5 text-slate-600 hover:text-[#14b8a6] hover:bg-slate-50 rounded-l-xl transition-colors"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
                         </div>
-
-                        <div className="text-left min-w-[110px]">
-                          <div className="flex items-center justify-end gap-1 mb-0.5">
-                            <input
-                              type="text"
-                              value={it.unitPriceStr !== undefined ? it.unitPriceStr : it.unitPrice}
-                              onFocus={resetCartInputIdleTimer}
-                              onBlur={clearCartInputIdleTimer}
-                              onKeyDown={handleCartNumericKeyDown}
-                              onChange={(e) => updateUnitPrice(it.itemId, e.target.value)}
-                              className="w-16 px-1.5 py-0.5 text-center text-xs font-bold text-slate-800 border border-slate-200 rounded-lg focus:outline-none focus:border-[#14b8a6] bg-white"
-                              title="سعر القطعة (قابل للتعديل)"
-                            />
-                            <span className="text-[10px] text-slate-400">ج.م</span>
-                          </div>
-                          <span className="text-sm font-black text-slate-900 block">
-                            {formatCurrency(lineTotal)}
-                          </span>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => removeFromCart(it.itemId)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 transition-colors"
-                          title="حذف البند"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
                       </div>
+
+                      {/* فاصل بين الكمية والسعر */}
+                      <div aria-hidden="true" className="w-3 sm:w-6 shrink-0" />
+
+                      {/* خانة السعر */}
+                      <div className="w-[60px] sm:w-[96px] shrink-0">
+                        <div className="flex items-center justify-center gap-1">
+                          <input
+                            type="text"
+                            value={it.unitPriceStr !== undefined ? it.unitPriceStr : it.unitPrice}
+                            onFocus={resetCartInputIdleTimer}
+                            onBlur={clearCartInputIdleTimer}
+                            onKeyDown={handleCartNumericKeyDown}
+                            onChange={(e) => updateUnitPrice(it.itemId, e.target.value)}
+                            className="w-full sm:w-16 px-1 sm:px-1.5 py-0.5 text-center text-xs font-bold text-slate-800 border border-slate-200 rounded-lg focus:outline-none focus:border-[#14b8a6] bg-white"
+                            title="سعر القطعة (قابل للتعديل)"
+                          />
+                          <span className="hidden sm:inline text-[10px] text-slate-400">ج.م</span>
+                        </div>
+                      </div>
+
+                      {/* خانة الإجمالي */}
+                      <div className="w-[72px] sm:w-[110px] shrink-0 text-left">
+                        <span className="text-[11px] sm:text-sm font-black text-slate-900 whitespace-nowrap block">
+                          {formatCurrency(lineTotal)}
+                        </span>
+                      </div>
+
+                      {/* زر الحذف */}
+                      <button
+                        type="button"
+                        onClick={() => removeFromCart(it.itemId)}
+                        className="p-1 shrink-0 w-6 flex items-center justify-center text-slate-400 hover:text-rose-600 transition-colors"
+                        title="حذف البند"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   );
                 })}

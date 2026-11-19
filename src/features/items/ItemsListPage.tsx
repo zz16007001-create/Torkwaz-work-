@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useItems } from '../../hooks/useItems';
+import { useItems, ExtendedItem } from '../../hooks/useItems';
+import { useBarcodeScanner } from '../../hooks/useBarcodeScanner';
 import { useUiMode } from '../../lib/uiMode';
 import { normalizeAr } from '../../domain/arabic';
 import { formatCurrency } from '../../domain/money';
@@ -16,6 +17,7 @@ import {
   Palette,
   Ruler,
   Archive,
+  X,
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -34,6 +36,128 @@ export const ItemsListPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showArchived, setShowArchived] = useState(false);
+
+  const [scannedItem, setScannedItem] = useState<ExtendedItem | null>(null);
+  const [scanErrorMsg, setScanErrorMsg] = useState<string | null>(null);
+  const scanErrorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  const playBeep = (type: 'success' | 'error') => {
+    try {
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtx) return;
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new AudioCtx();
+      }
+      const ctx = audioCtxRef.current;
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (type === 'success') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1046.5, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.1);
+      } else {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(240, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.18);
+      }
+    } catch {
+      // تجاهل أخطاء الصوت بصمت
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (scanErrorTimerRef.current) {
+        clearTimeout(scanErrorTimerRef.current);
+        scanErrorTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  useBarcodeScanner({
+    enabled: true,
+    onScan: (code) => {
+      const q = normalizeAr(code.trim());
+      const hit = items.find((it) => it.isActive && normalizeAr(String(it.code || '')) === q);
+
+      if (hit) {
+        if (scanErrorTimerRef.current) {
+          clearTimeout(scanErrorTimerRef.current);
+          scanErrorTimerRef.current = null;
+        }
+        setScanErrorMsg(null);
+        if (mode !== 'sales') {
+          playBeep('success');
+          navigate(`/items/${hit.id}`);
+        } else {
+          setScannedItem(hit);
+          playBeep('success');
+        }
+      } else {
+        const hasArabic = /[\u0600-\u06FF]/.test(code);
+        const msg = hasArabic
+          ? `الكود غير موجود: ${code} (تأكد أن لغة الكيبورد إنجليزي)`
+          : `الكود غير موجود: ${code}`;
+        setScanErrorMsg(msg);
+        if (scanErrorTimerRef.current) {
+          clearTimeout(scanErrorTimerRef.current);
+        }
+        scanErrorTimerRef.current = setTimeout(() => {
+          setScanErrorMsg(null);
+          scanErrorTimerRef.current = null;
+        }, 3000);
+        playBeep('error');
+      }
+    },
+  });
+
+  // أصناف نفس الموديل للعرض في كارت استعلام الموديل بوضع البيع
+  const modelVariants = useMemo(() => {
+    if (!scannedItem) return [];
+    const rawCode = String(scannedItem.code || '').trim();
+    const dashIndex = rawCode.indexOf('-');
+    if (dashIndex === -1) {
+      return [scannedItem];
+    }
+    const targetModelKey = normalizeAr(rawCode.slice(0, dashIndex));
+    const matches = items.filter((it) => {
+      if (!it.isActive) return false;
+      const itCode = String(it.code || '').trim();
+      const itDash = itCode.indexOf('-');
+      if (itDash === -1) return false;
+      return normalizeAr(itCode.slice(0, itDash)) === targetModelKey;
+    });
+
+    const list = matches.length > 0 ? matches : [scannedItem];
+    return [...list].sort((a, b) => {
+      const colorA = normalizeAr(String(a.color || ''));
+      const colorB = normalizeAr(String(b.color || ''));
+      const colorCmp = colorA.localeCompare(colorB, 'ar');
+      if (colorCmp !== 0) return colorCmp;
+
+      const sizeNumA = Number(a.size);
+      const sizeNumB = Number(b.size);
+      if (!isNaN(sizeNumA) && !isNaN(sizeNumB) && sizeNumA !== sizeNumB) {
+        return sizeNumA - sizeNumB;
+      }
+      return String(a.size || '').localeCompare(String(b.size || ''), 'ar', { numeric: true });
+    });
+  }, [items, scannedItem]);
 
   // تصفية وترشيح الأصناف
   const filteredItems = useMemo(() => {
@@ -153,6 +277,71 @@ export const ItemsListPage: React.FC = () => {
           })}
         </div>
       </Card>
+
+      {scanErrorMsg && (
+        <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm font-bold flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
+          <span>{scanErrorMsg}</span>
+        </div>
+      )}
+
+      {isSalesMode && scannedItem && (
+        <Card className="p-4 border-2 border-[#14b8a6]/40 bg-white space-y-3">
+          <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
+            <div>
+              <span className="text-[11px] font-bold text-[#14b8a6] block">استعلام الموديل</span>
+              <h2 className="text-base font-bold text-slate-900">{scannedItem.name}</h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setScannedItem(null)}
+              aria-label="إغلاق"
+              title="إغلاق"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="space-y-1.5">
+            {modelVariants.map((variant) => {
+              const isScannedExact = variant.id === scannedItem.id;
+              const isOutOfStock = (variant.currentStock ?? 0) <= 0;
+              return (
+                <div
+                  key={variant.id}
+                  className={`flex items-center justify-between gap-3 px-3 py-2 rounded-xl border text-xs sm:text-sm ${
+                    isScannedExact
+                      ? 'bg-[#14b8a6]/10 border-[#14b8a6] font-bold text-slate-900'
+                      : 'bg-slate-50 border-slate-200 text-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="inline-flex items-center gap-1">
+                      <Palette className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{variant.color || '-'}</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <Ruler className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{variant.size ? `مقاس ${variant.size}` : '-'}</span>
+                    </span>
+                  </div>
+
+                  <div>
+                    {isOutOfStock ? (
+                      <span className="text-rose-600 font-bold">نفد</span>
+                    ) : (
+                      <span className="font-bold text-emerald-700">
+                        الرصيد: {variant.currentStock}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
 
       {/* محتوى القائمة */}
       {loading ? (

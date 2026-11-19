@@ -1,53 +1,140 @@
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff } from 'lucide-react';
-import { getPendingCount, subscribePending } from '../../lib/pending';
+import { WifiOff, Clock, Loader2, CheckCircle2, X } from 'lucide-react';
+import { useSyncStatus } from '../../hooks/useSyncStatus';
+import {
+  getRejectedInvoices,
+  subscribeRejectedInvoices,
+  RejectedInvoiceAlert,
+} from '../../lib/pending';
 
 export const SyncIndicator: React.FC = () => {
-  const [isOnline, setIsOnline] = useState<boolean>(() => {
-    return typeof navigator !== 'undefined' ? navigator.onLine : true;
-  });
-
-  const [pending, setPending] = useState<number>(getPendingCount());
-  useEffect(() => subscribePending(() => setPending(getPendingCount())), []);
+  const { connection, pendingInvoices } = useSyncStatus();
+  const [rejectedInvoices, setRejectedInvoices] = useState<RejectedInvoiceAlert[]>(() =>
+    getRejectedInvoices()
+  );
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
+    return subscribeRejectedInvoices(() => {
+      setRejectedInvoices(getRejectedInvoices());
+    });
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
+  const pendingCount = pendingInvoices.length;
+  const pendingCountAr = pendingCount.toLocaleString('ar-EG');
+  const hasRejected = rejectedInvoices.length > 0;
+  const hasPending = pendingCount > 0;
+
+  let badgeClasses = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+  let badgeText = 'تمام';
+  let BadgeIcon: React.ReactNode = <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />;
+
+  if (connection === 'offline' || hasRejected) {
+    badgeClasses = 'bg-rose-50 text-rose-700 border-rose-200';
+    BadgeIcon = <WifiOff className="w-3.5 h-3.5 shrink-0" />;
+    if (hasRejected) {
+      badgeText = 'فاتورة مرفوضة';
+    } else if (hasPending) {
+      badgeText = `النت فاصل • ${pendingCountAr} لم يُرفع`;
+    } else {
+      badgeText = 'النت فاصل';
+    }
+  } else if (hasPending) {
+    badgeClasses = 'bg-amber-50 text-amber-700 border-amber-200';
+    BadgeIcon = <Clock className="w-3.5 h-3.5 shrink-0" />;
+    badgeText = `${pendingCountAr} لم يُرفع`;
+  } else if (connection === 'checking') {
+    badgeClasses = 'bg-slate-100 text-slate-600 border-slate-200';
+    BadgeIcon = <Loader2 className="w-3.5 h-3.5 shrink-0 animate-spin" />;
+    badgeText = 'جاري الاتصال';
+  }
+
   return (
-    <div
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border select-none transition-colors ${
-        isOnline
-          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-          : 'bg-amber-50 text-amber-700 border-amber-200'
-      }`}
-      title={isOnline ? 'النظام متصل بالإنترنت' : 'يعمل النظام أوفلاين في الذاكرة المحلية'}
-    >
-      <span
-        className={`w-2 h-2 rounded-full ${
-          isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
-        }`}
-      />
-      {isOnline ? (
+    <>
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer ${badgeClasses}`}
+      >
+        {BadgeIcon}
+        <span>{badgeText}</span>
+      </button>
+
+      {isOpen && (
         <>
-          <Wifi className="w-3.5 h-3.5" />
-          <span>متصل{pending > 0 ? ` • ${pending} لم يُرفع` : ''}</span>
-        </>
-      ) : (
-        <>
-          <WifiOff className="w-3.5 h-3.5" />
-          <span>بدون إنترنت{pending > 0 ? ` • ${pending} لم يُرفع` : ''}</span>
+          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+          <div
+            dir="rtl"
+            className="fixed z-50 top-[68px] inset-x-3 sm:inset-x-auto sm:left-4 sm:w-80 bg-white border border-slate-200 rounded-2xl shadow-lg p-4 text-sm space-y-2"
+          >
+            <div className="flex items-center justify-between gap-2 pb-1 border-b border-slate-100">
+              <div>
+                {connection === 'online' ? (
+                  <span className="font-bold text-emerald-700">النت: شغال</span>
+                ) : connection === 'offline' ? (
+                  <span className="font-bold text-rose-700">النت: فاصل</span>
+                ) : (
+                  <span className="font-bold text-slate-600">جاري فحص الاتصال…</span>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                aria-label="إغلاق"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {hasPending && (
+              <div className="space-y-1">
+                <p className="text-slate-800 font-medium">فواتير لسه ما اترفعتش:</p>
+                <p className="font-mono text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-xl p-2 break-words">
+                  {pendingInvoices.join('، ')}
+                </p>
+                <p className="text-xs text-slate-500">
+                  {connection === 'offline'
+                    ? 'كمّل بيع عادي، هتترفع لما النت يرجع.'
+                    : 'سيب الصفحة مفتوحة، هيترفعوا لوحدهم.'}
+                </p>
+              </div>
+            )}
+
+            {!hasPending && !hasRejected && (
+              <p className="text-slate-600 text-xs">مفيش فواتير معلّقة. كل حاجة اترفعت.</p>
+            )}
+
+            {hasRejected && (
+              <div className="space-y-1.5 pt-1 border-t border-rose-100">
+                {rejectedInvoices.map((rej) => (
+                  <div
+                    key={rej.invoiceNumber}
+                    className="p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-800"
+                  >
+                    <p className="text-xs font-bold">
+                      فاتورة {rej.invoiceNumber} رفضها السيرفر
+                    </p>
+                    <p className="text-[11px] text-rose-700 mt-0.5">{rej.errorMessage}</p>
+                  </div>
+                ))}
+                <p className="text-xs font-bold text-rose-700">راجع الإدارة.</p>
+              </div>
+            )}
+          </div>
         </>
       )}
-    </div>
+    </>
   );
 };
