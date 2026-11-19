@@ -15,7 +15,6 @@ import { Spinner } from '../../components/ui/Spinner';
 import {
   ArrowRight,
   User,
-  Calendar,
   Phone,
   Printer,
   RotateCcw,
@@ -202,60 +201,64 @@ export const InvoiceDetailPage: React.FC = () => {
 
   const isCancelled = invoice.status === 'cancelled';
   const hasDebt = (invoice.remainingAmount || 0) > 0.01;
+  const hasDiscount = (invoice.discountTotal || 0) > 0;
   const payments = invoice.payments || {};
 
   // فحص ما إذا كان هناك أي بنود قابلة للإرجاع
   const hasReturnableItems = (invoice.items || []).some(
     (it: any) => (Number(it.quantity) || 0) > (Number(it.returnedQty) || 0)
   );
+  const hasAnyReturned = (invoice.items || []).some(
+    (it: any) => (Number(it.returnedQty) || 0) > 0
+  );
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-3">
       {/* الشريط العلوي والأزرار */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="space-y-2">
+        <div className="flex items-start gap-2">
           <button
             onClick={() => navigate('/invoices')}
-            className="p-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors"
+            className="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors shrink-0 mt-0.5"
             title="رجوع لسجل الفواتير"
           >
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-4 h-4" />
           </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">
-                فاتورة رقم {invoice.invoiceNumber}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-lg font-bold text-slate-900">
+                فاتورة {invoice.invoiceNumber}
               </h1>
               {isCancelled ? (
-                <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-rose-100 text-rose-700">
+                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-rose-100 text-rose-700 shrink-0">
                   ملغاة
                 </span>
               ) : hasDebt ? (
-                <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-amber-100 text-amber-800">
+                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800 shrink-0">
                   آجل
                 </span>
               ) : (
-                <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800">
+                <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-800 shrink-0">
                   مدفوعة
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-[11px] text-slate-500 mt-0.5">
               {formatDate(invoice.createdAt, true)}
             </p>
           </div>
         </div>
 
         {/* أزرار الإجراءات */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={() => window.print()}
-            className="gap-1.5"
+            className="flex-1 justify-center gap-1 h-8 px-2 text-xs"
           >
-            <Printer className="w-4 h-4 text-slate-600" />
+            <Printer className="w-3.5 h-3.5 text-slate-600 shrink-0" />
             <span>طباعة</span>
           </Button>
 
@@ -267,9 +270,9 @@ export const InvoiceDetailPage: React.FC = () => {
               disabled={!hasReturnableItems}
               onClick={openReturnModal}
               title={hasReturnableItems ? 'تسجيل مرتجع' : 'تم إرجاع كافة البنود بالفعل'}
-              className="gap-1.5 text-amber-700 border-amber-300 hover:bg-amber-50 disabled:opacity-40"
+              className="flex-1 justify-center gap-1 h-8 px-2 text-xs text-amber-700 border-amber-300 hover:bg-amber-50 disabled:opacity-40"
             >
-              <RotateCcw className="w-4 h-4 text-amber-600" />
+              <RotateCcw className="w-3.5 h-3.5 text-amber-600 shrink-0" />
               <span>مرتجع</span>
             </Button>
           )}
@@ -280,9 +283,9 @@ export const InvoiceDetailPage: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={() => setIsCancelModalOpen(true)}
-              className="gap-1.5 text-rose-600 border-rose-200 hover:bg-rose-50"
+              className="flex-1 justify-center gap-1 h-8 px-2 text-xs text-rose-600 border-rose-200 hover:bg-rose-50"
             >
-              <Ban className="w-4 h-4" />
+              <Ban className="w-3.5 h-3.5 shrink-0" />
               <span>إلغاء</span>
             </Button>
           )}
@@ -290,77 +293,98 @@ export const InvoiceDetailPage: React.FC = () => {
       </div>
 
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
+        <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" />
+        <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
           <span>{successMsg}</span>
         </div>
       )}
 
-      {/* بيانات العميل والتاريخ */}
-      <Card className="p-5 border-slate-200">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-          <div>
-            <span className="text-xs text-slate-400 block mb-1">العميل</span>
-            <div className="flex items-center gap-1.5 font-bold text-slate-800">
-              <User className="w-4 h-4 text-slate-400" />
-              <span>{invoice.customerName || 'عميل نقدي'}</span>
-            </div>
+      {/* بيانات العميل */}
+      <Card className="p-3 border-slate-200">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs">
+          <div className="flex items-center gap-1.5 font-bold text-slate-800 min-w-0">
+            <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <span className="truncate">{invoice.customerName || 'عميل نقدي'}</span>
           </div>
 
-          <div>
-            <span className="text-xs text-slate-400 block mb-1">رقم الهاتف</span>
-            <div className="flex items-center gap-1.5 font-medium text-slate-700">
-              <Phone className="w-4 h-4 text-slate-400" />
-              <span dir="ltr">{invoice.customerPhone || '-'}</span>
-            </div>
-          </div>
-
-          <div>
-            <span className="text-xs text-slate-400 block mb-1">تاريخ الفاتورة</span>
-            <div className="flex items-center gap-1.5 font-medium text-slate-700">
-              <Calendar className="w-4 h-4 text-slate-400" />
-              <span>{formatDate(invoice.createdAt, true)}</span>
-            </div>
+          <div className="flex items-center gap-1.5 font-medium text-slate-600 shrink-0">
+            <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <span dir="ltr">{invoice.customerPhone || '-'}</span>
           </div>
         </div>
 
         {invoice.notes && (
-          <div className="mt-3 pt-3 border-t border-slate-100 text-xs text-slate-600">
+          <div className="mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-600">
             <span className="font-bold ml-1">ملاحظات:</span>
             <span>{invoice.notes}</span>
           </div>
         )}
       </Card>
 
-      {/* جدول بنود الفاتورة - ممنوع تماماً إظهار سعر الشراء أو الربح */}
+      {/* بنود الفاتورة - ممنوع تماماً إظهار سعر الشراء أو الربح */}
       <Card className="p-0 overflow-hidden border-slate-200">
-        <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-sm font-bold text-slate-800">بنود الفاتورة</h2>
+        <div className="px-3 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between gap-2">
+          <h2 className="text-xs font-bold text-slate-800">بنود الفاتورة</h2>
           {isCancelled && (
-            <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">
+            <span className="text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">
               تم إلغاء وإرجاع كافة البنود للمخزن
             </span>
           )}
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-right text-sm">
-            <thead className="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200">
+        {/* عرض الموبايل: كروت صغيرة بدون سكرول أفقي */}
+        <div className="md:hidden print:hidden divide-y divide-slate-100">
+          {(invoice.items || []).map((it: any, index: number) => {
+            const returned = Number(it.returnedQty) || 0;
+            return (
+              <div key={index} className="p-2.5 space-y-1">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-xs font-bold text-slate-800 leading-snug">
+                    {it.name}
+                  </span>
+                  <span className="text-xs font-black text-slate-900 shrink-0">
+                    {formatCurrency(it.total || it.unitPrice * it.quantity)}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[11px] text-slate-500">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="font-mono font-bold text-slate-600">{it.code || '-'}</span>
+                    <span>
+                      {it.quantity} × {formatCurrency(it.unitPrice)}
+                    </span>
+                  </div>
+                  {returned > 0 && (
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 shrink-0">
+                      مرتجع سابقاً: {returned} قطعة
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* عرض اللاب توب والطباعة: جدول نظيف */}
+        <div className="hidden md:block print:block overflow-x-auto">
+          <table className="w-full text-right text-xs">
+            <thead className="bg-slate-50/50 text-[11px] text-slate-500 border-b border-slate-200">
               <tr>
-                <th className="p-3 font-semibold">#</th>
-                <th className="p-3 font-semibold">الكود</th>
-                <th className="p-3 font-semibold">الصنف / الموديل</th>
-                <th className="p-3 font-semibold text-center">الكمية المباعة</th>
-                <th className="p-3 font-semibold text-center">المرتجع سابقاً</th>
-                <th className="p-3 font-semibold">سعر الوحدة</th>
-                <th className="p-3 font-semibold text-left">الإجمالي</th>
+                <th className="p-2 font-semibold">#</th>
+                <th className="p-2 font-semibold">الكود</th>
+                <th className="p-2 font-semibold">الصنف / الموديل</th>
+                <th className="p-2 font-semibold text-center">الكمية المباعة</th>
+                {hasAnyReturned && (
+                  <th className="p-2 font-semibold text-center">المرتجع سابقاً</th>
+                )}
+                <th className="p-2 font-semibold">سعر الوحدة</th>
+                <th className="p-2 font-semibold text-left">الإجمالي</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -368,19 +392,21 @@ export const InvoiceDetailPage: React.FC = () => {
                 const returned = Number(it.returnedQty) || 0;
                 return (
                   <tr key={index} className="hover:bg-slate-50/50">
-                    <td className="p-3 text-xs text-slate-400">{index + 1}</td>
-                    <td className="p-3 font-mono text-xs font-bold text-slate-700">
+                    <td className="p-2 text-xs text-slate-400">{index + 1}</td>
+                    <td className="p-2 font-mono text-xs font-bold text-slate-700">
                       {it.code || '-'}
                     </td>
-                    <td className="p-3 font-medium text-slate-800">{it.name}</td>
-                    <td className="p-3 font-bold text-slate-900 text-center">{it.quantity}</td>
-                    <td className="p-3 font-medium text-amber-700 text-center">
-                      {returned > 0 ? `${returned} قطعة` : '-'}
-                    </td>
-                    <td className="p-3 font-medium text-slate-700">
+                    <td className="p-2 font-medium text-slate-800">{it.name}</td>
+                    <td className="p-2 font-bold text-slate-900 text-center">{it.quantity}</td>
+                    {hasAnyReturned && (
+                      <td className="p-2 font-medium text-amber-700 text-center">
+                        {returned > 0 ? `${returned} قطعة` : '-'}
+                      </td>
+                    )}
+                    <td className="p-2 font-medium text-slate-700">
                       {formatCurrency(it.unitPrice)}
                     </td>
-                    <td className="p-3 font-bold text-slate-900 text-left">
+                    <td className="p-2 font-bold text-slate-900 text-left">
                       {formatCurrency(it.total || it.unitPrice * it.quantity)}
                     </td>
                   </tr>
@@ -391,18 +417,43 @@ export const InvoiceDetailPage: React.FC = () => {
         </div>
       </Card>
 
-      {/* ملخص الدفعات والإجماليات */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* تفاصيل السداد والمحافظ */}
-        <Card className="p-5 border-slate-200 space-y-3">
-          <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">
-            تفاصيل الدفعات
-          </h2>
-          <div className="space-y-2 text-sm">
+      {/* كارت الحساب المدمج (الإجماليات + طرق الدفع) */}
+      <Card className="p-3 border-slate-200 space-y-2">
+        <h2 className="text-xs font-bold text-slate-800 border-b border-slate-100 pb-1.5">
+          الحساب
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-6">
+          {/* الإجماليات */}
+          <div className="space-y-1.5 text-xs">
+            {hasDiscount && (
+              <>
+                <div className="flex justify-between text-slate-600">
+                  <span>المجموع الفرعي:</span>
+                  <span className="font-bold text-slate-800">
+                    {formatCurrency(invoice.subtotal || invoice.grandTotal)}
+                  </span>
+                </div>
+
+                <div className="flex justify-between text-rose-600 font-bold">
+                  <span>خصم الفاتورة:</span>
+                  <span>-{formatCurrency(invoice.discountTotal)}</span>
+                </div>
+              </>
+            )}
+
+            <div className="flex justify-between items-center text-sm font-black text-slate-900">
+              <span>إجمالي الفاتورة:</span>
+              <span className="text-base">{formatCurrency(invoice.grandTotal)}</span>
+            </div>
+          </div>
+
+          {/* طرق الدفع والمسدد والمتبقي */}
+          <div className="space-y-1.5 text-xs border-t border-slate-100 pt-2 md:border-t-0 md:pt-0 md:border-r md:pr-6">
             {payments.cash > 0 && (
               <div className="flex items-center justify-between text-slate-700">
                 <span className="flex items-center gap-1.5">
-                  <Banknote className="w-4 h-4 text-emerald-600" />
+                  <Banknote className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span>نقدي (خزينة المحل):</span>
                 </span>
                 <span className="font-bold">{formatCurrency(payments.cash)}</span>
@@ -412,7 +463,7 @@ export const InvoiceDetailPage: React.FC = () => {
             {payments.instapay > 0 && (
               <div className="flex items-center justify-between text-slate-700">
                 <span className="flex items-center gap-1.5">
-                  <CreditCard className="w-4 h-4 text-indigo-600" />
+                  <CreditCard className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
                   <span>إنستاباي (البنك):</span>
                 </span>
                 <span className="font-bold">{formatCurrency(payments.instapay)}</span>
@@ -422,54 +473,27 @@ export const InvoiceDetailPage: React.FC = () => {
             {payments.wallet > 0 && (
               <div className="flex items-center justify-between text-slate-700">
                 <span className="flex items-center gap-1.5">
-                  <Smartphone className="w-4 h-4 text-rose-600" />
+                  <Smartphone className="w-3.5 h-3.5 text-rose-600 shrink-0" />
                   <span>فودافون كاش:</span>
                 </span>
                 <span className="font-bold">{formatCurrency(payments.wallet)}</span>
               </div>
             )}
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100 font-bold text-slate-900">
+            <div className="flex items-center justify-between font-bold text-slate-900 pt-1">
               <span>إجمالي المسدد:</span>
               <span className="text-[#14b8a6]">{formatCurrency(invoice.paidAmount)}</span>
             </div>
-          </div>
-        </Card>
-
-        {/* إجماليات الفاتورة */}
-        <Card className="p-5 border-slate-200 space-y-3">
-          <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">
-            ملخص الحساب
-          </h2>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-slate-600">
-              <span>المجموع الفرعي:</span>
-              <span className="font-bold text-slate-800">
-                {formatCurrency(invoice.subtotal || invoice.grandTotal)}
-              </span>
-            </div>
-
-            {(invoice.discountTotal || 0) > 0 && (
-              <div className="flex justify-between text-rose-600 font-bold">
-                <span>خصم الفاتورة:</span>
-                <span>-{formatCurrency(invoice.discountTotal)}</span>
-              </div>
-            )}
-
-            <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-100">
-              <span>إجمالي الفاتورة:</span>
-              <span>{formatCurrency(invoice.grandTotal)}</span>
-            </div>
 
             {hasDebt && !isCancelled && (
-              <div className="flex justify-between text-rose-600 font-black text-sm pt-2 border-t border-slate-100 bg-rose-50 p-2.5 rounded-xl">
+              <div className="flex justify-between items-center text-rose-600 font-black text-xs bg-rose-50 border border-rose-200 px-2.5 py-1.5 rounded-lg">
                 <span>المتبقي آجل (دين):</span>
                 <span>{formatCurrency(invoice.remainingAmount)}</span>
               </div>
             )}
           </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
 
       {/* نافذة المرتجع */}
       <Modal
