@@ -206,7 +206,7 @@ const AppShellContent: React.FC = () => {
           </div>
 
           <button
-            onClick={handleSignOut}
+            onClick={() => { if (window.confirm('متأكد إنك عايز تخرج؟\nلو النت فاصل مش هتقدر تدخل تاني لحد ما يرجع.')) { handleSignOut(); } }}
             title="تسجيل الخروج"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors border border-slate-200"
           >

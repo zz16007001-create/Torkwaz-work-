@@ -33,6 +33,9 @@ import {
   Banknote,
   Smartphone,
   ScanBarcode,
+  ChevronDown,
+  ChevronUp,
+  Pencil,
 } from 'lucide-react';
 
 interface CartItem {
@@ -368,6 +371,27 @@ export const CashierPage: React.FC = () => {
     setWalletStr('');
   };
 
+  // حالات عرض لوحة السداد فقط
+  const [payMode, setPayMode] = useState<'cashFull' | 'custom'>('cashFull');
+  const [showDiscount, setShowDiscount] = useState(false);
+  const [showCustomer, setShowCustomer] = useState(false);
+
+  // مزامنة الدفع الكاش الكامل تلقائياً مع تغير الإجمالي
+  useEffect(() => {
+    if (payMode === 'cashFull' && cart.length > 0) {
+      handlePayFullCash();
+    }
+  }, [payMode, grandTotal, cart.length]);
+
+  // إعادة لوحة السداد لوضعها الافتراضي عند تفريغ السلة أو بعد الحفظ
+  useEffect(() => {
+    if (cart.length === 0) {
+      setPayMode('cashFull');
+      setShowDiscount(false);
+      setShowCustomer(false);
+    }
+  }, [cart.length]);
+
   // حفظ الفاتورة
   const handleSaveInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -513,7 +537,7 @@ export const CashierPage: React.FC = () => {
             type="button"
             variant="outline"
             size="sm"
-            onClick={clearCart}
+            onClick={() => { if (window.confirm('متأكد إنك عايز تفرّغ السلة؟\nكل الأصناف هتتمسح.')) { clearCart(); } }}
             className="text-rose-600 border-rose-200 hover:bg-rose-50 gap-1.5 self-start sm:self-auto"
           >
             <Trash2 className="w-4 h-4" />
@@ -836,162 +860,238 @@ export const CashierPage: React.FC = () => {
                   {formatCurrency(grandTotal)}
                 </span>
               </div>
-              <button
-                type="button"
-                onClick={handlePayFullCash}
-                className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition-colors"
-              >
-                سداد كاش كامل
-              </button>
             </div>
 
-            {/* الخصم والمجموع الفرعي */}
-            <div className="space-y-3 text-sm border-b border-slate-100 pb-3">
-              <div className="flex justify-between text-slate-600">
-                <span>المجموع الفرعي:</span>
-                <span className="font-bold text-slate-800">{formatCurrency(subtotal)}</span>
-              </div>
-
-              {/* قسم الخصم مع زر الاختيار بين نسبة أو مبلغ */}
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-700">خصم الفاتورة:</span>
-                  <div className="inline-flex rounded-lg border border-slate-200 p-0.5 bg-white text-xs">
-                    <button
-                      type="button"
-                      onClick={() => setDiscountType('fixed')}
-                      className={`px-2.5 py-1 rounded-md font-bold transition-colors ${
-                        discountType === 'fixed'
-                          ? 'bg-[#14b8a6] text-white shadow-2xs'
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      مبلغ (ج)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDiscountType('percent')}
-                      className={`px-2.5 py-1 rounded-md font-bold transition-colors ${
-                        discountType === 'percent'
-                          ? 'bg-[#14b8a6] text-white shadow-2xs'
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      نسبة (%)
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    placeholder={discountType === 'percent' ? 'مثال: 10' : 'مثال: 50'}
-                    value={discountInputStr}
-                    onChange={(e) => setDiscountInputStr(e.target.value)}
-                    className="flex-1 text-left bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
-                  />
-                  {overallDiscount > 0 && (
-                    <span className="text-xs font-extrabold text-rose-600 whitespace-nowrap">
-                      خصم: -{formatCurrency(overallDiscount)}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* خانات الدفع المتعددة */}
-            <div className="space-y-3">
-              <span className="text-xs font-bold text-slate-800 block">تفاصيل السداد والمحافظ:</span>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <div>
-                  <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
-                    <Banknote className="w-3 h-3 text-emerald-600" />
-                    <span>نقدية (كاش)</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="0.00"
-                    value={cashStr}
-                    onChange={(e) => setCashStr(e.target.value)}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
-                    <CreditCard className="w-3 h-3 text-indigo-600" />
-                    <span>إنستاباي</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="0.00"
-                    value={instapayStr}
-                    onChange={(e) => setInstapayStr(e.target.value)}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
-                    <Smartphone className="w-3 h-3 text-rose-600" />
-                    <span>فودافون كاش</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="0.00"
-                    value={walletStr}
-                    onChange={(e) => setWalletStr(e.target.value)}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
-                  />
-                </div>
-              </div>
-
-              {/* ملخص المتبقي آجل أو الباقي للعميل */}
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold space-y-1">
-                <div className="flex justify-between">
-                  <span className="text-slate-600">إجمالي المدفوع:</span>
-                  <span className="text-slate-900">{formatCurrency(totalPaid)}</span>
-                </div>
-                {remainingDebt > 0 ? (
-                  <div className="flex justify-between text-rose-600 font-extrabold text-sm pt-1 border-t border-slate-200">
-                    <span>المتبقي آجل (دين على العميل):</span>
-                    <span>{formatCurrency(remainingDebt)}</span>
-                  </div>
-                ) : changeDue > 0 ? (
-                  <div className="flex justify-between text-emerald-700 font-bold pt-1 border-t border-slate-200">
-                    <span>الباقي للعميل:</span>
-                    <span>{formatCurrency(changeDue)}</span>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
-            {/* قسم العميل (يظهر اسم وتليفون، ويصبح إلزامياً إذا كان هناك آجل) */}
-            <div className="space-y-3 pt-2 border-t border-slate-100">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-[#14b8a6]" />
-                  <span>بيانات العميل</span>
+            {/* صف حالة السداد */}
+            {payMode === 'cashFull' ? (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between">
+                <span className="flex items-center gap-2 font-bold text-emerald-800 text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>كاش كامل</span>
                 </span>
-                {remainingDebt > 0 && (
-                  <span className="text-[11px] text-rose-600 font-bold">* إلزامي لوجود آجل</span>
+                <span className="font-bold text-emerald-800 text-sm">
+                  {formatCurrency(grandTotal)}
+                </span>
+              </div>
+            ) : (
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
+                <span className="flex items-center gap-2 font-bold text-slate-700 text-sm">
+                  <Pencil className="w-4 h-4 text-slate-500 shrink-0" />
+                  <span>دفع مخصص</span>
+                </span>
+                <span className="font-bold text-slate-700 text-sm">
+                  {formatCurrency(grandTotal)}
+                </span>
+              </div>
+            )}
+
+            {/* الروابط القابلة للفتح */}
+            <div>
+              {/* 1. رابط ولوحة الخصم */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setShowDiscount((prev) => !prev)}
+                  className="w-full flex items-center justify-between border-t border-slate-100 py-2.5 text-sm text-slate-600 hover:text-slate-900 transition-colors"
+                >
+                  <span className={overallDiscount > 0 ? 'text-rose-600 font-bold' : ''}>
+                    {overallDiscount > 0 ? `خصم: -${formatCurrency(overallDiscount)}` : 'خصم'}
+                  </span>
+                  {showDiscount || overallDiscount > 0 ? (
+                    <ChevronUp className="w-4 h-4 text-slate-400 shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
+                  )}
+                </button>
+
+                {(showDiscount || overallDiscount > 0) && (
+                  <div className="space-y-3 text-sm pb-3">
+                    {overallDiscount > 0 && (
+                      <div className="flex justify-between text-slate-600">
+                        <span>المجموع الفرعي:</span>
+                        <span className="font-bold text-slate-800">{formatCurrency(subtotal)}</span>
+                      </div>
+                    )}
+
+                    {/* قسم الخصم مع زر الاختيار بين نسبة أو مبلغ */}
+                    <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-700">خصم الفاتورة:</span>
+                        <div className="inline-flex rounded-lg border border-slate-200 p-0.5 bg-white text-xs">
+                          <button
+                            type="button"
+                            onClick={() => setDiscountType('fixed')}
+                            className={`px-2.5 py-1 rounded-md font-bold transition-colors ${
+                              discountType === 'fixed'
+                                ? 'bg-[#14b8a6] text-white shadow-2xs'
+                                : 'text-slate-600 hover:text-slate-900'
+                            }`}
+                          >
+                            مبلغ (ج)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setDiscountType('percent')}
+                            className={`px-2.5 py-1 rounded-md font-bold transition-colors ${
+                              discountType === 'percent'
+                                ? 'bg-[#14b8a6] text-white shadow-2xs'
+                                : 'text-slate-600 hover:text-slate-900'
+                            }`}
+                          >
+                            نسبة (%)
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          placeholder={discountType === 'percent' ? 'مثال: 10' : 'مثال: 50'}
+                          value={discountInputStr}
+                          onChange={(e) => setDiscountInputStr(e.target.value)}
+                          className="flex-1 text-left bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                        />
+                        {overallDiscount > 0 && (
+                          <span className="text-xs font-extrabold text-rose-600 whitespace-nowrap">
+                            خصم: -{formatCurrency(overallDiscount)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <Input
-                  placeholder="اسم العميل"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  required={remainingDebt > 0}
-                />
-                <Input
-                  placeholder="رقم الهاتف"
-                  value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
-                  required={remainingDebt > 0}
-                />
+              {/* 2. رابط ولوحة الدفع المخصص */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setPayMode(payMode === 'cashFull' ? 'custom' : 'cashFull')}
+                  className="w-full flex items-center justify-between border-t border-slate-100 py-2.5 text-sm text-slate-600 hover:text-slate-900 transition-colors"
+                >
+                  <span>
+                    {payMode === 'custom' ? 'رجوع لكاش كامل' : 'طريقة دفع تانية أو آجل'}
+                  </span>
+                  {payMode === 'custom' ? (
+                    <ChevronUp className="w-4 h-4 text-slate-400 shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
+                  )}
+                </button>
+
+                {payMode === 'custom' && (
+                  <div className="space-y-3 pb-3">
+                    <span className="text-xs font-bold text-slate-800 block">تفاصيل السداد والمحافظ:</span>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <div>
+                        <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
+                          <Banknote className="w-3 h-3 text-emerald-600" />
+                          <span>نقدية (كاش)</span>
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="0.00"
+                          value={cashStr}
+                          onChange={(e) => setCashStr(e.target.value)}
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
+                          <CreditCard className="w-3 h-3 text-indigo-600" />
+                          <span>إنستاباي</span>
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="0.00"
+                          value={instapayStr}
+                          onChange={(e) => setInstapayStr(e.target.value)}
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] font-medium text-slate-500 mb-1 flex items-center gap-1">
+                          <Smartphone className="w-3 h-3 text-rose-600" />
+                          <span>فودافون كاش</span>
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="0.00"
+                          value={walletStr}
+                          onChange={(e) => setWalletStr(e.target.value)}
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#14b8a6]"
+                        />
+                      </div>
+                    </div>
+
+                    {/* ملخص المتبقي آجل أو الباقي للعميل */}
+                    <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">إجمالي المدفوع:</span>
+                        <span className="text-slate-900">{formatCurrency(totalPaid)}</span>
+                      </div>
+                      {remainingDebt > 0 ? (
+                        <div className="flex justify-between text-rose-600 font-extrabold text-sm pt-1 border-t border-slate-200">
+                          <span>المتبقي آجل (دين على العميل):</span>
+                          <span>{formatCurrency(remainingDebt)}</span>
+                        </div>
+                      ) : changeDue > 0 ? (
+                        <div className="flex justify-between text-emerald-700 font-bold pt-1 border-t border-slate-200">
+                          <span>الباقي للعميل:</span>
+                          <span>{formatCurrency(changeDue)}</span>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* 3. رابط ولوحة بيانات العميل */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setShowCustomer((prev) => !prev)}
+                  className="w-full flex items-center justify-between border-t border-slate-100 py-2.5 text-sm text-slate-600 hover:text-slate-900 transition-colors"
+                >
+                  <span>بيانات عميل (اختياري)</span>
+                  {showCustomer || remainingDebt > 0 || customerName.trim() || customerPhone.trim() ? (
+                    <ChevronUp className="w-4 h-4 text-slate-400 shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
+                  )}
+                </button>
+
+                {(showCustomer || remainingDebt > 0 || customerName.trim() || customerPhone.trim()) && (
+                  <div className="space-y-3 pb-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                        <User className="w-3.5 h-3.5 text-[#14b8a6]" />
+                        <span>بيانات العميل</span>
+                      </span>
+                      {remainingDebt > 0 && (
+                        <span className="text-[11px] text-rose-600 font-bold">* إلزامي لوجود آجل</span>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <Input
+                        placeholder="اسم العميل"
+                        value={customerName}
+                        onChange={(e) => setCustomerName(e.target.value)}
+                        required={remainingDebt > 0}
+                      />
+                      <Input
+                        placeholder="رقم الهاتف"
+                        value={customerPhone}
+                        onChange={(e) => setCustomerPhone(e.target.value)}
+                        required={remainingDebt > 0}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
