@@ -115,12 +115,18 @@ const AppShellContent: React.FC = () => {
     setUnlockModalOpen(true);
   };
 
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
   const handleConfirmAdminUnlock = (e: React.FormEvent) => {
     e.preventDefault();
     if (tryUnlockAdmin(adminPasswordInput)) {
       setUnlockModalOpen(false);
       setAdminPasswordInput('');
       setAdminPasswordError(null);
+      setMobileMenuOpen(false);
+      navigate('/', { replace: true });
     } else {
       setAdminPasswordError('كلمة السر غير صحيحة');
       setAdminPasswordInput('');
@@ -245,30 +251,36 @@ const AppShellContent: React.FC = () => {
         </aside>
 
         {/* Content Outlet */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 pb-24 md:pb-6">
           {isRouteBlocked ? <Navigate to="/cashier" replace /> : <Outlet />}
         </main>
       </div>
 
-      {/* Mobile Drawer Overlay for "المزيد" */}
-      {mode === 'admin' && mobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs md:hidden print:hidden"
-          onClick={() => setMobileMenuOpen(false)}
-        >
+      {/* Mobile Floating Menu Backdrop & Panel */}
+      {mobileMenuOpen && (
+        <>
           <div
-            className="absolute bottom-16 inset-x-0 bg-white rounded-t-3xl p-5 shadow-2xl border-t border-brand-100 max-h-[75vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-[38] bg-slate-900/35 backdrop-blur-xs md:hidden print:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          <div
+            role="dialog"
+            aria-label="كافة أقسام النظام"
+            className="fixed left-4 right-4 bottom-[calc(84px+env(safe-area-inset-bottom))] max-w-md z-40 bg-white rounded-3xl p-4 shadow-2xl border border-brand-100 max-h-[70vh] overflow-y-auto md:hidden print:hidden"
           >
-            <div className="flex items-center justify-between mb-4 pb-2 border-b border-brand-100">
-              <span className="font-bold text-brand-800 text-sm">كافة أقسام النظام</span>
+            <div className="flex items-center justify-between mb-3 pb-2 border-b border-brand-100">
+              <span className="font-bold text-brand-800 text-xs">كافة أقسام النظام</span>
               <button
+                type="button"
                 onClick={() => setMobileMenuOpen(false)}
+                aria-label="إغلاق القائمة"
                 className="p-1 rounded-lg text-slate-400 hover:text-brand-800 hover:bg-brand-50"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
+
             <div className="grid grid-cols-2 gap-2">
               {visibleNavItems.map((item) => {
                 const Icon = item.icon;
@@ -279,17 +291,17 @@ const AppShellContent: React.FC = () => {
                     end={item.to === '/'}
                     onClick={() => setMobileMenuOpen(false)}
                     className={({ isActive }) =>
-                      `flex items-center gap-2.5 p-3 rounded-xl text-xs font-medium border ${
+                      `flex items-center gap-2 p-2.5 rounded-xl text-xs border transition-colors ${
                         isActive
-                          ? 'border-brand-600 bg-brand-600 text-white'
-                          : 'border-brand-100 text-slate-700 hover:bg-brand-50'
+                          ? 'border-brand-600 bg-brand-600 text-white font-bold shadow-xs'
+                          : 'border-brand-100 bg-brand-50/40 text-slate-700 font-medium hover:bg-brand-50 hover:text-brand-800'
                       }`
                     }
                   >
                     {({ isActive }) => (
                       <>
-                        <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-brand-600'}`} />
-                        <span>{item.label}</span>
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-brand-600'}`} />
+                        <span className="truncate">{item.label}</span>
                       </>
                     )}
                   </NavLink>
@@ -297,73 +309,20 @@ const AppShellContent: React.FC = () => {
               })}
             </div>
           </div>
-        </div>
+        </>
       )}
 
-      {/* Mobile Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 inset-x-0 z-30 bg-white border-t border-brand-100 md:hidden flex items-center justify-around h-16 px-2 shadow-lg print:hidden">
-        <NavLink
-          to="/cashier"
-          className={({ isActive }) =>
-            `flex flex-col items-center justify-center w-16 py-1.5 rounded-xl text-[11px] font-medium transition-colors ${
-              isActive ? 'bg-brand-600 text-white font-semibold' : 'text-slate-500 hover:text-brand-800'
-            }`
-          }
-        >
-          <ShoppingCart className="w-5 h-5 mb-0.5" />
-          <span>الكاشير</span>
-        </NavLink>
-
-        <NavLink
-          to="/items"
-          className={({ isActive }) =>
-            `flex flex-col items-center justify-center w-16 py-1.5 rounded-xl text-[11px] font-medium transition-colors ${
-              isActive ? 'bg-brand-600 text-white font-semibold' : 'text-slate-500 hover:text-brand-800'
-            }`
-          }
-        >
-          <Boxes className="w-5 h-5 mb-0.5" />
-          <span>المخزون</span>
-        </NavLink>
-
-        {mode === 'sales' ? (
-          <NavLink
-            to="/invoices"
-            className={({ isActive }) =>
-              `flex flex-col items-center justify-center w-16 py-1.5 rounded-xl text-[11px] font-medium transition-colors ${
-                isActive ? 'bg-brand-600 text-white font-semibold' : 'text-slate-500 hover:text-brand-800'
-              }`
-            }
-          >
-            <Receipt className="w-5 h-5 mb-0.5" />
-            <span>الفواتير</span>
-          </NavLink>
-        ) : (
-          <>
-            <NavLink
-              to="/purchase"
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center w-16 py-1.5 rounded-xl text-[11px] font-medium transition-colors ${
-                  isActive ? 'bg-brand-600 text-white font-semibold' : 'text-slate-500 hover:text-brand-800'
-                }`
-              }
-            >
-              <PackagePlus className="w-5 h-5 mb-0.5" />
-              <span>إضافة بضاعة</span>
-            </NavLink>
-
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`flex flex-col items-center justify-center w-16 py-1.5 rounded-xl text-[11px] font-medium transition-colors ${
-                mobileMenuOpen ? 'bg-brand-600 text-white font-semibold' : 'text-slate-500 hover:text-brand-800'
-              }`}
-            >
-              <Menu className="w-5 h-5 mb-0.5" />
-              <span>المزيد</span>
-            </button>
-          </>
-        )}
-      </nav>
+      {/* Mobile Floating Action Button (FAB) */}
+      <button
+        type="button"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => setMobileMenuOpen((prev) => !prev)}
+        aria-label={mobileMenuOpen ? 'إغلاق قائمة الأقسام' : 'فتح قائمة الأقسام'}
+        aria-expanded={mobileMenuOpen}
+        className="fixed left-4 bottom-[calc(16px+env(safe-area-inset-bottom))] z-40 w-14 h-14 rounded-full bg-brand-700 hover:bg-brand-800 active:scale-95 text-white shadow-lg ring-2 ring-white/80 flex items-center justify-center transition-all md:hidden print:hidden"
+      >
+        {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </button>
 
       {/* Admin Unlock Modal */}
       <Modal
